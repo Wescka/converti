@@ -197,3 +197,9 @@ Ejecutar pruebas estáticas:
 ```bash
 python -m unittest tests/test_static_quality.py -v
 ```
+
+## Ajuste 2026-08-22 — Exportación Word/PDF y selector de formato
+- El DOCX moderno usa anchos de tabla A4 fijos compatibles con Word/LibreOffice para evitar compresión horizontal.
+- Se mejoró la legibilidad del DOCX y la paginación: encabezados permanecen con el contenido asociado y descripciones largas pueden continuar en la página siguiente sin perder datos.
+- La exportación PDF conserva su flujo multipágina; los bloques excepcionalmente largos pueden dividirse de forma segura para evitar recortes.
+- El selector de formato reserva espacio suficiente para mostrar completos `PDF` y `Word` en escritorio y móvil. La regla es común a ES/EN/FR/PT-BR.
