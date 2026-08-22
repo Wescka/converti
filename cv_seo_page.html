@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="{{ ui.html_lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ page.title }}</title>
+  <meta name="description" content="{{ page.description }}">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <link rel="canonical" href="{{ canonical_url }}">
+  {% for code, href in alternates.items() %}<link rel="alternate" hreflang="{{ code }}" href="{{ href }}">{% endfor %}
+  <link rel="alternate" hreflang="x-default" href="{{ alternates['es'] }}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Converti">
+  <meta property="og:title" content="{{ page.title }}">
+  <meta property="og:description" content="{{ page.description }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  <meta property="og:image" content="https://converti.lat/static/images/logo_converti.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page.title }}">
+  <meta name="twitter:description" content="{{ page.description }}">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/icon1.png') }}?v=6">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/site_ui.css') }}?v=seo-20260822">
+  <style>
+    .seo-cv{max-width:1080px;margin:0 auto;padding:56px 22px 72px;color:#14213a;font-family:'Plus Jakarta Sans',sans-serif}.seo-cv-hero{padding:38px;border:1px solid #e3eaf3;border-radius:26px;background:linear-gradient(180deg,#fff,#f8fbff)}.seo-cv-badge{font-size:13px;font-weight:800;color:#2879ed;text-transform:uppercase;letter-spacing:.05em}.seo-cv h1{font-size:clamp(32px,5vw,56px);line-height:1.05;margin:12px 0 16px;max-width:850px}.seo-cv .lead{font-size:18px;line-height:1.7;color:#53627a;max-width:800px}.seo-cv-cta{display:inline-flex;margin-top:22px;padding:14px 20px;border-radius:13px;background:#2879ed;color:white;text-decoration:none;font-weight:800}.seo-cv-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:28px}.seo-cv-card{padding:26px;border:1px solid #e3eaf3;border-radius:20px;background:#fff}.seo-cv h2{font-size:26px;margin:0 0 12px}.seo-cv h3{font-size:18px;margin:22px 0 8px}.seo-cv p,.seo-cv li{line-height:1.7;color:#53627a}.seo-cv ul,.seo-cv ol{padding-left:22px}.seo-cv-related{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.seo-cv-related a{padding:10px 12px;border:1px solid #dce6f2;border-radius:10px;text-decoration:none;color:#214166;background:#fff}@media(max-width:720px){.seo-cv{padding:28px 14px 50px}.seo-cv-hero{padding:24px 20px}.seo-cv-grid{grid-template-columns:1fr}.seo-cv h1{font-size:34px}.seo-cv .lead{font-size:16px}}
+  </style>
+  <script type="application/ld+json">{{ schema_json|safe }}</script>
+</head>
+<body>
+  <header class="converti-seo-header">
+    <a href="{{ paths.home }}" aria-label="Converti"><img src="{{ url_for('static', filename='images/logo_converti.png') }}" alt="Converti"></a>
+    <nav><a href="{{ paths.convert }}">{{ ui.convert }}</a><a href="{{ paths.formats }}">{{ ui.formats }}</a><a href="{{ paths.help }}">{{ ui.help }}</a><a href="{{ paths.create }}">{{ ui.create }}</a></nav>
+  </header>
+  <main class="seo-cv">
+    <section class="seo-cv-hero">
+      <div class="seo-cv-badge">{{ page.badge }}</div>
+      <h1>{{ page.h1 }}</h1>
+      <p class="lead">{{ page.lead }}</p>
+      <a class="seo-cv-cta" href="{{ paths.create }}">{{ page.cta }}</a>
+    </section>
+    <div class="seo-cv-grid">
+      <article class="seo-cv-card">
+        <h2>{{ page.what_title }}</h2>
+        <p>{{ page.what_text }}</p>
+        <h3>{{ page.benefits_title }}</h3>
+        <ul>{% for item in page.benefits %}<li>{{ item }}</li>{% endfor %}</ul>
+      </article>
+      <article class="seo-cv-card">
+        <h2>{{ page.how_title }}</h2>
+        <ol>{% for item in page.steps %}<li>{{ item }}</li>{% endfor %}</ol>
+        <h3>{{ page.privacy_title }}</h3>
+        <p>{{ page.privacy_text }}</p>
+      </article>
+    </div>
+    <section class="seo-cv-card" style="margin-top:22px">
+      <h2>{{ page.faq_title }}</h2>
+      {% for q,a in page.faq %}<h3>{{ q }}</h3><p>{{ a }}</p>{% endfor %}
+      <h3>{{ page.related_title }}</h3>
+      <div class="seo-cv-related">{% for href,label in related %}<a href="{{ href }}">{{ label }}</a>{% endfor %}</div>
+    </section>
+  </main>
+</body>
+</html>
