@@ -213,3 +213,9 @@ python -m unittest tests/test_static_quality.py -v
 - Se reforzaron canonical, hreflang, robots, Open Graph y datos estructurados WebApplication/BreadcrumbList en Converti CV.
 - El editor `/crear-cv` enlaza internamente las nuevas landing pages para facilitar descubrimiento y rastreo.
 - `robots.txt` permite el sitio público y excluye `/api/` y `/download/` del rastreo.
+
+
+## Corrección 2026-08-22 — landings SEO de CV
+- Se reconstruyó `templates/cv_seo_page.html` con estilos autocontenidos y responsive para evitar conflictos/caché con CSS global.
+- Se verificó el layout en escritorio 1648 px y móvil 390 px sin bloques vacíos ni desbordes.
+- Se conserva navegación, selector de idioma, canonical, hreflang, schema y enlaces internos.
