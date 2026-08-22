@@ -1,14 +1,17 @@
 from pathlib import Path
 import py_compile
 import re
+import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 
 class StaticQualityTests(unittest.TestCase):
     def test_python_sources_compile(self):
-        for name in ("app.py", "capabilities.py", "config.py", "converters.py", "cv_exports.py", "security_utils.py"):
-            py_compile.compile(str(ROOT / name), doraise=True)
+        with tempfile.TemporaryDirectory() as tmp:
+            for name in ("app.py", "capabilities.py", "config.py", "converters.py", "cv_exports.py", "security_utils.py"):
+                target = Path(tmp) / f"{name}.pyc"
+                py_compile.compile(str(ROOT / name), cfile=str(target), doraise=True)
 
     def test_main_navigation_uses_real_routes(self):
         offenders = []
@@ -71,6 +74,15 @@ class StaticQualityTests(unittest.TestCase):
         ):
             self.assertIn(slug, source)
         self.assertIn('locale=locale', source)
+
+
+    def test_create_cv_receives_navigation_paths(self):
+        source = (ROOT / "app.py").read_text(encoding="utf-8")
+        self.assertIn('nav_paths=SECTION_PATHS[locale]', source)
+        template = (ROOT / "templates/create_cv.html").read_text(encoding="utf-8")
+        self.assertIn('{{ nav_paths.convert }}', template)
+        self.assertIn('{{ nav_paths.formats }}', template)
+        self.assertIn('{{ nav_paths.help }}', template)
 
     def test_mobile_cv_flow_and_export_labels_remain(self):
         js = (ROOT / "static/js/create_cv.js").read_text(encoding="utf-8")
