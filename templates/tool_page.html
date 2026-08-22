@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="{{ ui.html_lang }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ title }} · Converti</title><link rel="icon" type="image/png" href="/static/images/icon1.png">
+<meta name="description" content="{{ description }}">
+<link rel="canonical" href="{{ canonical_url }}">
+<link rel="alternate" hreflang="es" href="{{ alternates['es'] }}">
+<link rel="alternate" hreflang="en" href="{{ alternates['en'] }}">
+<link rel="alternate" hreflang="fr" href="{{ alternates['fr'] }}">
+<link rel="alternate" hreflang="pt-BR" href="{{ alternates['pt-br'] }}">
+<link rel="alternate" hreflang="x-default" href="{{ alternates['en'] }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0b1234;
+  --blue:#2a7bff;
+  --blue-soft:#eef5ff;
+  --text:#0d173d;
+  --muted:#5d6b93;
+  --line:#dfe7f4;
+  --bg:#f7faff;
+  --shadow:0 16px 42px rgba(18,41,100,.08);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:"Plus Jakarta Sans",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at left 120px,rgba(42,123,255,.08),transparent 22%),
+    linear-gradient(180deg,#fff 0%,#f7faff 100%);
+}
+.header{
+  height:70px;
+  display:grid;
+  grid-template-columns:minmax(210px,1fr) auto minmax(120px,1fr);
+  align-items:center;
+  column-gap:24px;
+  padding:0 3.2%;
+  background:#fff;
+  border-bottom:1px solid #edf2fa;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-decoration:none;
+  
+  font-weight:800;
+  letter-spacing:-1.2px;
+  color:var(--navy);
+}
+
+.nav{margin:0;display:flex;align-items:center;justify-self:center;gap:34px}
+.nav a{
+  color:var(--navy);
+  text-decoration:none;
+  font-size:14px;
+  font-weight:600;
+}
+.wrap{
+  width:min(980px,calc(100% - 36px));
+  margin:64px auto 90px;
+}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  padding:8px 12px;
+  border:1px solid #dbe7fb;
+  border-radius:999px;
+  background:#fbfdff;
+  color:var(--blue);
+  font-size:12px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+h1{
+  margin:18px 0 12px;
+  max-width:760px;
+  color:var(--navy);
+  font-size:52px;
+  line-height:1.04;
+  letter-spacing:-2.2px;
+}
+.lead{
+  max-width:760px;
+  margin:0 0 30px;
+  color:var(--muted);
+  font-size:18px;
+  line-height:1.6;
+}
+.box{
+  padding:30px;
+  border:1px solid var(--line);
+  border-radius:26px;
+  background:#fff;
+  box-shadow:var(--shadow);
+}
+.box-top{
+  display:flex;
+  gap:18px;
+  align-items:flex-start;
+}
+.icon{
+  width:58px;
+  height:58px;
+  flex:0 0 58px;
+  border-radius:18px;
+  background:var(--blue-soft);
+  color:var(--blue);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:0;
+  border:1px solid #dbe7fb;
+}
+.icon svg{width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.box h2{
+  margin:2px 0 8px;
+  color:var(--navy);
+  font-size:20px;
+}
+.box p{
+  margin:0;
+  color:var(--muted);
+  line-height:1.65;
+  font-size:14px;
+}
+.actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:24px;
+}
+.primary{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:48px;
+  padding:0 20px;
+  border-radius:14px;
+  background:linear-gradient(180deg,#4d93ff 0%,#2a7bff 100%);
+  color:#fff;
+  text-decoration:none;
+  font-weight:700;
+  box-shadow:0 12px 24px rgba(42,123,255,.22);
+  gap:8px;
+}
+.primary svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.secondary{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:48px;
+  padding:0 20px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+  color:var(--navy);
+  text-decoration:none;
+  font-weight:700;
+}
+.note{
+  margin-top:20px;
+  padding:14px 16px;
+  border:1px solid #dbe7fb;
+  border-radius:16px;
+  background:#fbfdff;
+  color:var(--muted);
+  font-size:13px;
+}
+footer{
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+  padding:0 20px 28px;
+}
+
+.brand-logo{height:62px!important;width:auto;max-width:360px;display:block;object-fit:contain;flex-shrink:0}
+@media(max-width:700px){
+  .header{height:auto;min-height:0;padding:5px 12px 6px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 10px}
+  .brand{justify-self:start;min-width:0}
+  .brand-logo{height:54px!important;width:auto;max-width:250px}
+  .lang-select{grid-column:2;grid-row:1;justify-self:end;margin:0;width:84px!important;min-width:84px;max-width:84px;padding:7px 8px;font-size:11px}
+  .nav{grid-column:1/-1;grid-row:2;width:100%;margin:0;padding:5px 0 0;border-top:1px solid #edf2fa;justify-content:center;gap:28px}
+  .nav a{font-size:12px;white-space:nowrap}
+  .wrap{margin-top:38px}
+  h1{font-size:39px}
+  .box{padding:22px}
+  .box-top{flex-direction:column}
+}
+
+.seo-section{margin-top:28px;padding:28px;border:1px solid var(--line);border-radius:24px;background:#fff;box-shadow:0 10px 30px rgba(18,41,100,.05)}
+.seo-section h2{margin:0 0 12px;color:var(--navy);font-size:26px;letter-spacing:-.7px}
+.seo-section p{margin:0;color:var(--muted);font-size:15px;line-height:1.75}
+.seo-list{margin:14px 0 0;padding-left:22px;color:var(--muted);font-size:14px;line-height:1.8}
+.steps{counter-reset:steps;display:grid;gap:12px;margin-top:16px}
+.step{display:flex;gap:12px;align-items:flex-start;color:var(--muted);font-size:14px;line-height:1.65}
+.step:before{counter-increment:steps;content:counter(steps);width:30px;height:30px;flex:0 0 30px;border-radius:10px;background:var(--blue-soft);color:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:800;border:1px solid #dbe7fb}
+.faq{display:grid;gap:10px;margin-top:14px}
+.faq details{border:1px solid var(--line);border-radius:16px;background:#fbfdff;padding:14px 16px}
+.faq summary{cursor:pointer;color:var(--navy);font-weight:700;font-size:14px}
+.faq details p{margin-top:9px;font-size:13px;line-height:1.65}
+.related{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.related a{display:inline-flex;padding:10px 13px;border:1px solid #dbe7fb;border-radius:12px;background:#fbfdff;color:var(--blue);text-decoration:none;font-size:13px;font-weight:700}
+.related a:hover{background:var(--blue-soft)}
+@media(max-width:700px){.seo-section{padding:21px}.seo-section h2{font-size:23px}}
+
+.lang-select{justify-self:end;margin-left:0;width:104px!important;min-width:104px;max-width:104px;flex:0 0 104px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--navy);padding:8px 10px;font:700 13px/1 "Plus Jakarta Sans",sans-serif;outline:none;cursor:pointer}
+
+/* REDISEÑO VISUAL GLOBAL SEO — mantiene layout, colores y logo */
+body{
+  font-family:"Plus Jakarta Sans",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  font-size:16px;
+  font-weight:500;
+  line-height:1.6;
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+}
+.nav a{font-size:16px;font-weight:700;letter-spacing:-.01em}
+.lang-select{font-family:"Plus Jakarta Sans",sans-serif;font-size:13px;font-weight:700}
+.badge{
+  padding:9px 14px;
+  font-size:13px;
+  font-weight:800;
+}
+h1{
+  font-size:58px;
+  line-height:1.035;
+  letter-spacing:-2.6px;
+  font-weight:800;
+}
+.lead{
+  font-size:20px;
+  line-height:1.7;
+  font-weight:500;
+}
+.box{
+  padding:34px;
+  border-radius:28px;
+  box-shadow:0 18px 46px rgba(18,41,100,.075);
+}
+.box h2{
+  font-size:24px;
+  line-height:1.3;
+  font-weight:800;
+  letter-spacing:-.03em;
+}
+.box p{
+  font-size:16px;
+  line-height:1.75;
+  font-weight:500;
+}
+.note{
+  padding:16px 18px;
+  border-radius:18px;
+  font-size:14px;
+  line-height:1.65;
+  font-weight:500;
+  box-shadow:0 4px 14px rgba(18,41,100,.035);
+}
+.primary,.secondary{
+  min-height:52px;
+  padding:0 23px;
+  border-radius:16px;
+  font-family:"Plus Jakarta Sans",sans-serif;
+  font-size:15px;
+  font-weight:800;
+  letter-spacing:-.01em;
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+.primary:hover,.secondary:hover{transform:translateY(-1px)}
+.secondary{box-shadow:0 5px 16px rgba(18,41,100,.05)}
+.seo-section{
+  padding:32px;
+  border-radius:26px;
+  box-shadow:0 12px 34px rgba(18,41,100,.06);
+}
+.seo-section h2{
+  font-size:30px;
+  line-height:1.25;
+  font-weight:800;
+  letter-spacing:-.8px;
+}
+.seo-section p{
+  font-size:16px;
+  line-height:1.8;
+  font-weight:500;
+}
+.seo-list{
+  font-size:15px;
+  line-height:1.9;
+  font-weight:500;
+}
+.step{
+  gap:14px;
+  font-size:15px;
+  line-height:1.75;
+  font-weight:500;
+}
+.step:before{
+  width:34px;
+  height:34px;
+  flex-basis:34px;
+  border-radius:11px;
+  font-size:14px;
+}
+.faq{gap:12px}
+.faq details{
+  padding:17px 19px;
+  border-radius:18px;
+  box-shadow:0 4px 14px rgba(18,41,100,.035);
+}
+.faq summary{
+  font-size:16px;
+  line-height:1.45;
+  font-weight:800;
+}
+.faq details p{
+  margin-top:11px;
+  font-size:15px;
+  line-height:1.75;
+}
+.related{gap:11px}
+.related a{
+  min-height:42px;
+  align-items:center;
+  padding:0 16px;
+  border-radius:13px;
+  font-size:14px;
+  font-weight:800;
+  box-shadow:0 4px 14px rgba(18,41,100,.04);
+  transition:transform .18s ease,box-shadow .18s ease;
+}
+.related a:hover{
+  transform:translateY(-1px);
+  box-shadow:0 7px 17px rgba(18,41,100,.07);
+}
+.primary:focus-visible,.secondary:focus-visible,.related a:focus-visible,.nav a:focus-visible,.faq summary:focus-visible{
+  outline:3px solid rgba(42,123,255,.2);
+  outline-offset:3px;
+}
+footer{font-size:13px;line-height:1.65;font-weight:500}
+
+@media(max-width:700px){
+  body{font-size:15px}
+  .nav a{font-size:13px}
+  .lang-select{font-size:12px}
+  h1{font-size:42px;letter-spacing:-1.8px}
+  .lead{font-size:17px}
+  .box{padding:24px;border-radius:23px}
+  .box h2{font-size:21px}
+  .box p{font-size:14px}
+  .primary,.secondary{min-height:49px;font-size:14px}
+  .seo-section{padding:23px;border-radius:21px}
+  .seo-section h2{font-size:25px}
+  .seo-section p,.seo-list,.step{font-size:14px}
+  .faq summary{font-size:15px}
+  .faq details p{font-size:14px}
+  .related a{font-size:13px}
+  footer{font-size:11.5px}
+}
+
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XLZM56PZHM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XLZM56PZHM');
+</script>
+
+{% if seo and seo.faq %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {% for q, a in seo.faq %}
+    {
+      "@type": "Question",
+      "name": {{ q|tojson }},
+      "acceptedAnswer": {"@type": "Answer", "text": {{ a|tojson }}}
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endif %}
+<link rel="stylesheet" href="/static/css/site_ui.css?v=clean-20260821">
+</head>
+<body>
+<header class="header">
+  <a href="{{ home_path }}" class="brand" aria-label="Converti">
+    <img class="brand-logo" src="/static/images/logo_converti.png" alt="Converti">
+  </a>
+  <nav class="nav">
+    {% if locale == "en" %}
+      <a href="{{ home_path }}#convertir">Convert</a><a href="{{ home_path }}#formatos">Formats</a><a href="{{ home_path }}#ayuda">Help</a>
+    {% elif locale == "fr" %}
+      <a href="{{ home_path }}#convertir">Convertir</a><a href="{{ home_path }}#formatos">Formats</a><a href="{{ home_path }}#ayuda">Aide</a>
+    {% elif locale == "pt-br" %}
+      <a href="{{ home_path }}#convertir">Converter</a><a href="{{ home_path }}#formatos">Formatos</a><a href="{{ home_path }}#ayuda">Ajuda</a>
+    {% else %}
+      <a href="{{ home_path }}#convertir">Convertir</a><a href="{{ home_path }}#formatos">Formatos</a><a href="{{ home_path }}#ayuda">Ayuda</a>
+    {% endif %}
+    {% if locale == "en" %}<a class="nav-cv" href="/en/create-cv">Create CV</a>
+    {% elif locale == "fr" %}<a class="nav-cv" href="/fr/creer-cv">Créer un CV</a>
+    {% elif locale == "pt-br" %}<a class="nav-cv" href="/pt-br/criar-cv">Criar CV</a>
+    {% else %}<a class="nav-cv" href="/crear-cv">Crear CV</a>{% endif %}
+  </nav>
+<div class="converti-header-tools">
+    <select class="lang-select" id="langSelector" aria-label="Idioma / Language"><option value="es">ES</option><option value="en">EN</option><option value="fr">FR</option><option value="pt-br">PT-BR</option></select></div>
+</header>
+
+<main class="wrap">
+  <div class="badge">{{ ui.badge }}</div>
+  <h1>{{ title }}</h1>
+  <p class="lead">{{ description }}</p>
+
+  <section class="box">
+    <div class="box-top">
+      <div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h13"/><path d="m14 4 3 3-3 3"/><path d="M20 17H7"/><path d="m10 14-3 3 3 3"/></svg></div>
+      <div>
+        <h2>{{ ui.convert_title }}</h2>
+        <p>{{ ui.same_engine }}</p>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a class="primary" href="{{ home_path }}#convertir"><span>{{ ui.open }}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m14 7 5 5-5 5"/></svg></a>
+      <a class="secondary" href="{{ home_path }}">{{ ui.back }}</a>
+    </div>
+
+    <div class="note">{{ ui.note }}</div>
+  </section>
+
+  {% if seo %}
+  <section class="seo-section">
+    <h2>{{ ui.about.format(title=title) }}</h2>
+    <p>{{ seo.intro }}</p>
+    {% if seo.benefits %}
+    <ul class="seo-list">
+      {% for item in seo.benefits %}<li>{{ item }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+  </section>
+
+  {% if seo.steps %}
+  <section class="seo-section">
+    <h2>{{ ui.how.format(title=title) }}</h2>
+    <div class="steps">
+      {% for item in seo.steps %}<div class="step">{{ item }}</div>{% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if seo.faq %}
+  <section class="seo-section">
+    <h2>{{ ui.faq }}</h2>
+    <div class="faq">
+      {% for q, a in seo.faq %}
+      <details><summary>{{ q }}</summary><p>{{ a }}</p></details>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if seo.related %}
+  <section class="seo-section">
+    <h2>{{ ui.related }}</h2>
+    <div class="related">
+      {% for related_slug, related_title in seo.related %}
+      <a href="{{ tool_base }}{{ related_slug }}">{{ related_title }}</a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+  {% endif %}
+</main>
+
+<footer class="converti-site-footer">{{ ui.footer }} ·
+{% if locale == "en" %}<a href="/en/privacy">Privacy</a>
+{% elif locale == "fr" %}<a href="/fr/confidentialite">Confidentialité</a>
+{% elif locale == "pt-br" %}<a href="/pt-br/privacidade">Privacidade</a>
+{% else %}<a href="/privacidad">Privacidad</a>{% endif %}
+</footer>
+<script>(function(){const s=document.getElementById('langSelector');if(!s)return;s.value={{ locale|tojson }};const slug={{ slug|tojson }};const p={es:'/convertir/'+slug,en:'/en/convert/'+slug,fr:'/fr/convertir/'+slug,'pt-br':'/pt-br/converter/'+slug};s.onchange=()=>{localStorage.setItem('converti_lang',s.value);location.href=p[s.value]};})();</script>
+
+</body>
+</html>

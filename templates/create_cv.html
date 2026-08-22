@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="{{ cv_ui.html_lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ cv_ui.meta_title }}</title>
+  <meta name="description" content="{{ cv_ui.meta_description }}">
+  <link rel="canonical" href="{{ canonical_url }}">
+  {% for code, href in alternates.items() %}<link rel="alternate" hreflang="{{ code }}" href="{{ href }}">{% endfor %}
+  <link rel="alternate" hreflang="x-default" href="https://converti.lat/crear-cv">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/icon1.png') }}?v=6">
+  <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/icon1.png') }}?v=6">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/create_cv.css') }}?v=clean-20260821">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/site_ui.css') }}?v=clean-20260821">
+</head>
+<body class="cvb-app">
+<header class="cvb-site-header">
+  <a class="cvb-brand" href="{{ home_path }}" aria-label="Converti">
+    <img src="{{ url_for('static', filename='images/logo_converti.png') }}" alt="Converti" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">
+    <span class="cvb-brand-fallback">Converti</span>
+  </a>
+  <nav class="cvb-site-nav" aria-label="{{ cv_ui.nav_label }}">
+    <a href="{{ home_path }}#convertir">{{ cv_ui.nav_convert }}</a>
+    <a href="{{ home_path }}#formatos">{{ cv_ui.nav_formats }}</a>
+    <a href="{{ home_path }}#ayuda">{{ cv_ui.nav_help }}</a>
+    <a class="is-current" id="cvbNavCreate" href="{{ cv_path }}">{{ cv_ui.nav_create }}</a>
+  </nav>
+  <div class="converti-header-tools">
+    <select class="cvb-lang" id="cvbLang" aria-label="{{ cv_ui.language }}">
+      <option value="/crear-cv" {% if locale=='es' %}selected{% endif %}>ES</option>
+      <option value="/en/create-cv" {% if locale=='en' %}selected{% endif %}>EN</option>
+      <option value="/fr/creer-cv" {% if locale=='fr' %}selected{% endif %}>FR</option>
+      <option value="/pt-br/criar-cv" {% if locale=='pt-br' %}selected{% endif %}>PT-BR</option>
+    </select>
+  </div>
+</header>
+
+<main class="cvb-main">
+  <section class="cvb-toolbar" aria-label="{{ cv_ui.customize }}">
+    <div class="cvb-template-group">
+      <span class="cvb-toolbar-label">{{ cv_ui.templates }}</span>
+      <div class="cvb-template-buttons" id="cvbTemplates">
+        <button type="button" class="cvb-template-btn is-active" data-template="modern">{{ cv_ui.t_modern }}</button>
+        <button type="button" class="cvb-template-btn" data-template="classic">{{ cv_ui.t_classic }}</button>
+        <button type="button" class="cvb-template-btn" data-template="minimal">{{ cv_ui.t_minimal }}</button>
+        <button type="button" class="cvb-template-btn" data-template="creative">{{ cv_ui.t_creative }}</button>
+        <button type="button" class="cvb-template-btn" data-template="executive">{{ cv_ui.t_executive }}</button>
+      </div>
+    </div>
+    <div class="cvb-color-control" id="cvbColorControl">
+      <span class="cvb-color-label">{{ cv_ui.accent }}</span>
+      <div class="cvb-color-presets" id="cvbColorPresets" aria-label="{{ cv_ui.accent }}">
+        <button type="button" class="cvb-color-swatch is-active" data-accent="#2a7bff" data-gradient="linear-gradient(135deg,#2a7bff,#65a7ff)" style="--swatch:linear-gradient(135deg,#2a7bff,#65a7ff)" aria-label="Azul"></button>
+        <button type="button" class="cvb-color-swatch" data-accent="#6d5dfc" data-gradient="linear-gradient(135deg,#6d5dfc,#a56bff)" style="--swatch:linear-gradient(135deg,#6d5dfc,#a56bff)" aria-label="Violeta"></button>
+        <button type="button" class="cvb-color-swatch" data-accent="#0f9f83" data-gradient="linear-gradient(135deg,#0f9f83,#43c69f)" style="--swatch:linear-gradient(135deg,#0f9f83,#43c69f)" aria-label="Verde"></button>
+        <button type="button" class="cvb-color-swatch" data-accent="#e25d38" data-gradient="linear-gradient(135deg,#e25d38,#ff9a52)" style="--swatch:linear-gradient(135deg,#e25d38,#ff9a52)" aria-label="Naranja"></button>
+        <button type="button" class="cvb-color-swatch" data-accent="#c13f71" data-gradient="linear-gradient(135deg,#c13f71,#ee6d8e)" style="--swatch:linear-gradient(135deg,#c13f71,#ee6d8e)" aria-label="Rosa"></button>
+        <button type="button" class="cvb-color-swatch" data-accent="#26354f" data-gradient="linear-gradient(135deg,#16243e,#405d82)" style="--swatch:linear-gradient(135deg,#16243e,#405d82)" aria-label="Azul oscuro"></button>
+      </div>
+      <label class="cvb-custom-color" title="{{ cv_ui.accent }} personalizado"><input id="cvbAccent" type="color" value="#2a7bff"><span aria-hidden="true">+</span></label>
+    </div>
+
+    <div class="cvb-export-control" id="cvbExportControl" hidden>
+      <label for="cvbExportFormat">{{ cv_ui.export_format }}</label>
+      <select id="cvbExportFormat">
+        <option value="pdf">{{ cv_ui.export_pdf }}</option>
+        <option value="docx">{{ cv_ui.export_word }}</option>
+      </select>
+      <button class="cvb-download-btn" type="button" id="cvbDownload"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>{{ cv_ui.download }}</span></button>
+    </div>
+    <button class="cvb-clear-btn" type="button" id="cvbClear">{{ cv_ui["clear"] }}</button>
+  </section>
+
+
+  <div class="cvb-side-art cvb-side-art-left" aria-hidden="true">
+    <svg viewBox="0 0 180 420">
+      <g class="art-float-one">
+        <rect x="28" y="36" width="112" height="142" rx="20" fill="#eef5ff" stroke="#cbdcf4"/>
+        <rect x="46" y="58" width="58" height="8" rx="4" fill="#9fc3f3"/>
+        <rect x="46" y="78" width="74" height="6" rx="3" fill="#d1def0"/>
+        <rect x="46" y="94" width="66" height="6" rx="3" fill="#d1def0"/>
+        <circle cx="55" cy="128" r="12" fill="#dceaff"/>
+        <path d="M76 123h42M76 137h31" stroke="#acc6e9" stroke-width="6" stroke-linecap="round"/>
+      </g>
+      <g class="art-float-two">
+        <path d="M41 238h99v118H41z" fill="#fff8ea" stroke="#ead9b7"/>
+        <path d="M63 270l14 14 32-38" fill="none" stroke="#80b99a" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M62 312h56M62 330h43" stroke="#d5c39e" stroke-width="6" stroke-linecap="round"/>
+      </g>
+    </svg>
+  </div>
+  <div class="cvb-side-art cvb-side-art-right" aria-hidden="true">
+    <svg viewBox="0 0 180 420">
+      <g class="art-float-one">
+        <rect x="34" y="44" width="108" height="78" rx="18" fill="#f7efff" stroke="#dfcff0"/>
+        <path d="M55 66h66M55 83h48M55 100h58" stroke="#bea8dc" stroke-width="6" stroke-linecap="round"/>
+        <path d="M116 122l18 22-37-14" fill="#eadfff"/>
+      </g>
+      <g class="art-float-two">
+        <rect x="30" y="222" width="118" height="90" rx="18" fill="#eefaf5" stroke="#cce8d9"/>
+        <path d="M48 246h82M48 266h55M48 286h71" stroke="#9ccdb4" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="124" cy="336" r="34" fill="#eef5ff" stroke="#cbdcf4"/>
+        <path d="M108 336l11 11 22-27" fill="none" stroke="#78a9e6" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+    </svg>
+  </div>
+
+  <section class="cvb-workspace" id="cv-editor">
+    <aside class="cvb-editor" aria-label="{{ cv_ui.editor }}">
+      <div class="cvb-editor-head">
+        <div class="cvb-editor-title"><span>{{ cv_ui.kicker }}</span><h1>{{ cv_ui.hero_title }}</h1><p>{{ cv_ui.editor_hint }}</p></div>
+        <div class="cvb-session-pill">{{ cv_ui.saved }}</div>
+      </div>
+
+      <div class="cvb-start-actions" aria-label="{{ cv_ui.customize }}">
+        <button type="button" class="cvb-start-btn" data-assistant="import"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0 4 4m-4-4L8 8M5 14v5h14v-5"/></svg><span><strong>{{ cv_ui.flow_import_title }}</strong><small>PDF / DOCX</small></span></button>
+        <button type="button" class="cvb-start-btn" data-assistant="text"><svg viewBox="0 0 24 24"><path d="M5 5h14M5 10h14M5 15h9M5 20h7"/></svg><span><strong>{{ cv_ui.flow_text_title }}</strong><small>{{ cv_ui.ai_badge }}</small></span></button>
+        <button type="button" class="cvb-start-btn" id="cvbStartManual"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span><strong>{{ cv_ui.flow_manual_title }}</strong><small>{{ cv_ui.flow_manual_text }}</small></span></button>
+        <button type="button" class="cvb-start-btn cvb-start-compu" data-assistant="computrabajo"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg><span><strong>{{ cv_ui.compu_title }}</strong><small>{{ cv_ui.compu_action }}</small></span></button>
+      </div>
+
+      <section class="cvb-assistant" id="cvbAiPanel" hidden>
+        <div class="cvb-assistant-top">
+          <div><strong id="cvbAssistantTitle">{{ cv_ui.flow_import_title }}</strong><span id="cvbAssistantSubtitle">{{ cv_ui.flow_import_text }}</span></div>
+          <button type="button" class="cvb-assistant-close" id="cvbAssistantClose" aria-label="Cerrar">×</button>
+        </div>
+
+        <div class="cvb-assistant-panel" data-assistant-panel="import">
+          <label class="cvb-ai-upload" for="cvbAiFile"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0 4 4m-4-4L8 8M5 14v5h14v-5"/></svg><strong>{{ cv_ui.ai_import }}</strong><span>PDF · DOCX · 8 MB</span><input id="cvbAiFile" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"><em id="cvbAiFileName"></em></label>
+          <div class="cvb-import-preview" id="cvbImportPreview"><div class="cvb-import-preview-empty" id="cvbImportPreviewEmpty">{{ cv_ui.import_preview_empty }}</div><iframe id="cvbImportPdfPreview" title="PDF preview"></iframe></div>
+          <button type="button" class="cvb-ai-primary" id="cvbAiImport">{{ cv_ui.ai_improve_import }}</button>
+        </div>
+
+        <div class="cvb-assistant-panel" data-assistant-panel="text" hidden>
+          <label class="cvb-ai-paste"><span>{{ cv_ui.ai_paste }}</span><textarea id="cvbAiText" rows="7" placeholder="{{ cv_ui.ai_paste_placeholder }}"></textarea></label>
+          <button type="button" class="cvb-ai-primary" id="cvbAiTextBuild">{{ cv_ui.text_build }}</button>
+        </div>
+        <div class="cvb-assistant-panel" data-assistant-panel="email" hidden>
+          <label class="cvb-ai-paste"><span>{{ cv_ui.email_context }}</span><textarea id="cvbEmailContext" rows="5" placeholder="{{ cv_ui.email_context }}"></textarea></label>
+          <button type="button" class="cvb-ai-primary" id="cvbEmailGenerate">{{ cv_ui.email_generate }}</button>
+          <div class="cvb-email-result" id="cvbEmailResult" hidden>
+            <label><span>{{ cv_ui.email_subject }}</span><input id="cvbEmailSubject" readonly></label>
+            <textarea id="cvbEmailBody" rows="8" readonly></textarea>
+            <button type="button" class="cvb-ai-secondary" id="cvbEmailCopy">{{ cv_ui.email_copy }}</button>
+          </div>
+        </div>
+
+        <div class="cvb-ai-privacy-row">
+          <div class="cvb-ai-privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3m-11 0h12v10H6V10Z"/></svg><span>{{ cv_ui.privacy_short }}</span></div>
+          <details class="cvb-ai-privacy"><summary>{{ cv_ui.ai_privacy_title }}</summary><p>{{ cv_ui.ai_privacy_text }}</p><small>{{ cv_ui.ai_privacy_more }}</small></details>
+        </div>
+        <div class="cvb-ai-status" id="cvbAiStatus" role="status" aria-live="polite"></div>
+      </section>
+
+      <div class="cvb-editor-utilities">
+        <button type="button" class="cvb-utility-card cvb-utility-improve" id="cvbAiCurrent">
+          <span class="cvb-utility-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 14.2 8.1 19 10.2 14.2 12.3 12 17.5 9.8 12.3 5 10.2 9.8 8.1Z"/></svg></span>
+          <span class="cvb-utility-copy"><strong>{{ cv_ui.ai_improve_current }}</strong><small>{{ cv_ui.ai_improve_help }}</small></span>
+        </button>
+        <button type="button" class="cvb-utility-card cvb-utility-filter" id="cvbAiAts">
+          <span class="cvb-utility-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 6h14M8 12h8M10 18h4"/></svg></span>
+          <span class="cvb-utility-copy"><strong>{{ cv_ui.ai_ats }}</strong><small>{{ cv_ui.ai_ats_help }}</small></span>
+        </button>
+        <button type="button" class="cvb-utility-card cvb-utility-email" data-assistant="email" id="cvbEmailOpen">
+          <span class="cvb-utility-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4zM4 7l8 6 8-6"/></svg></span>
+          <span class="cvb-utility-copy"><strong>{{ cv_ui.email_action }}</strong><small>{{ cv_ui.email_help }}</small></span>
+        </button>
+      </div>
+
+      <details class="cvb-form-section" open>
+        <summary>{{ cv_ui.personal }}</summary>
+        <div class="cvb-fields">
+          <label class="cvb-field cvb-field-full"><span>{{ cv_ui.photo }}</span><span class="cvb-file-picker"><input class="cvb-file-native" type="file" id="photo" accept="image/*"><span class="cvb-file-button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0 4 4m-4-4L8 8M5 14v5h14v-5"/></svg>{{ cv_ui.photo_choose }}</span><span class="cvb-file-name" id="cvbPhotoFileName">{{ cv_ui.photo_empty }}</span></span></label>
+          <label class="cvb-field"><span>{{ cv_ui.full_name }}</span><input data-bind="name" placeholder="{{ cv_ui.full_name }}" autocomplete="name"></label>
+          <label class="cvb-field"><span>{{ cv_ui.job_title }}</span><input data-bind="title" placeholder="{{ cv_ui.job_title }}"></label>
+          <label class="cvb-field"><span>{{ cv_ui.email }}</span><input data-bind="email" placeholder="nombre@email.com" type="email" autocomplete="email"></label>
+          <label class="cvb-field"><span>{{ cv_ui.phone }}</span><input data-bind="phone" placeholder="+51 999 999 999" autocomplete="tel"></label>
+          <label class="cvb-field"><span>{{ cv_ui.city }}</span><input data-bind="city" placeholder="{{ cv_ui.city }}"></label>
+          <label class="cvb-field"><span>{{ cv_ui.website }}</span><input data-bind="website" placeholder="linkedin.com/in/tu-perfil"></label>
+        </div>
+      </details>
+
+      <details class="cvb-form-section" open>
+        <summary>{{ cv_ui.profile }}</summary>
+        <button class="cvb-inline-ai" type="button" data-ai-action="profile">{{ cv_ui.ai_profile }}</button>
+        <div class="cvb-fields"><label class="cvb-field cvb-field-full"><textarea data-bind="profile" rows="4" placeholder="{{ cv_ui.profile_example }}"></textarea></label></div>
+      </details>
+
+      <details class="cvb-form-section" open>
+        <summary>{{ cv_ui.experience }}</summary>
+        <button class="cvb-inline-ai" type="button" data-ai-action="experience">{{ cv_ui.ai_experience }}</button>
+        <div id="experienceBlocks" class="cvb-dynamic-list"></div>
+        <button class="cvb-add-btn" type="button" data-add="experience">+ {{ cv_ui.add_experience }}</button>
+      </details>
+
+      <details class="cvb-form-section" open>
+        <summary>{{ cv_ui.education }}</summary>
+        <div id="educationBlocks" class="cvb-dynamic-list"></div>
+        <button class="cvb-add-btn" type="button" data-add="education">+ {{ cv_ui.add_education }}</button>
+      </details>
+
+      <details class="cvb-form-section">
+        <summary>{{ cv_ui.skills }}</summary>
+        <button class="cvb-inline-ai" type="button" data-ai-action="skills">{{ cv_ui.ai_skills }}</button>
+        <div id="skillsBlocks" class="cvb-dynamic-list"></div>
+        <button class="cvb-add-btn" type="button" data-add="skills">+ {{ cv_ui.add_skill }}</button>
+      </details>
+
+      <details class="cvb-form-section">
+        <summary>{{ cv_ui.languages }}</summary><div id="languagesBlocks" class="cvb-dynamic-list"></div><button class="cvb-add-btn" type="button" data-add="languages">+ {{ cv_ui.add_language }}</button>
+      </details>
+
+      <details class="cvb-form-section">
+        <summary>{{ cv_ui.certifications }}</summary><div id="certificationBlocks" class="cvb-dynamic-list"></div><button class="cvb-add-btn" type="button" data-add="certifications">+ {{ cv_ui.add_cert }}</button>
+      </details>
+    </aside>
+
+    <div class="cvb-preview-column">
+      <div class="cvb-preview-label"><strong>{{ cv_ui.preview }}</strong><span>{{ cv_ui.a4_note }}</span></div>
+      <div class="cvb-page-shell" id="cvbPageShell">
+        <div class="cvb-page-stage" id="cvbPageStage">
+        <article class="cvb-page template-modern" id="cvbPage">
+          <aside class="cvb-cv-side">
+            <div class="cvb-photo-wrap"><img id="cvPhotoPreview" alt=""><span id="cvPhotoPlaceholder">CV</span></div>
+            <section class="cvb-side-section"><h3>{{ cv_ui.contact }}</h3><div id="cvContact"></div></section>
+            <section class="cvb-side-section"><h3>{{ cv_ui.skills }}</h3><div class="cvb-chip-list" id="cvSkills"></div></section>
+            <section class="cvb-side-section"><h3>{{ cv_ui.languages }}</h3><div id="cvLanguages"></div></section>
+          </aside>
+          <div class="cvb-cv-main">
+            <header class="cvb-cv-header"><h1 id="cvName">{{ cv_ui.full_name }}</h1><p id="cvTitle">{{ cv_ui.job_title }}</p></header>
+            <section class="cvb-cv-section"><h2>{{ cv_ui.profile }}</h2><p id="cvProfile"></p></section>
+            <section class="cvb-cv-section"><h2>{{ cv_ui.experience }}</h2><div id="cvExperience"></div></section>
+            <section class="cvb-cv-section"><h2>{{ cv_ui.education }}</h2><div id="cvEducation"></div></section>
+            <section class="cvb-cv-section"><h2>{{ cv_ui.certifications }}</h2><div id="cvCertifications"></div></section>
+          </div>
+        </article>
+        </div>
+      </div>
+      <p class="cvb-print-help">{{ cv_ui.print_help }}</p>
+    </div>
+  </section>
+</main>
+<footer class="cvb-site-footer">Converti · <a href="{{ privacy_path }}">{{ cv_ui.privacy_label }}</a></footer>
+<script>window.CVB_I18N={{ cv_js|tojson }};</script>
+<script src="{{ url_for('static', filename='js/create_cv.js') }}?v=clean-20260821" defer></script>
+
+</body>
+</html>

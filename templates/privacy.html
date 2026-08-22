@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacidad · Converti</title><link rel="icon" type="image/png" href="/static/images/icon1.png">
+
+<link rel="canonical" href="https://converti.lat/privacidad">
+<link rel="alternate" hreflang="es" href="https://converti.lat/privacidad">
+<link rel="alternate" hreflang="en" href="https://converti.lat/en/privacy">
+<link rel="alternate" hreflang="fr" href="https://converti.lat/fr/confidentialite">
+<link rel="alternate" hreflang="pt-BR" href="https://converti.lat/pt-br/privacidade">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0b1234;
+  --blue:#2a7bff;
+  --blue-soft:#eef5ff;
+  --text:#0d173d;
+  --muted:#5d6b93;
+  --line:#dfe7f4;
+  --bg:#f7faff;
+  --white:#fff;
+  --shadow:0 16px 42px rgba(18,41,100,.08);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:"Plus Jakarta Sans",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  color:var(--text);
+  background:linear-gradient(180deg,#fff 0%,#f7faff 100%);
+}
+.header{
+  height:70px;
+  display:grid;
+  grid-template-columns:minmax(210px,1fr) auto minmax(120px,1fr);
+  align-items:center;
+  column-gap:24px;
+  padding:0 3.2%;
+  background:#fff;
+  border-bottom:1px solid #edf2fa;
+}
+
+.nav{margin:0;display:flex;align-items:center;justify-self:center;gap:34px}
+.nav a{color:var(--navy);text-decoration:none;font-size:14px;font-weight:600}
+.nav a:hover{color:var(--blue)}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-decoration:none;
+  
+  font-weight:800;
+  letter-spacing:-1.2px;
+  color:var(--navy);
+}
+
+.wrap{
+  width:min(920px,calc(100% - 36px));
+  margin:56px auto 80px;
+}
+.eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  border:1px solid #dbe7fb;
+  border-radius:999px;
+  background:#fbfdff;
+  color:var(--blue);
+  font-size:12px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+h1{
+  margin:18px 0 10px;
+  font-size:48px;
+  line-height:1.05;
+  letter-spacing:-2px;
+  color:var(--navy);
+}
+.lead{
+  margin:0 0 28px;
+  color:var(--muted);
+  font-size:18px;
+  line-height:1.6;
+}
+.card{
+  padding:28px;
+  border:1px solid var(--line);
+  border-radius:24px;
+  background:#fff;
+  box-shadow:var(--shadow);
+}
+.item{
+  display:grid;
+  grid-template-columns:48px 1fr;
+  gap:16px;
+  padding:18px 0;
+  border-bottom:1px solid #edf2fa;
+}
+.item:last-child{border-bottom:0}
+.icon{
+  width:48px;
+  height:48px;
+  border-radius:15px;
+  background:var(--blue-soft);
+  color:var(--blue);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:0;
+}
+.icon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.item h2{
+  margin:0 0 6px;
+  font-size:17px;
+  color:var(--navy);
+}
+.item p{
+  margin:0;
+  color:var(--muted);
+  line-height:1.65;
+  font-size:14px;
+}
+strong{color:var(--navy)}
+.back{
+  display:inline-flex;
+  margin-top:24px;
+  padding:13px 18px;
+  border-radius:14px;
+  background:linear-gradient(180deg,#4d93ff 0%,#2a7bff 100%);
+  color:#fff;
+  text-decoration:none;
+  font-weight:700;
+  box-shadow:0 12px 24px rgba(42,123,255,.22);
+  align-items:center;gap:7px;
+}
+.back svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+footer{
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+  padding:0 20px 28px;
+}
+
+.brand-logo{height:62px!important;width:auto;max-width:360px;display:block;object-fit:contain;flex-shrink:0}
+@media(max-width:700px){
+  .header{height:auto;min-height:0;padding:5px 12px 6px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 10px}
+  .brand{justify-self:start;min-width:0}
+  .brand-logo{height:54px!important;width:auto;max-width:250px}
+  .lang-select{grid-column:2;grid-row:1;justify-self:end;margin:0;width:84px!important;min-width:84px;max-width:84px;padding:7px 8px;font-size:11px}
+  .nav{grid-column:1/-1;grid-row:2;width:100%;margin:0;padding:5px 0 0;border-top:1px solid #edf2fa;justify-content:center;gap:28px}
+  .nav a{font-size:12px;white-space:nowrap}
+  .wrap{margin-top:36px}
+  h1{font-size:38px}
+  .card{padding:20px}
+}
+
+.lang-select{justify-self:end;margin-left:0;width:104px!important;min-width:104px;max-width:104px;flex:0 0 104px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--navy);padding:8px 10px;font:700 13px/1 "Plus Jakarta Sans",sans-serif;outline:none;cursor:pointer}
+
+
+/* REDISEÑO VISUAL GLOBAL — mantiene estructura, paleta y logo */
+body{
+  font-family:"Plus Jakarta Sans",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  font-size:16px;
+  font-weight:500;
+  line-height:1.6;
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+}
+.nav a{font-size:16px;font-weight:700;letter-spacing:-.01em}
+.lang-select{font-family:"Plus Jakarta Sans",sans-serif;font-size:13px;font-weight:700}
+.eyebrow{
+  padding:9px 14px;
+  font-size:13px;
+  font-weight:800;
+}
+h1{
+  font-size:56px;
+  line-height:1.04;
+  letter-spacing:-2.5px;
+  font-weight:800;
+}
+.lead{
+  font-size:20px;
+  line-height:1.7;
+  font-weight:500;
+}
+.card{
+  padding:34px;
+  border-radius:27px;
+  box-shadow:0 18px 46px rgba(18,41,100,.075);
+}
+.item{
+  gap:18px;
+  padding:22px 0;
+}
+.item h2{
+  margin-bottom:8px;
+  font-size:20px;
+  line-height:1.35;
+  font-weight:800;
+  letter-spacing:-.025em;
+}
+.item p{
+  font-size:16px;
+  line-height:1.75;
+  font-weight:500;
+}
+.icon{
+  width:52px;
+  height:52px;
+  border-radius:17px;
+  box-shadow:0 4px 14px rgba(42,123,255,.07);
+}
+.back{
+  min-height:50px;
+  padding:0 21px;
+  border-radius:16px;
+  font-family:"Plus Jakarta Sans",sans-serif;
+  font-size:15px;
+  font-weight:800;
+  box-shadow:0 13px 27px rgba(42,123,255,.22);
+  transition:transform .18s ease,box-shadow .18s ease;
+}
+.back:hover{transform:translateY(-1px);box-shadow:0 16px 30px rgba(42,123,255,.25)}
+.back:focus-visible,.nav a:focus-visible{outline:3px solid rgba(42,123,255,.2);outline-offset:3px}
+footer{font-size:13px;line-height:1.65;font-weight:500}
+
+@media(max-width:700px){
+  body{font-size:15px}
+  .nav a{font-size:13px}
+  .lang-select{font-size:12px}
+  h1{font-size:41px;letter-spacing:-1.7px}
+  .lead{font-size:17px}
+  .card{padding:23px;border-radius:22px}
+  .item{padding:19px 0;gap:14px}
+  .item h2{font-size:18px}
+  .item p{font-size:14px}
+  .back{font-size:14px}
+  footer{font-size:11.5px}
+}
+
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XLZM56PZHM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XLZM56PZHM');
+</script>
+<link rel="stylesheet" href="/static/css/site_ui.css?v=clean-20260821">
+</head>
+<body>
+<header class="header">
+  <a href="/" class="brand" aria-label="Converti">
+    <img class="brand-logo" src="/static/images/logo_converti.png" alt="Converti">
+  </a>
+  <nav class="nav">
+    <a href="/#convertir">Convertir</a>
+    <a href="/#formatos">Formatos</a>
+    <a href="/#ayuda">Ayuda</a>
+      <a class="nav-cv" href="/crear-cv">Crear CV</a>
+  </nav>
+<div class="converti-header-tools">
+    <select class="lang-select" id="langSelector" aria-label="Idioma / Language"><option value="es">ES</option><option value="en">EN</option><option value="fr">FR</option><option value="pt-br">PT-BR</option></select>
+</div>
+</header>
+
+<main class="wrap">
+  <div class="eyebrow">Privacidad y seguridad</div>
+  <h1>Privacidad en Converti</h1>
+  <p class="lead">Tus archivos se procesan únicamente para realizar la conversión solicitada y se eliminan automáticamente.</p>
+
+  <section class="card">
+    <div class="item">
+      <div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 19 6v5c0 4.6-2.8 8-7 10-4.2-2-7-5.4-7-10V6l7-3Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+      <div>
+        <h2>Procesamiento temporal</h2>
+        <p>Los archivos se procesan en el equipo o servidor donde se ejecuta Converti. El archivo original se elimina al finalizar el intento de conversión.</p>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+      <div>
+        <h2>Resultados temporales</h2>
+        <p>Los archivos convertidos permanecen disponibles durante un máximo aproximado de <strong>{{ ttl_minutes }} minutos</strong> para permitir la vista previa y la descarga.</p>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div>
+      <div>
+        <h2>Sin almacenamiento permanente</h2>
+        <p>Converti no necesita guardar el contenido de tus archivos en los registros. Los logs técnicos se limitan al estado, categoría, formato y tamaño del resultado.</p>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 5v6h-6"/></svg></div>
+      <div>
+        <h2>Limpieza automática</h2>
+        <p>Si el proceso se interrumpe, la limpieza de archivos temporales se ejecuta periódicamente y también cada vez que se inicia la aplicación.</p>
+      </div>
+    </div>
+  </section>
+
+<section class="card privacy-ai-card">
+    <div class="item">
+      <div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3m-11 0h12v10H6V10Z"/><path d="M12 14v2"/></svg></div>
+      <div><h2>IA en Crear CV</h2><p>Cuando eliges una función de IA para mejorar o redactar tu CV, Converti envía a Google Gemini únicamente el texto necesario para realizar esa tarea. Converti no conserva el contenido del CV ni crea perfiles con esa información.</p></div>
+    </div>
+  </section>
+
+  <a class="back" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg><span>Volver a Converti</span></a>
+</main>
+
+<footer class="converti-site-footer">Converti · Conversión de archivos sencilla y privada · <a href="/privacidad">Privacidad</a></footer>
+<script>(function(){const s=document.getElementById('langSelector');if(!s)return;s.value="es";const p={es:'/privacidad',en:'/en/privacy',fr:'/fr/confidentialite','pt-br':'/pt-br/privacidade'};s.onchange=()=>{localStorage.setItem('converti_lang',s.value);location.href=p[s.value]};})();</script>
+
+</body>
+</html>

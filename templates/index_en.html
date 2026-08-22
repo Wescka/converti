@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Converti: convierte audio, imágenes y documentos de forma sencilla y privada.">
+<title>Converti · Simple and private file conversion</title>
+<link rel="canonical" href="https://converti.lat/en/">
+<link rel="alternate" hreflang="en" href="https://converti.lat/">
+<link rel="alternate" hreflang="en" href="https://converti.lat/en/">
+<link rel="alternate" hreflang="fr" href="https://converti.lat/fr/">
+<link rel="alternate" hreflang="pt-BR" href="https://converti.lat/pt-br/">
+<link rel="alternate" hreflang="x-default" href="https://converti.lat/en/">
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/icon1.png') }}?v=1">
+<link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/icon1.png') }}?v=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Converti","applicationCategory":"UtilitiesApplication","operatingSystem":"Web"}</script>
+<style>
+:root{
+    --navy:#0b1234;
+    --navy-soft:#1b2b62;
+    --blue:#2a7bff;
+    --blue-2:#4d93ff;
+    --blue-3:#eef5ff;
+    --bg:#f7faff;
+    --white:#ffffff;
+    --text:#0d173d;
+    --muted:#5d6b93;
+    --line:#dfe7f4;
+    --line-2:#edf2fa;
+    --success:#27b368;
+    --shadow:0 16px 42px rgba(18,41,100,.08);
+    --radius:22px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+    margin:0;
+    color:var(--text);
+    background:
+      radial-gradient(circle at left 180px, rgba(42,123,255,.08), transparent 22%),
+      radial-gradient(circle at right 200px, rgba(42,123,255,.08), transparent 22%),
+      linear-gradient(180deg,#ffffff 0%,#fbfdff 54%,#f7faff 100%);
+    font-family:"Plus Jakarta Sans",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+}
+a{color:inherit}
+.header{
+    height:70px;
+    display:grid;
+    grid-template-columns:minmax(210px,1fr) auto minmax(120px,1fr);
+    align-items:center;
+    column-gap:24px;
+    padding:0 3.2%;
+    border-bottom:1px solid var(--line-2);
+    background:rgba(255,255,255,.96);
+    backdrop-filter:saturate(180%) blur(10px);
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    text-decoration:none;
+    font-size:30px;
+    font-weight:800;
+    letter-spacing:-1.3px;
+    color:var(--navy);
+}
+.brand-icon{
+    width:48px;
+    height:48px;
+    flex:0 0 48px;
+    display:inline-flex;
+}
+.brand-wordmark{display:inline-flex;align-items:center;line-height:1}
+
+.brand-logo{height:62px!important;width:auto;max-width:330px;display:block;object-fit:contain}
+.nav{margin:0;display:flex;align-items:center;justify-self:center;gap:34px;flex:0 0 auto}
+.nav a{
+    color:var(--navy);
+    text-decoration:none;
+    font-weight:600;
+    font-size:15px;
+    opacity:.92;
+}
+.nav a:hover{color:var(--blue)}
+.lang-select{justify-self:end;margin-left:0;width:104px!important;min-width:104px;max-width:104px;flex:0 0 104px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--navy);padding:8px 10px;font:700 13px/1 "Plus Jakarta Sans",sans-serif;outline:none;cursor:pointer}
+.page{width:100%;max-width:1520px;margin:auto;padding:26px 5.2% 16px;position:relative}
+.workspace{display:grid;grid-template-columns:minmax(430px,.95fr) minmax(560px,1.05fr);gap:34px;align-items:start}
+.workspace>section:first-child,.workspace>section:last-child{position:relative;z-index:1}
+.hero{
+    margin-bottom:18px;
+    padding:4px 0 0;
+}
+.hero h1{
+    margin:0;
+    max-width:700px;
+    font-size:64px;
+    line-height:.98;
+    letter-spacing:-2.8px;
+    font-weight:800;
+    color:var(--navy);
+}
+.hero h1 span{color:var(--blue)}
+.hero p{
+    margin:18px 0 0;
+    max-width:660px;
+    color:var(--muted);
+    font-size:22px;
+    line-height:1.45;
+}
+.limit-info{
+    margin-top:16px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 14px;
+    border:1px solid #dbe6fb;
+    border-radius:999px;
+    background:#fbfdff;
+    color:var(--muted);
+    font-size:13px;
+    font-weight:500;
+}
+.upload-box{
+    min-height:250px;
+    padding:34px 28px;
+    border:2px dashed #8db7ff;
+    border-radius:28px;
+    background:linear-gradient(180deg,#ffffff 0%,#fbfdff 100%);
+    box-shadow:var(--shadow);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer;transition:.22s ease;
+}
+.upload-box:hover,.upload-box.dragging{border-color:var(--blue);transform:translateY(-1px);box-shadow:0 22px 46px rgba(18,41,100,.12)}
+.upload-icon{
+    width:68px;height:68px;border-radius:20px;background:var(--blue-3);color:var(--blue);
+    display:flex;align-items:center;justify-content:center;font-size:34px;line-height:1;margin-bottom:14px;
+}
+.upload-title{font-size:31px;font-weight:800;color:var(--navy);letter-spacing:-1px}
+.upload-subtitle{margin:7px 0 18px;color:var(--muted);font-size:17px}
+.file-button{
+    display:inline-flex;align-items:center;justify-content:center;gap:10px;
+    min-width:280px;height:54px;padding:0 24px;border:0;border-radius:14px;
+    background:linear-gradient(180deg,var(--blue-2) 0%,var(--blue) 100%);
+    color:#fff;font-weight:700;font-size:16px;box-shadow:0 12px 24px rgba(42,123,255,.24);
+}
+.upload-small{margin-top:14px;color:#6f80a7;font-size:12px;font-weight:500}
+#archivo{display:none}
+.file-list{display:none;margin-top:14px;gap:10px;flex-direction:column}
+.file-strip{
+    min-height:60px;padding:11px 14px;display:flex;align-items:center;gap:12px;
+    border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:0 4px 16px rgba(21,47,112,.05)
+}
+.file-icon{
+    width:42px;height:42px;flex-shrink:0;border-radius:12px;background:var(--blue-3);color:var(--blue);
+    display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;border:1px solid #dbe7fb
+}
+.file-name{font-weight:700;color:var(--navy)}
+.file-meta{margin-top:3px;color:var(--muted);font-size:12px}
+.remove{margin-left:auto;border:0;background:transparent;color:#8392b8;font-size:24px;cursor:pointer}
+.controls{margin-top:16px}
+.controls label.title{display:block;margin-bottom:8px;font-weight:700;font-size:13px;color:var(--navy);letter-spacing:.02em}
+select,input[type=number],input[type=text]{
+    width:100%;height:48px;padding:0 14px;border:1px solid var(--line);border-radius:14px;background:#fff;
+    color:var(--navy);font-size:14px;outline:none;box-shadow:0 2px 8px rgba(18,41,100,.03)
+}
+select:focus,input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(42,123,255,.12)}
+.auto{margin-top:12px;display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;cursor:pointer}
+.auto input{width:18px;height:18px;accent-color:var(--blue)}
+.advanced-toggle{margin-top:14px;border:0;background:transparent;color:var(--blue);font-weight:700;cursor:pointer;padding:0}.advanced-toggle{display:inline-flex;align-items:center;gap:6px}.advanced-toggle .svg-icon{width:16px;height:16px}.advanced.open~*{} .file-button .svg-icon{width:19px;height:19px;flex:0 0 19px}.file-button{gap:9px}
+.advanced{display:none;margin-top:12px;padding:14px;border:1px solid var(--line);border-radius:18px;background:#fbfdff}
+.advanced.open{display:block}
+.advanced-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.advanced label{font-size:12px;color:var(--muted)}
+.advanced label span{display:block;margin-bottom:6px;font-weight:650;color:var(--navy)}
+.convert{
+    width:100%;height:54px;margin-top:14px;border:0;border-radius:16px;
+    background:linear-gradient(180deg,var(--blue-2) 0%,var(--blue) 100%);
+    color:#fff;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.02em;box-shadow:0 14px 28px rgba(42,123,255,.24)
+}
+.convert:hover{filter:brightness(.98)}
+.convert:disabled{opacity:.58;cursor:not-allowed;box-shadow:none}
+.progress-wrap{display:none;margin-top:14px;height:9px;border-radius:999px;background:#eaf1ff;overflow:hidden}
+.progress-bar{width:0%;height:100%;background:linear-gradient(90deg,#5aa0ff 0%,#2a7bff 100%);transition:width .2s ease}
+.status-line{min-height:19px;margin-top:9px;color:var(--muted);font-size:12px}
+.right{
+    padding:22px;border:1px solid var(--line);border-radius:28px;background:#fff;box-shadow:var(--shadow)
+}
+.section-title{margin-bottom:11px;font-size:18px;font-weight:800;color:var(--navy);letter-spacing:-.02em}
+.preview-box{
+    min-height:246px;padding:14px;border:1px solid var(--line);border-radius:22px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(180deg,#ffffff 0%,#fbfdff 100%)
+}
+.placeholder{text-align:center;color:#8a97b7;font-size:14px;line-height:1.7}
+.preview-content,.result-content{width:100%}
+.preview-content img,.result-content img{display:block;max-width:100%;max-height:320px;margin:auto;object-fit:contain;border-radius:14px}
+.preview-content video,.result-content video{width:100%;max-height:320px;border-radius:14px;background:#111}
+.preview-content audio,.result-content audio{width:100%}
+.preview-content iframe,.result-content iframe{width:100%;height:320px;border:0;background:#fafcff;border-radius:14px}
+.preview-content pre,.result-content pre{max-height:280px;overflow:auto;white-space:pre-wrap;word-break:break-word;text-align:left;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;color:var(--navy)}
+.divider{height:1px;margin:16px 0 12px;background:var(--line-2)}
+.result{
+    min-height:148px;padding:14px;border:1px solid #d7e5ff;border-radius:22px;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(180deg,#fafdff 0%,#f5f9ff 100%)
+}
+.result-placeholder-icon{
+    width:54px;height:54px;margin:0 auto 12px;border-radius:18px;background:var(--blue-3);color:var(--blue);
+    display:flex;align-items:center;justify-content:center;font-size:24px;border:1px solid #dbe7fb
+}
+.download{
+    display:block;width:100%;margin-top:12px;padding:13px 14px;border-radius:16px;background:linear-gradient(180deg,var(--blue-2) 0%,var(--blue) 100%);color:#fff;text-decoration:none;font-weight:800;box-shadow:0 14px 28px rgba(42,123,255,.22)
+}
+.again{display:block;width:100%;margin-top:8px;padding:11px;border:1px solid var(--line);border-radius:16px;background:#fff;color:var(--navy);font-weight:700;cursor:pointer}
+#sessionHistory{margin-top:14px!important;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:#fbfdff;color:var(--muted)!important}
+.security{
+    margin-top:12px;padding:14px 16px;border:1px solid var(--line);border-radius:20px;background:#fbfdff;display:flex;align-items:center;gap:14px
+}
+.security-icon{
+    width:44px;height:44px;flex-shrink:0;border-radius:14px;background:var(--blue-3);color:var(--blue);
+    display:flex;align-items:center;justify-content:center;font-size:21px;border:1px solid #dbe7fb
+}
+.security strong{display:block;margin-bottom:3px;color:var(--navy)}
+.security p{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+.info-section{width:100%;max-width:1520px;margin:22px auto 0;padding:0 5.2%}
+.info-section h2{margin:0 0 10px;font-size:24px;color:var(--navy);letter-spacing:-.02em}
+.info-section>p{margin:0 0 14px;color:var(--muted);font-size:14px}
+.format-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.format-card,.help-card{
+    padding:16px;border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:0 8px 22px rgba(18,41,100,.05)
+}
+.format-card h3,.help-card h3{margin:0 0 8px;color:var(--navy);font-size:16px;letter-spacing:-.02em}
+.format-card p,.help-card p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}
+.coming{margin-top:10px;padding:12px 14px;border:1px solid #dbe7fb;border-radius:16px;background:#fbfdff;color:var(--muted);font-size:12px}
+.help-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.help-card{min-height:142px}
+.help-number{
+    width:34px;height:34px;margin-bottom:10px;border-radius:12px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;box-shadow:0 10px 18px rgba(42,123,255,.22)
+}
+.engine-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:12px}
+.engine{border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:11px;color:var(--muted);background:#fff}
+.engine.ok{color:#2f6f3e;background:#f4fff7;border-color:#caead6}
+.engine.missing{color:#a05145;background:#fff8f7;border-color:#f3d8d3}
+footer{margin-top:28px;padding:24px 20px;color:var(--muted);text-align:center;font-size:12px}
+footer a{color:var(--blue);text-decoration:none;font-weight:700}
+.hero-shell{position:relative}
+.hero-shell:before,.hero-shell:after{
+    content:"";position:absolute;pointer-events:none;z-index:0;opacity:.55
+}
+.hero-shell:before{
+    width:340px;height:340px;left:-180px;top:14px;
+    background:radial-gradient(circle at center, transparent 58%, rgba(90,160,255,.15) 59%, transparent 60%),
+               radial-gradient(circle at center, transparent 68%, rgba(90,160,255,.12) 69%, transparent 70%),
+               radial-gradient(circle at center, transparent 78%, rgba(90,160,255,.1) 79%, transparent 80%);
+}
+.hero-shell:after{
+    width:340px;height:340px;right:-160px;top:26px;
+    background:radial-gradient(circle at center, transparent 58%, rgba(90,160,255,.15) 59%, transparent 60%),
+               radial-gradient(circle at center, transparent 68%, rgba(90,160,255,.12) 69%, transparent 70%),
+               radial-gradient(circle at center, transparent 78%, rgba(90,160,255,.1) 79%, transparent 80%);
+}
+
+/* Iconografía Converti: SVG lineal, sin emoji ni glifos dependientes del sistema. */
+.svg-icon{width:1em;height:1em;display:inline-block;vertical-align:-.14em;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.upload-icon .svg-icon{width:30px;height:30px}
+.security-icon .svg-icon,.result-placeholder-icon .svg-icon{width:24px;height:24px}
+.download .svg-icon{width:20px;height:20px;margin-right:8px}
+.file-icon .svg-icon{width:21px;height:21px}
+.remove .svg-icon{width:20px;height:20px}
+.expiry-line{display:flex;align-items:center;justify-content:center;gap:6px;color:#777;font-size:11px;margin:8px 0 0}
+.result-filename{display:block;max-width:100%;overflow-wrap:anywhere;word-break:break-word;font-size:15px;line-height:1.35;color:var(--navy)}
+
+@media(max-width:1100px){
+    .workspace{grid-template-columns:1fr}
+    .hero h1{font-size:52px}
+    .format-grid{grid-template-columns:repeat(2,1fr)}
+    .engine-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+
+/* --- FIX RESPONSIVE MOVIL REAL --- */
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+body{min-width:0}
+.workspace,.workspace>section,.right,.result,.preview-box,.controls,.file-list,.file-strip,.info-section,.format-card,.help-card{min-width:0;max-width:100%}
+#sessionHistory,.result-content,.preview-content,.file-name{overflow-wrap:anywhere;word-break:break-word}
+#sessionHistory{overflow:hidden}
+.result-content a,.result-content strong{overflow-wrap:anywhere;word-break:break-word}
+.preview-content table,.result-content table{display:block;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.preview-content pre,.result-content pre{max-width:100%;overflow:auto}
+.pdf-preview{width:100%;display:flex;flex-direction:column;gap:12px}
+.pdf-preview-note{font-size:12px;color:var(--muted);text-align:center;margin-bottom:2px}
+.pdf-preview-page{width:100%;display:block;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 4px 18px rgba(18,41,100,.06)}
+
+
+
+
+
+
+/* ===== RESPONSIVE MOVIL - BLOQUE UNICO ===== */
+@media(max-width:760px){
+    html,body{width:100%;max-width:100%;overflow-x:hidden}
+    body{min-width:0;font-size:14px}
+
+    .header{
+        height:auto;
+        min-height:0;
+        padding:5px 12px 6px;
+        display:grid;
+        grid-template-columns:1fr auto;
+        align-items:center;
+        gap:4px 10px;
+    }
+    .brand{
+        min-width:0;
+        max-width:230px;
+        gap:7px;
+        justify-self:start;
+    }
+    .brand-logo{
+        height:54px!important;
+        width:auto;
+        max-width:250px;
+        display:block;
+        object-fit:contain;
+        flex-shrink:0;
+    }
+    .lang-select{
+        grid-column:2;
+        grid-row:1;
+        justify-self:end;
+        margin:0;
+        width:84px!important;
+        min-width:84px;
+        max-width:84px;
+        padding:7px 8px;
+        font-size:11px;
+    }
+    .nav{
+        grid-column:1 / -1;
+        grid-row:2;
+        width:100%;
+        margin:0;
+        padding:5px 0 0;
+        border-top:1px solid var(--line-2);
+        display:flex;
+        justify-content:center;
+        gap:28px;
+    }
+    .nav a{font-size:12px;white-space:nowrap}
+
+        .page,.info-section{width:100%;padding-left:14px;padding-right:14px}
+    .page{padding-top:18px;padding-bottom:10px}
+
+    .workspace{display:block;width:100%;max-width:100%;gap:0}
+    .workspace>section{width:100%;max-width:100%;min-width:0;margin:0 0 16px}
+    .right,.result,.preview-box,.controls,.file-list,.file-strip,.format-card,.help-card{min-width:0;max-width:100%}
+
+    .hero{margin-bottom:14px}
+    .hero h1{font-size:30px;line-height:1.06;letter-spacing:-1.2px;max-width:100%}
+    .hero p{margin-top:10px;font-size:14px;line-height:1.45}
+    .limit-info{max-width:100%;white-space:normal;flex-wrap:wrap;border-radius:16px;font-size:10px;line-height:1.35;padding:8px 10px}
+    .hero-shell:before,.hero-shell:after{display:none}
+
+    .upload-box{width:100%;min-height:190px;padding:24px 16px;border-radius:20px}
+    .upload-icon{width:54px;height:54px;border-radius:16px}
+    .upload-title{font-size:20px;letter-spacing:-.4px}
+    .upload-subtitle{font-size:13px;margin:5px 0 14px}
+    .file-button{width:100%;max-width:300px;min-width:0;height:48px;font-size:13px;padding:0 14px}
+    .upload-small{font-size:10px}
+
+    .file-strip{width:100%;padding:10px;border-radius:13px}
+    .file-info{min-width:0;flex:1}
+    .file-name{font-size:13px;line-height:1.25;overflow-wrap:anywhere;word-break:break-word}
+
+    .controls{width:100%;margin-top:13px}
+    select,input[type=number],input[type=text]{height:46px;font-size:14px;max-width:100%}
+    .advanced{padding:11px;border-radius:15px}
+    .advanced-grid{grid-template-columns:1fr;gap:9px}
+    .convert{height:50px;border-radius:14px;font-size:15px;margin-top:12px}
+
+    .right{width:100%;padding:14px;border-radius:20px;box-shadow:0 8px 24px rgba(18,41,100,.06)}
+    .section-title{font-size:18px;margin-bottom:9px}
+    .preview-box{min-height:160px;padding:8px;border-radius:16px}
+    .result{min-height:122px;padding:12px;border-radius:16px;width:100%}
+    .result-content{font-size:13px;min-width:0}
+    .result-filename{font-size:14px;line-height:1.32;font-weight:700;margin:0 auto 8px;max-width:100%;overflow-wrap:anywhere;word-break:break-word}
+    .download{font-size:15px;padding:12px 10px;border-radius:14px;display:flex;align-items:center;justify-content:center}
+    .again{font-size:14px;padding:11px;border-radius:14px}
+
+    .preview-content iframe,.result-content iframe{height:310px;max-width:100%}
+    .preview-content video,.result-content video,.preview-content img,.result-content img{max-width:100%;max-height:360px}
+    .preview-content table,.result-content table{display:block;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .preview-content pre,.result-content pre{max-width:100%;overflow:auto}
+    .pdf-preview{width:100%;gap:10px}
+    .pdf-preview-page{width:100%;height:auto;max-height:none;border-radius:8px}
+
+    #sessionHistory{
+        font-size:11px;
+        line-height:1.35;
+        padding:10px;
+        border-radius:14px;
+        margin-top:10px;
+        overflow:hidden;
+        overflow-wrap:anywhere;
+        word-break:break-word;
+    }
+    #sessionHistory strong{font-size:13px}
+
+    .security{padding:11px 12px;border-radius:16px;align-items:flex-start}
+    .security-icon{width:38px;height:38px;flex-basis:38px;border-radius:12px}
+    .security strong{font-size:13px}
+    .security p{font-size:10px}
+
+    .info-section{margin-top:16px}
+    .info-section h2{font-size:21px}
+    .info-section>p{font-size:12px}
+    .format-grid,.help-grid,.engine-grid{grid-template-columns:1fr;gap:10px}
+    .format-card,.help-card{width:100%;padding:14px;border-radius:16px;min-height:0}
+    .format-card h3,.help-card h3{font-size:14px}
+    .format-card p,.help-card p{font-size:11px}
+    footer{font-size:10px;padding:18px 14px}
+}
+
+
+/* Enlazado interno SEO: herramientas populares */
+.popular-tools{width:100%;max-width:1520px;margin:24px auto 0;padding:0 5.2%}
+.popular-tools-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:14px}
+.popular-tools h2{margin:0;color:var(--navy);font-size:24px;letter-spacing:-.02em}
+.popular-tools p{margin:5px 0 0;color:var(--muted);font-size:13px}
+.popular-tools-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.popular-tool{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0;padding:13px 14px;border:1px solid var(--line);border-radius:16px;background:#fff;color:var(--navy);text-decoration:none;font-size:13px;font-weight:700;box-shadow:0 4px 14px rgba(18,41,100,.04);transition:border-color .18s ease,transform .18s ease,box-shadow .18s ease}
+.popular-tool:hover{border-color:#b9d2ff;transform:translateY(-1px);box-shadow:0 10px 22px rgba(18,41,100,.08)}
+.popular-tool span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.popular-tool .tool-open{flex:0 0 auto;color:var(--blue);font-size:11px;font-weight:700}
+@media(max-width:1100px){.popular-tools-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){.popular-tools{margin-top:16px;padding-left:18px;padding-right:18px}.popular-tools-head{display:block;margin-bottom:10px}.popular-tools h2{font-size:21px}.popular-tools p{font-size:11px}.popular-tools-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.popular-tool{padding:11px 12px;border-radius:14px;font-size:12px}.popular-tool .tool-open{display:none}}
+
+/* Preview universal Converti */
+.doc-preview-page,.text-preview,.code-preview,.slide-preview,.table-preview-wrap{
+  width:100%;box-sizing:border-box;background:#fff;border:1px solid var(--line);
+  border-radius:12px;box-shadow:0 4px 18px rgba(18,41,100,.05);
+}
+.doc-preview-page{padding:24px;text-align:left;color:var(--navy);max-height:520px;overflow:auto}
+.doc-preview-page h2{font-size:22px;margin:0 0 14px}
+.doc-preview-page h3{font-size:17px;margin:18px 0 8px}
+.doc-preview-page p{font-size:14px;line-height:1.65;margin:0 0 10px}
+.doc-preview-image{max-width:100%;height:auto;display:block;margin:14px auto;border-radius:8px}
+.text-preview,.code-preview{padding:14px;max-height:420px;overflow:auto;text-align:left}
+.text-preview pre,.code-preview pre{margin:0;white-space:pre-wrap;word-break:break-word;font:13px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace}
+.slides-preview{width:100%;display:flex;flex-direction:column;gap:12px}
+.slide-preview{position:relative;padding:22px 24px;min-height:120px;text-align:left}
+.slide-preview p{margin:0 0 8px;font-size:14px;line-height:1.5}
+.slide-number{position:absolute;right:10px;top:8px;font-size:11px;color:var(--muted)}
+.table-preview-wrap{overflow:auto;max-height:420px}
+.table-preview{width:100%;border-collapse:collapse;font-size:12px;text-align:left}
+.table-preview th,.table-preview td{padding:8px 10px;border:1px solid var(--line);white-space:nowrap;max-width:260px;overflow:hidden;text-overflow:ellipsis}
+.table-preview th{background:#f6f9ff;color:var(--navy);font-weight:700;position:sticky;top:0}
+.sheet-name{font-size:12px;font-weight:700;color:var(--muted);margin:0 0 7px;text-align:left}
+.preview-empty,.preview-file-card{padding:20px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--muted)}
+.preview-file-card{display:flex;justify-content:space-between;gap:12px;align-items:center}
+#previewOriginal video,#resultContent video,#previewOriginal audio,#resultContent audio{width:100%;max-width:100%}
+#previewOriginal video,#resultContent video{max-height:420px;border-radius:12px;background:#000}
+@media(max-width:700px){
+  .doc-preview-page{padding:16px;max-height:460px}
+  .table-preview th,.table-preview td{padding:7px 8px;font-size:11px}
+  .slide-preview{padding:18px}
+}
+
+
+/* =========================================================
+   REDISEÑO VISUAL 2026 — TIPOGRAFÍA / BOTONES / TARJETAS
+   Sin modificar layout, orden, paleta ni logotipo.
+   ========================================================= */
+body{
+    font-family:"Plus Jakarta Sans",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+    font-size:16px;
+    font-weight:500;
+    line-height:1.55;
+    text-rendering:optimizeLegibility;
+    -webkit-font-smoothing:antialiased;
+}
+.nav a{
+    font-size:16px;
+    font-weight:700;
+    letter-spacing:-.01em;
+}
+.lang-select{
+    font-family:"Plus Jakarta Sans",sans-serif;
+    font-size:13px;
+    font-weight:700;
+}
+.hero h1{
+    font-size:68px;
+    line-height:.99;
+    letter-spacing:-3.1px;
+    font-weight:800;
+}
+.hero p{
+    font-size:23px;
+    line-height:1.55;
+    font-weight:500;
+}
+.limit-info{
+    font-size:14px;
+    font-weight:600;
+    padding:11px 15px;
+}
+.upload-title{
+    font-size:33px;
+    line-height:1.15;
+    font-weight:800;
+}
+.upload-subtitle{
+    font-size:18px;
+    line-height:1.5;
+    font-weight:500;
+}
+.upload-small{
+    font-size:13px;
+    line-height:1.5;
+    font-weight:600;
+}
+.file-button,
+.convert,
+.download,
+.again{
+    font-family:"Plus Jakarta Sans",sans-serif;
+    font-weight:800;
+    letter-spacing:-.01em;
+    border-radius:17px;
+    transition:transform .18s ease,box-shadow .18s ease,filter .18s ease,border-color .18s ease;
+}
+.file-button{
+    min-height:56px;
+    height:56px;
+    padding:0 27px;
+    font-size:17px;
+    box-shadow:0 14px 28px rgba(42,123,255,.24);
+}
+.convert{
+    min-height:56px;
+    height:56px;
+    font-size:17px;
+    box-shadow:0 14px 30px rgba(42,123,255,.24);
+}
+.download{
+    padding:14px 18px;
+    font-size:16px;
+}
+.again{
+    padding:13px 16px;
+    font-size:15px;
+    box-shadow:0 5px 16px rgba(18,41,100,.05);
+}
+.file-button:hover,
+.convert:not(:disabled):hover,
+.download:hover,
+.again:hover{
+    transform:translateY(-1px);
+}
+.file-button:active,
+.convert:not(:disabled):active,
+.download:active,
+.again:active{
+    transform:translateY(0);
+}
+.advanced-toggle{
+    font-family:"Plus Jakarta Sans",sans-serif;
+    font-size:14px;
+    font-weight:800;
+    padding:5px 2px;
+    border-radius:10px;
+}
+.controls label.title{
+    font-size:14px;
+    font-weight:800;
+}
+select,input[type=number],input[type=text]{
+    font-family:"Plus Jakarta Sans",sans-serif;
+    font-size:15px;
+    font-weight:600;
+    border-radius:15px;
+}
+.auto{
+    font-size:14px;
+    font-weight:600;
+}
+.file-name{
+    font-size:15px;
+    font-weight:800;
+}
+.file-meta{
+    font-size:13px;
+    font-weight:500;
+}
+.status-line{
+    font-size:13px;
+    font-weight:600;
+}
+.section-title{
+    font-size:21px;
+    font-weight:800;
+    letter-spacing:-.03em;
+}
+.placeholder{
+    font-size:15px;
+    line-height:1.7;
+    font-weight:500;
+}
+.security{
+    padding:17px 18px;
+    border-radius:22px;
+    box-shadow:0 5px 18px rgba(18,41,100,.04);
+}
+.security strong{
+    font-size:15px;
+    font-weight:800;
+}
+.security p{
+    font-size:13.5px;
+    line-height:1.6;
+    font-weight:500;
+}
+#sessionHistory{
+    font-size:13px;
+    line-height:1.55;
+}
+#sessionHistory strong{
+    font-size:15px;
+}
+.result-filename{
+    font-size:16px;
+    font-weight:800;
+}
+
+/* Herramientas populares */
+.popular-tools{
+    margin-top:28px;
+}
+.popular-tools h2{
+    font-size:30px;
+    line-height:1.15;
+    font-weight:800;
+    letter-spacing:-.8px;
+}
+.popular-tools p{
+    margin-top:7px;
+    font-size:16px;
+    line-height:1.55;
+    font-weight:500;
+}
+.popular-tools-grid{
+    gap:11px;
+}
+.popular-tool{
+    padding:14px 14px 14px 16px;
+    border-radius:18px;
+    font-size:15px;
+    font-weight:800;
+    box-shadow:0 6px 18px rgba(18,41,100,.055);
+    transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+.popular-tool:hover{
+    transform:translateY(-2px);
+    box-shadow:0 12px 26px rgba(18,41,100,.09);
+}
+.popular-tool .tool-open{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:34px;
+    padding:0 13px;
+    border:1px solid #dbe7fb;
+    border-radius:11px;
+    background:var(--blue-3);
+    color:var(--blue);
+    font-size:12px;
+    line-height:1;
+    font-weight:800;
+    box-shadow:0 3px 10px rgba(42,123,255,.08);
+    transition:transform .18s ease,box-shadow .18s ease;
+}
+.popular-tool:hover .tool-open{
+    transform:translateY(-1px);
+    box-shadow:0 6px 14px rgba(42,123,255,.12);
+}
+
+/* Secciones, tarjetas y etiquetas */
+.info-section h2{
+    font-size:30px;
+    line-height:1.18;
+    font-weight:800;
+    letter-spacing:-.8px;
+}
+.info-section>p{
+    font-size:16px;
+    line-height:1.6;
+    font-weight:500;
+}
+.format-card,.help-card{
+    padding:21px;
+    border-radius:22px;
+    box-shadow:0 8px 24px rgba(18,41,100,.06);
+}
+.format-card h3,.help-card h3{
+    margin-bottom:9px;
+    font-size:18px;
+    line-height:1.3;
+    font-weight:800;
+    letter-spacing:-.025em;
+}
+.format-card p,.help-card p{
+    font-size:14px;
+    line-height:1.68;
+    font-weight:500;
+}
+.coming{
+    padding:14px 16px;
+    border-radius:18px;
+    font-size:14px;
+    line-height:1.55;
+    font-weight:500;
+    box-shadow:0 4px 14px rgba(18,41,100,.035);
+}
+.help-number{
+    width:38px;
+    height:38px;
+    border-radius:13px;
+    font-size:15px;
+}
+.engine-grid{
+    gap:11px;
+}
+.engine{
+    padding:12px 14px;
+    border-radius:16px;
+    font-size:13px;
+    line-height:1.35;
+    font-weight:700;
+    box-shadow:0 4px 14px rgba(18,41,100,.035);
+}
+footer{
+    font-size:13px;
+    line-height:1.6;
+    font-weight:500;
+}
+footer a{
+    font-weight:800;
+}
+
+/* Accesibilidad visual de interacciones */
+.file-button:focus-visible,
+.convert:focus-visible,
+.download:focus-visible,
+.again:focus-visible,
+.popular-tool:focus-visible,
+.advanced-toggle:focus-visible,
+.nav a:focus-visible{
+    outline:3px solid rgba(42,123,255,.2);
+    outline-offset:3px;
+}
+
+@media(max-width:1100px){
+    .hero h1{font-size:56px}
+}
+
+@media(max-width:760px){
+    body{font-size:15px}
+    .nav a{font-size:13px;font-weight:700}
+    .lang-select{font-size:12px}
+    .hero h1{font-size:34px;line-height:1.08;letter-spacing:-1.4px}
+    .hero p{font-size:16px;line-height:1.55}
+    .limit-info{font-size:11px;font-weight:600}
+    .upload-title{font-size:23px}
+    .upload-subtitle{font-size:14px}
+    .upload-small{font-size:11px}
+    .file-button{height:50px;min-height:50px;font-size:14px}
+    .convert{height:52px;min-height:52px;font-size:16px}
+    .controls label.title{font-size:13px}
+    .auto{font-size:13px}
+    .advanced-toggle{font-size:13px}
+    .section-title{font-size:20px}
+    .security strong{font-size:14px}
+    .security p{font-size:11.5px}
+    .popular-tools h2{font-size:25px}
+    .popular-tools p{font-size:13.5px}
+    .popular-tool{
+        padding:12px 10px 12px 13px;
+        border-radius:15px;
+        font-size:13px;
+        gap:7px;
+    }
+    .popular-tool .tool-open{
+        display:inline-flex;
+        min-height:29px;
+        padding:0 8px;
+        border-radius:9px;
+        font-size:10px;
+    }
+    .info-section h2{font-size:25px}
+    .info-section>p{font-size:13.5px}
+    .format-card,.help-card{padding:17px;border-radius:18px}
+    .format-card h3,.help-card h3{font-size:16px}
+    .format-card p,.help-card p{font-size:13px}
+    .coming{font-size:12.5px}
+    .engine{padding:11px 12px;font-size:12px}
+    footer{font-size:11.5px}
+}
+
+
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XLZM56PZHM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XLZM56PZHM');
+</script>
+
+<link rel="stylesheet" href="/static/css/site_ui.css?v=clean-20260821">
+  <link rel="prefetch" href="/en/create-cv">
+  <link rel="prefetch" href="/static/css/create_cv.css" as="style">
+  <link rel="prefetch" href="/static/js/create_cv.js" as="script">
+</head>
+<body>
+<header class="header">
+    <a class="brand" href="#convertir" aria-label="Converti">
+        <img class="brand-logo" src="/static/images/logo_converti.png" alt="Converti">
+    </a>
+    <nav class="nav">
+        <a href="#convertir">Convert</a>
+        <a href="#formatos">Formats</a>
+        <a href="#ayuda">Help</a>
+    
+        <a class="nav-cv" href="/en/create-cv">Create CV</a></nav>
+    <div class="converti-header-tools">
+    <select class="lang-select" id="langSelector" aria-label="Idioma / Language">
+        <option value="es">ES</option><option value="en">EN</option><option value="fr">FR</option><option value="pt-br">PT-BR</option>
+    </select>
+    </div>
+</header>
+<aside class="converti-crosspromo" aria-label="Applying for a job too?">
+  <div><strong>Applying for a job too?</strong><span>Create your resume and draft professional application emails with AI assistance.</span></div>
+  <a href="/en/create-cv">Open CV tools</a>
+</aside>
+
+<main class="page hero-shell" id="convertir"><div class="workspace">
+<section>
+    <div class="hero">
+        <h1>Convert your files <span>with confidence</span></h1>
+        <p>Audio, images and documents in one place.</p>
+        <div class="limit-info"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 19 6v5c0 4.6-2.8 8-7 10-4.2-2-7-5.4-7-10V6l7-3Z"/><path d="m9 12 2 2 4-4"/></svg> Automatic MIME detection · <strong>Maximum {{ max_mb }} MB per request</strong></div>
+    </div>
+    <label class="upload-box" id="dropZone" for="archivo">
+        <div class="upload-icon"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .7-7.94A6 6 0 0 0 6.3 8.6 4.5 4.5 0 0 0 7 18Z"/><path d="M12 15V8"/><path d="m9.5 10.5 2.5-2.5 2.5 2.5"/></svg></div>
+        <div class="upload-title">Drag your files here</div>
+        <div class="upload-subtitle">or select them from your device</div>
+        <div class="file-button"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M12 11v6M9 14h6"/></svg><span>Select file(s)</span></div>
+        <div class="upload-small">Single or batch conversion</div>
+    </label>
+    <input type="file" id="archivo" multiple>
+    <div class="file-list" id="fileList"></div>
+    <label class="auto" style="margin-top:12px">
+        <input type="checkbox" id="previewOriginalToggle" autocomplete="off">
+        Select to preview the original file
+    </label>
+    <div class="controls">
+        <label class="title">Convert to</label>
+        <select id="formato" disabled><option value="">Select a file first</option></select>
+        <label class="auto"><input type="checkbox" id="autoDownload"> Download automatically when finished</label>
+        <button type="button" class="advanced-toggle" id="advancedToggle"><span>Advanced options</span><svg class="svg-icon advanced-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 9 5 5 5-5"/></svg></button>
+        <div class="advanced" id="advanced">
+            <div class="advanced-grid">
+                <label><span>Image quality (1–100)</span><input type="number" id="quality" min="1" max="100" value="92"></label>
+                <label><span>PDF/image DPI</span><input type="number" id="dpi" min="72" max="600" value="150"></label>
+                <label><span>Audio bitrate</span><select id="audioBitrate"><option>128k</option><option selected>192k</option><option>256k</option><option>320k</option></select></label>
+                
+                
+                <label><span>OCR language</span><input type="text" id="ocrLang" value="spa+eng"></label>
+                <label><span>First PDF page</span><input type="number" id="pageStart" min="1" value="1"></label>
+                <label><span>Last PDF page (0 = last)</span><input type="number" id="pageEnd" min="0" value="0"></label>
+            </div>
+            <label class="auto"><input type="checkbox" id="ocr"> Use OCR if the PDF is scanned</label>
+            <label class="auto"><input type="checkbox" id="stripMetadata"> Remove metadata when supported</label>
+        </div>
+        <button type="button" class="convert" id="convertButton" disabled>CONVERT</button>
+        <div class="progress-wrap" id="progressWrap"><div class="progress-bar" id="progressBar"></div></div>
+        <div class="status-line" id="statusLine"></div>
+    </div>
+</section>
+<section>
+    <div class="right">
+        <div id="originalPreviewPanel" style="display:none">
+            <div class="section-title">Original file preview</div>
+            <div class="preview-box">
+                <div class="preview-content" id="previewOriginal" style="display:none"></div>
+            </div>
+            <div class="divider"></div>
+        </div>
+        <div class="section-title">Conversion result</div>
+        <div class="result">
+            <div id="resultPlaceholder"><div class="result-placeholder-icon"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.6 2.6L16.5 9"/></svg></div><strong>Your converted file will appear here</strong><p style="color:#7b88aa;font-size:12px;margin:5px 0 0">You can preview it before downloading.</p></div>
+            <div class="result-content" id="resultContent" style="display:none"></div>
+        </div>
+        <div id="sessionHistory"></div>
+    </div>
+    <div class="security"><div class="security-icon"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 19 6v5c0 4.6-2.8 8-7 10-4.2-2-7-5.4-7-10V6l7-3Z"/><path d="m9 12 2 2 4-4"/></svg></div><div><strong>Your privacy is our priority</strong><p>The original is deleted after processing. The result remains available temporarily for 30 minutes, and cleanup also runs when Converti starts.</p></div></div>
+</section>
+</div></main>
+<section class="popular-tools" aria-labelledby="popular-tools-title">
+  <div class="popular-tools-head">
+    <div>
+      <h2 id="popular-tools-title">Popular tools</h2>
+      <p>Open Converti’s most popular conversion tools directly.</p>
+    </div>
+  </div>
+  <div class="popular-tools-grid">
+    <a class="popular-tool" href="/en/convert/pdf-a-word"><span>PDF to Word</span><span class="tool-open">Open</span></a>
+    <a class="popular-tool" href="/en/convert/word-a-pdf"><span>Word to PDF</span><span class="tool-open">Open</span></a>
+    <a class="popular-tool" href="/en/convert/jpg-a-pdf"><span>JPG to PDF</span><span class="tool-open">Open</span></a>
+    <a class="popular-tool" href="/en/convert/pdf-a-jpg"><span>PDF to JPG</span><span class="tool-open">Open</span></a>
+    <a class="popular-tool" href="/en/convert/png-a-jpg"><span>PNG to JPG</span><span class="tool-open">Open</span></a>
+    <a class="popular-tool" href="/en/convert/jpg-a-png"><span>JPG to PNG</span><span class="tool-open">Open</span></a>
+    <a class="popular-tool" href="/en/convert/pdf-a-png"><span>PDF to PNG</span><span class="tool-open">Open</span></a>
+    <a class="popular-tool" href="/en/convert/docx-a-txt"><span>DOCX to TXT</span><span class="tool-open">Open</span></a>
+    <a class="popular-tool" href="/en/convert/docx-a-html"><span>DOCX to HTML</span><span class="tool-open">Open</span></a>
+    <a class="popular-tool" href="/en/convert/mp3-a-wav"><span>MP3 to WAV</span><span class="tool-open">Open</span></a>
+    <a class="popular-tool" href="/en/convert/wav-a-mp3"><span>WAV to MP3</span><span class="tool-open">Open</span></a>
+    <a class="popular-tool" href="/en/convert/png-a-webp"><span>PNG to WEBP</span><span class="tool-open">Open</span></a>
+    <a class="popular-tool" href="/en/convert/webp-a-jpg"><span>WEBP to JPG</span><span class="tool-open">Open</span></a>
+    <a class="popular-tool" href="/en/convert/csv-a-xlsx"><span>CSV to XLSX</span><span class="tool-open">Open</span></a>
+    <a class="popular-tool" href="/en/convert/xlsx-a-csv"><span>XLSX to CSV</span><span class="tool-open">Open</span></a>
+  </div>
+</section>
+
+<section class="info-section" id="formatos"><h2>Available formats</h2><p>Options are generated from the real MIME type and the engines available on this server.</p><div class="format-grid"><div class="format-card"><h3>Audio</h3><p>FFmpeg: MP3, WAV, FLAC, OGG, OPUS, M4A, AAC, WMA y más según compilación.</p></div><div class="format-card"><h3>Images</h3><p>PNG, JPG, WEBP, TIFF, GIF, AVIF, HEIC, PSD, SVG y RAW cuando el motor los soporte.</p></div><div class="format-card"><h3>Documents</h3><p>PDF, DOCX, ODT, RTF, XLSX, ODS, CSV, PPTX, EPUB, Markdown, HTML y LaTeX.</p></div></div><div class="coming">PDF to Word, scanned PDF OCR, multi-page PDF to ZIP images, multiple images to PDF and batch conversion are integrated.</div><div class="engine-grid" id="engineGrid"></div></section>
+<section class="info-section" id="ayuda"><h2>How does Converti work?</h2><div class="help-grid"><div class="help-card"><div class="help-number">1</div><h3>Select</h3><p>Converti validates the content, detects MIME and classifies the file.</p></div><div class="help-card"><div class="help-number">2</div><h3>Choose</h3><p>Only formats supported by the engines actually available are shown.</p></div><div class="help-card"><div class="help-number">3</div><h3>Convert</h3><p>Conversion runs without reloading the page; multiple results are delivered in a ZIP file.</p></div></div></section>
+<footer class="converti-site-footer">Converti · Simple and private file conversion · <a href="/en/privacy">Privacy</a></footer>
+
+<script>
+(function(){
+ const current="en";
+ const sel=document.getElementById('langSelector'); if(sel) sel.value=current;
+ const homes={es:'/',en:'/en/',fr:'/fr/','pt-br':'/pt-br/'};
+ if(sel) sel.addEventListener('change',()=>{localStorage.setItem('converti_lang',sel.value);location.href=homes[sel.value]});
+ if(current==='es' && location.pathname==='/' && !localStorage.getItem('converti_lang') && !/bot|crawl|spider|slurp|bingpreview/i.test(navigator.userAgent)){
+   const l=(navigator.language||'').toLowerCase(); let target='es';
+   if(l.startsWith('pt')) target='pt-br'; else if(l.startsWith('fr')) target='fr'; else if(l.startsWith('en')) target='en'; else if(l && !l.startsWith('es')) target='en';
+   if(target!=='es') location.replace(homes[target]);
+ }
+})();
+</script>
+<script>
+const MAX_MB={{ max_mb|int }},input=document.getElementById('archivo'),formato=document.getElementById('formato'),dropZone=document.getElementById('dropZone'),fileList=document.getElementById('fileList'),preview=document.getElementById('previewOriginal'),originalPreviewPanel=document.getElementById('originalPreviewPanel'),resultPlaceholder=document.getElementById('resultPlaceholder'),resultContent=document.getElementById('resultContent'),convertButton=document.getElementById('convertButton'),progressWrap=document.getElementById('progressWrap'),progressBar=document.getElementById('progressBar'),statusLine=document.getElementById('statusLine'),autoDownload=document.getElementById('autoDownload'),previewOriginalToggle=document.getElementById('previewOriginalToggle'),engineGrid=document.getElementById('engineGrid'),advanced=document.getElementById('advanced');let selectedFiles=[],objectURL=null,sessionHistory=[],serverOriginalPreview=null;
+previewOriginalToggle.checked=false;
+const extOf=n=>{const i=n.lastIndexOf('.');return i>=0?n.slice(i+1).toLowerCase():''};const sizeText=b=>b<1024?b+' B':b<1048576?(b/1024).toFixed(1)+' KB':(b/1048576).toFixed(1)+' MB';
+const svgIcon=name=>{const paths={
+file:'<path d="M6 2.8h8l4 4V21H6z"/><path d="M14 2.8V7h4"/>',
+audio:'<path d="M9 18V6l9-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="15.5" cy="16" r="2.5"/>',
+video:'<rect x="3" y="5" width="14" height="14" rx="2"/><path d="m17 10 4-2v8l-4-2z"/>',
+image:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m4 17 5-5 4 4 2-2 5 5"/>',
+pdf:'<path d="M6 2.8h8l4 4V21H6z"/><path d="M14 2.8V7h4"/><path d="M8 16h8M8 12h5"/>',
+sheet:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16M15 4v16"/>',
+close:'<path d="m6 6 12 12M18 6 6 18"/>',
+download:'<path d="M12 3v12"/><path d="m7.5 11 4.5 4.5 4.5-4.5"/><path d="M5 21h14"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',check:'<path d="m5 12 4 4L19 6"/>',x:'<path d="m6 6 12 12M18 6 6 18"/>'};return '<svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true">'+(paths[name]||paths.file)+'</svg>'};
+const iconFor=e=>['mp3','wav','flac','ogg','opus','m4a','aac'].includes(e)?svgIcon('audio'):['mp4','mkv','avi','webm','mov'].includes(e)?svgIcon('video'):['jpg','jpeg','png','webp','bmp','gif','tiff','heic','avif','svg','psd'].includes(e)?svgIcon('image'):e==='pdf'?svgIcon('pdf'):['xlsx','xls','csv','ods'].includes(e)?svgIcon('sheet'):svgIcon('file');
+function resetResult(){resultContent.innerHTML='';resultContent.style.display='none';resultPlaceholder.style.display='block'}function hideOriginalPreview(){originalPreviewPanel.style.display='none';preview.style.display='none';preview.innerHTML='';if(objectURL){URL.revokeObjectURL(objectURL);objectURL=null}}function clearAll(){selectedFiles=[];serverOriginalPreview=null;input.value='';fileList.style.display='none';fileList.innerHTML='';formato.innerHTML='<option value="">Select a file first</option>';formato.disabled=true;convertButton.disabled=true;statusLine.textContent='';hideOriginalPreview();resetResult()}
+function renderFileList(){fileList.innerHTML='';selectedFiles.forEach((f,i)=>{const row=document.createElement('div');row.className='file-strip';row.innerHTML='<div class="file-icon">'+iconFor(extOf(f.name))+'</div><div class="file-info"><div class="file-name"></div><div class="file-meta"></div></div><button class="remove" type="button" aria-label="Remove file">'+svgIcon('close')+'</button>';row.querySelector('.file-name').textContent=f.name;row.querySelector('.file-meta').textContent=sizeText(f.size);row.querySelector('.remove').onclick=()=>{selectedFiles.splice(i,1);if(!selectedFiles.length){clearAll();return}renderFileList();analyzeSelection()};fileList.appendChild(row)});fileList.style.display=selectedFiles.length?'flex':'none'}
+function showPreview(file){
+    if(!previewOriginalToggle.checked){hideOriginalPreview();return}
+    if(serverOriginalPreview){
+        preview.innerHTML=serverOriginalPreview;
+        preview.style.display='block';
+        originalPreviewPanel.style.display='block';
+        return;
+    }
+    if(objectURL)URL.revokeObjectURL(objectURL);
+    objectURL=URL.createObjectURL(file);
+    preview.innerHTML='';
+    preview.style.display='none';
+    originalPreviewPanel.style.display='none';
+    const e=extOf(file.name);
+    let media='';
+    if(file.type.startsWith('image/'))media='<img src="'+objectURL+'">';
+    else if(file.type.startsWith('audio/'))media='<audio controls src="'+objectURL+'"></audio>';else if(file.type.startsWith('video/'))media='<video controls playsinline preload="metadata" src="'+objectURL+'"></video>';
+    else if(file.type==='application/pdf'||e==='pdf'){ URL.revokeObjectURL(objectURL); objectURL=null; return; }
+    if(media){
+        preview.innerHTML=media;
+        preview.style.display='block';
+        originalPreviewPanel.style.display='block';
+    }
+}
+async function analyzeSelection(){if(!selectedFiles.length)return;serverOriginalPreview=null;const total=selectedFiles.reduce((s,f)=>s+f.size,0);if(total>MAX_MB*1024*1024){alert('The selection exceeds '+MAX_MB+' MB.');clearAll();return}if(previewOriginalToggle.checked)showPreview(selectedFiles[0]);else hideOriginalPreview();formato.disabled=true;convertButton.disabled=true;formato.innerHTML='<option>Analyzing…</option>';statusLine.textContent='Detecting MIME and capabilities…';let intersection=null;for(const file of selectedFiles){const fd=new FormData();fd.append('file',file);fd.append('preview',previewOriginalToggle.checked&&selectedFiles.length===1?'1':'0');const r=await fetch('/api/analyze',{method:'POST',body:fd});const j=await r.json();if(!r.ok){statusLine.textContent=j.error||'Could not analyze the file.';return}if(selectedFiles.length===1&&previewOriginalToggle.checked&&j.preview_html){serverOriginalPreview=j.preview_html;preview.innerHTML=j.preview_html;preview.style.display='block';originalPreviewPanel.style.display='block'}const set=new Set(j.targets||[]);intersection=intersection===null?set:new Set([...intersection].filter(x=>set.has(x)))}const targets=[...(intersection||[])];if(selectedFiles.length>1&&selectedFiles.every(f=>f.type.startsWith('image/')))targets.unshift('pdf');const unique=[...new Set(targets)];formato.innerHTML='';if(!unique.length){formato.innerHTML='<option>No common conversions</option>';statusLine.textContent='No common output format is available for this selection.';return}unique.forEach(x=>{const o=document.createElement('option');o.value=x;o.textContent=x.toUpperCase();formato.appendChild(o)});formato.disabled=false;convertButton.disabled=false;statusLine.textContent=unique.length+' formats available.'}
+function setFiles(files){selectedFiles=[...files];renderFileList();resetResult();analyzeSelection().catch(e=>statusLine.textContent=e.message)}input.addEventListener('change',()=>setFiles(input.files));previewOriginalToggle.addEventListener('change',()=>{serverOriginalPreview=null;if(!selectedFiles.length){hideOriginalPreview();return}analyzeSelection().catch(e=>statusLine.textContent=e.message)});['dragenter','dragover'].forEach(n=>dropZone.addEventListener(n,e=>{e.preventDefault();dropZone.classList.add('dragging')}));['dragleave','drop'].forEach(n=>dropZone.addEventListener(n,e=>{e.preventDefault();dropZone.classList.remove('dragging')}));dropZone.addEventListener('drop',e=>setFiles(e.dataTransfer.files));document.getElementById('advancedToggle').onclick=()=>advanced.classList.toggle('open');
+function options(){return{quality:+document.getElementById('quality').value||92,dpi:+document.getElementById('dpi').value||150,audio_bitrate:document.getElementById('audioBitrate').value,resolution:'original',video_crf:23,ocr:document.getElementById('ocr').checked,ocr_lang:document.getElementById('ocrLang').value||'spa+eng',strip_metadata:document.getElementById('stripMetadata').checked,page_start:+document.getElementById('pageStart').value||1,page_end:+document.getElementById('pageEnd').value||0}}
+function renderResult(j){resultPlaceholder.style.display='none';resultContent.style.display='block';let media='';if(j.preview_html)media=j.preview_html;else if(j.preview_kind==='image')media='<img src="'+j.preview_url+'" alt="Result preview">';else if(j.preview_kind==='audio')media='<audio controls src="'+j.preview_url+'"></audio>';else if(j.preview_kind==='video')media='<video controls playsinline preload="metadata" src="'+j.preview_url+'"></video>';else if(j.preview_kind==='pdf')media='<div class="placeholder"><strong>PDF ready.</strong><br>The preview could not be generated, but you can download the file.</div>';else media='<div class="placeholder"><strong>Conversion finished.</strong><br>This format cannot be displayed directly in the browser, but the result is ready to download.</div>';resultContent.innerHTML='<strong class="result-filename">'+j.filename+'</strong><div style="margin-top:9px">'+media+'</div><div style="color:#777;font-size:12px;margin-top:7px">Size: '+sizeText(j.size)+' · Time: '+j.elapsed_seconds+' s</div><a class="download" id="downloadLink" href="'+j.download_url+'">'+svgIcon('download')+' Download '+j.extension.toUpperCase()+'</a><button class="again" id="againButton">Convert another file</button><p class="expiry-line">'+svgIcon('clock')+' It will be deleted automatically in '+j.expires_minutes+' minutes.</p>';document.getElementById('againButton').onclick=clearAll;sessionHistory.unshift(j.filename+' · '+j.elapsed_seconds+' s');sessionHistory=sessionHistory.slice(0,5);document.getElementById('sessionHistory').innerHTML='<strong>Session history</strong><br>'+sessionHistory.map(x=>'• '+x).join('<br>');if(autoDownload.checked)document.getElementById('downloadLink').click()}
+convertButton.onclick=()=>{
+    if(!selectedFiles.length||!formato.value)return;
+    const totalBytes=selectedFiles.reduce((sum,f)=>sum+f.size,0);
+    const tracked=totalBytes>5*1024*1024;
+    const jobId=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():(Date.now()+'-'+Math.random().toString(16).slice(2));
+    const fd=new FormData();
+    selectedFiles.forEach(f=>fd.append('files',f));
+    fd.append('format',formato.value);
+    fd.append('options',JSON.stringify(options()));
+    fd.append('job_id',jobId);
+    fd.append('track_progress',tracked?'1':'0');
+
+    // Una sola línea temporal: 1..20 subida, 20..99 conversión, 100 terminado.
+    let visiblePct=1;
+    let finished=false;
+    const setProgress=(pct,message)=>{
+        if(finished && pct<100)return;
+        const next=Math.max(visiblePct,Math.min(100,Math.round(Number(pct)||0)));
+        visiblePct=next;
+        progressBar.style.width=next+'%';
+        if(message)statusLine.textContent=message;
+    };
+
+    convertButton.disabled=true;
+    progressWrap.style.display='block';
+    setProgress(1,'Uploading file… 1%');
+    resetResult();
+
+    let pollTimer=null;
+    const stopPolling=()=>{if(pollTimer){clearInterval(pollTimer);pollTimer=null}};
+    const pollProgress=async()=>{
+        if(!tracked||finished)return;
+        try{
+            const r=await fetch('/api/progress/'+encodeURIComponent(jobId),{cache:'no-store'});
+            if(!r.ok)return;
+            const j=await r.json();
+            if(j.pending)return;
+            const serverPct=Math.max(0,Math.min(100,Number(j.percent)||0));
+            // El progreso del motor ocupa 20..99; jamás puede pisar hacia atrás la subida.
+            const overall=20+(serverPct*0.79);
+            const shown=Math.min(99,overall);
+            setProgress(shown,'Converting… '+Math.round(shown)+'%');
+            if(j.done)stopPolling();
+        }catch(e){}
+    };
+
+    const xhr=new XMLHttpRequest();
+    xhr.open('POST','/api/convert');
+    xhr.upload.onprogress=e=>{
+        if(e.lengthComputable && !finished){
+            const raw=e.loaded/e.total;
+            const overall=1+(raw*19);
+            setProgress(overall,'Uploading file… '+Math.round(overall)+'%');
+        }
+    };
+    xhr.upload.onload=()=>{
+        // NO reiniciar barra. La conversión continúa desde 20 %.
+        setProgress(20,'Preparing conversion… 20%');
+        if(tracked){
+            pollProgress();
+            pollTimer=setInterval(pollProgress,500);
+        }else{
+            // Para conversiones rápidas sin telemetría real, avanzar suavemente sin retroceder.
+            let synthetic=20;
+            pollTimer=setInterval(()=>{
+                synthetic=Math.min(92,synthetic+Math.max(1,Math.round((92-synthetic)*0.08)));
+                setProgress(synthetic,'Converting… '+synthetic+'%');
+            },650);
+        }
+    };
+    xhr.onload=()=>{
+        stopPolling();
+        convertButton.disabled=false;
+        let j;
+        try{j=JSON.parse(xhr.responseText)}catch{j={error:'Invalid server response.'}}
+        if(xhr.status<200||xhr.status>=300){
+            finished=true;
+            statusLine.textContent=j.error||'Conversion error.';
+            return;
+        }
+        finished=true;
+        setProgress(100,'Conversion completed.');
+        renderResult(j);
+        setTimeout(()=>{progressWrap.style.display='none'},1200);
+    };
+    xhr.onerror=()=>{
+        stopPolling();
+        convertButton.disabled=false;
+        finished=true;
+        statusLine.textContent='Could not connect to the server.';
+    };
+    xhr.send(fd);
+};
+(async()=>{try{const r=await fetch('/api/status'),j=await r.json();const labels={ffmpeg:'FFmpeg',ffprobe:'FFprobe',libreoffice:'LibreOffice',pandoc:'Pandoc',imagemagick:'ImageMagick',tesseract_ocr:'Tesseract OCR',python_magic:'python-magic'};engineGrid.innerHTML='';Object.entries(labels).forEach(([k,v])=>{const d=document.createElement('div');d.className='engine '+(j.tools[k]?'ok':'missing');d.innerHTML=svgIcon(j.tools[k]?'check':'x')+' <span>'+v+'</span>';engineGrid.appendChild(d)})}catch{}})();
+</script>
+</body></html>
