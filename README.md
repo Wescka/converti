@@ -15,6 +15,9 @@ Rutas principales:
 
 - `/` — Converti ES
 - `/en/`, `/fr/`, `/pt-br/`
+- `/convertir` — conversor principal
+- `/formatos` — formatos disponibles
+- `/ayuda` — ayuda de uso
 - `/crear-cv`
 - `/en/create-cv`
 - `/fr/creer-cv`
@@ -135,7 +138,7 @@ El código detecta los motores disponibles en tiempo real.
 6. No cambiar logo, favicon, tipografía o paleta base salvo petición explícita.
 7. No guardar contenido del CV en almacenamiento persistente del navegador.
 8. No incorporar claves privadas al repositorio.
-9. Antes de entregar cambios: compilar Python, validar JS/Jinja y revisar visualmente `/`, `/crear-cv` y `/privacidad`.
+9. Antes de entregar cambios: compilar Python, validar JS/Jinja y revisar visualmente `/`, `/convertir`, `/formatos`, `/ayuda`, `/crear-cv` y `/privacidad`.
 10. Entregar archivos/ZIP listos; evitar hacer que el usuario copie archivos grandes manualmente.
 
 ## Instalación limpia en Redmi/Termux
@@ -170,3 +173,27 @@ Subir únicamente el contenido de esta carpeta. No subir:
 - `.env`
 - scripts `FIX_*`, `ACTUALIZAR_*` o instaladores de versiones anteriores
 - demos y HTML de QA
+
+
+## Auditoría aplicada el 21/08/2026
+
+Esta base incorpora correcciones de producción realizadas sobre el handoff limpio:
+
+- navegación principal mediante rutas reales, sin anchors `#convertir`, `#formatos` ni `#ayuda`;
+- páginas localizadas reales para Formatos y Ayuda, incluidas en sitemap;
+- `hreflang` corregido y metadescripciones localizadas en las portadas;
+- exportación CV con validación estructural de DOCX/PDF antes de entregar el archivo;
+- texto de usuario escapado antes de pasar por el motor de marcado de ReportLab;
+- importación DOCX/PDF con comprobación de firma/estructura y rechazo de macros en Word;
+- parser defensivo para respuestas JSON de IA, incluso si Gemini envía fences Markdown accidentales;
+- limpieza temporal oportunista también bajo Gunicorn, no solo ejecutando `python app.py`;
+- cabeceras HTTP de seguridad y API sin caché;
+- `debug` desactivado por defecto en producción;
+- flujo móvil de Converti CV con pestañas Editar / Vista previa y campos táctiles adaptados;
+- pruebas estáticas en `tests/test_static_quality.py`.
+
+Ejecutar pruebas estáticas:
+
+```bash
+python -m unittest tests/test_static_quality.py -v
+```

@@ -89,3 +89,47 @@ body,button,input,textarea,select{font-family:"Plus Jakarta Sans",system-ui,-app
 .privacy-ai-card .item{grid-template-columns:52px minmax(0,1fr)!important;align-items:start!important}
 .privacy-ai-card .item>div:last-child{min-width:0!important;width:auto!important;max-width:none!important}
 .privacy-ai-card .item h2,.privacy-ai-card .item p{width:auto!important;max-width:none!important;word-break:normal!important;overflow-wrap:normal!important}
+
+/* ===== Converti CV · navegación móvil dedicada (2026-08-22) ===== */
+.cvb-mobile-menu-toggle{display:none}
+@media(max-width:720px){
+  .cvb-app .cvb-site-header{
+    min-height:66px!important;padding:8px 12px!important;
+    grid-template-columns:minmax(0,1fr) auto auto!important;
+    grid-template-rows:auto auto!important;column-gap:8px!important;row-gap:0!important;
+    align-items:center!important;
+  }
+  .cvb-app .cvb-brand{min-width:0!important;max-width:100%!important;overflow:hidden!important}
+  .cvb-app .cvb-brand img{
+    width:clamp(148px,43vw,188px)!important;height:auto!important;max-height:50px!important;max-width:100%!important;
+  }
+  .cvb-app .converti-header-tools{grid-column:2!important;grid-row:1!important;justify-self:end!important;min-width:0!important}
+  .cvb-app .cvb-lang{height:42px!important;min-width:60px!important;max-width:70px!important;padding:0 7px!important;border-radius:12px!important;font-size:12px!important}
+  .cvb-app .cvb-mobile-menu-toggle{
+    grid-column:3!important;grid-row:1!important;display:grid!important;place-items:center!important;
+    width:42px!important;height:42px!important;padding:0!important;border:1px solid #dbe6f5!important;border-radius:12px!important;
+    background:#fff!important;color:#172846!important;box-shadow:0 2px 8px rgba(20,49,96,.045)!important;
+    touch-action:manipulation!important;
+  }
+  .cvb-app .cvb-mobile-menu-toggle svg{width:21px!important;height:21px!important}
+  .cvb-app .cvb-site-nav{
+    grid-column:1/-1!important;grid-row:2!important;width:100%!important;justify-self:stretch!important;
+    display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important;
+    max-height:0!important;opacity:0!important;overflow:hidden!important;pointer-events:none!important;
+    padding:0!important;margin:0!important;transform:translateY(-4px)!important;
+    transition:max-height .2s ease,opacity .16s ease,transform .16s ease,padding .2s ease!important;
+  }
+  .cvb-app .cvb-site-header.is-menu-open .cvb-site-nav{
+    max-height:150px!important;opacity:1!important;pointer-events:auto!important;padding:9px 0 2px!important;transform:none!important;
+  }
+  .cvb-app .cvb-site-nav a{
+    width:100%!important;min-width:0!important;min-height:44px!important;padding:0 8px!important;border-radius:11px!important;
+    font-size:12px!important;line-height:1.15!important;white-space:normal!important;text-align:center!important;
+  }
+}
+@media(max-width:360px){
+  .cvb-app .cvb-site-header{padding-inline:9px!important;column-gap:6px!important}
+  .cvb-app .cvb-brand img{width:clamp(136px,42vw,154px)!important}
+  .cvb-app .cvb-lang{min-width:56px!important;width:56px!important}
+  .cvb-app .cvb-mobile-menu-toggle{width:40px!important;height:40px!important}
+}

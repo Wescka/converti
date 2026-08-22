@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="{{ 'pt-BR' if locale == 'pt-br' else locale }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>{{ title }} | Converti</title>
+  <meta name="description" content="{{ lead }}">
+  <link rel="canonical" href="{{ canonical_url }}">
+  {% for code, href in alternates.items() %}<link rel="alternate" hreflang="{{ 'pt-BR' if code == 'pt-br' else code }}" href="{{ href }}">{% endfor %}
+  <link rel="alternate" hreflang="x-default" href="{{ alternates['es'] }}">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/icon1.png') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/site_ui.css') }}?v=20260821-audit">
+  <style>
+    :root{--navy:#0b1234;--blue:#2a7bff;--muted:#63708f;--line:#e1e8f3;--soft:#f6f9ff}
+    *{box-sizing:border-box}body{margin:0;font-family:"Plus Jakarta Sans",system-ui,sans-serif;color:var(--navy);background:linear-gradient(180deg,#fff,#f7faff)}
+    .section-wrap{width:min(1080px,calc(100% - 32px));margin:58px auto 80px}.section-kicker{display:inline-flex;padding:8px 12px;border:1px solid #dce7fb;border-radius:999px;color:var(--blue);font-size:12px;font-weight:800;background:#fff}
+    h1{font-size:clamp(38px,6vw,62px);line-height:1.02;letter-spacing:-.045em;margin:18px 0 14px}.lead{max-width:760px;color:var(--muted);font-size:clamp(16px,2vw,20px);line-height:1.7;margin:0 0 30px}
+    .panel{background:#fff;border:1px solid var(--line);border-radius:26px;padding:clamp(22px,4vw,36px);box-shadow:0 18px 48px rgba(18,41,100,.07)}
+    .format-grid,.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.card{border:1px solid var(--line);border-radius:18px;padding:20px;background:var(--soft)}.card h2,.card h3{margin:0 0 8px;font-size:18px}.card p{margin:0;color:var(--muted);line-height:1.65;font-size:14px}
+    .step-num{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:#eaf3ff;color:var(--blue);font-weight:800;margin-bottom:12px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}.actions a{min-height:48px;padding:0 18px;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-weight:800}.primary{background:var(--blue);color:#fff}.secondary{border:1px solid var(--line);color:var(--navy);background:#fff}
+    @media(max-width:760px){.section-wrap{width:min(100% - 20px,1080px);margin-top:30px}.format-grid,.steps{grid-template-columns:1fr}.panel{border-radius:20px}.actions a{width:100%;min-height:50px}}
+  </style>
+</head>
+<body>
+<header class="header">
+  <a href="{{ paths.home }}" class="brand" aria-label="Converti"><img class="brand-logo" src="{{ url_for('static', filename='images/logo_converti.png') }}" alt="Converti"></a>
+  <nav class="nav" aria-label="Navigation">
+    <a href="{{ paths.convert }}">{{ ui.convert }}</a><a href="{{ paths.formats }}">{{ ui.formats }}</a><a href="{{ paths.help }}">{{ ui.help }}</a><a class="nav-cv" href="{{ paths.create }}">{{ ui.create }}</a>
+  </nav>
+  <div class="converti-header-tools"><select class="lang-select" aria-label="Language" onchange="location.href=this.value">
+      <option value="{{ alternates['es'].replace('https://converti.lat','') }}" {% if locale=='es' %}selected{% endif %}>ES</option>
+      <option value="{{ alternates['en'].replace('https://converti.lat','') }}" {% if locale=='en' %}selected{% endif %}>EN</option>
+      <option value="{{ alternates['fr'].replace('https://converti.lat','') }}" {% if locale=='fr' %}selected{% endif %}>FR</option>
+      <option value="{{ alternates['pt-br'].replace('https://converti.lat','') }}" {% if locale=='pt-br' %}selected{% endif %}>PT-BR</option>
+    </select></div>
+</header>
+<main class="section-wrap">
+  <span class="section-kicker">Converti</span><h1>{{ title }}</h1><p class="lead">{{ lead }}</p>
+  <section class="panel">
+  {% if section == 'formats' %}
+    <div class="format-grid">{% for heading, text in ui.format_cards %}<article class="card"><h2>{{ heading }}</h2><p>{{ text }}</p></article>{% endfor %}</div>
+  {% else %}
+    <div class="steps">{% for num, heading, text in ui.steps %}<article class="card"><div class="step-num">{{ num }}</div><h2>{{ heading }}</h2><p>{{ text }}</p></article>{% endfor %}</div>
+  {% endif %}
+    <div class="actions"><a class="primary" href="{{ paths.convert }}">{{ ui.convert }}</a><a class="secondary" href="{{ paths.home }}">{{ ui.home }}</a></div>
+  </section>
+</main>
+</body>
+</html>

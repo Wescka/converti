@@ -13,8 +13,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/create_cv.css') }}?v=clean-20260821">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/site_ui.css') }}?v=clean-20260821">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/create_cv.css') }}?v=mobile-20260822">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/site_ui.css') }}?v=mobile-20260822">
 </head>
 <body class="cvb-app">
 <header class="cvb-site-header">
@@ -22,10 +22,10 @@
     <img src="{{ url_for('static', filename='images/logo_converti.png') }}" alt="Converti" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">
     <span class="cvb-brand-fallback">Converti</span>
   </a>
-  <nav class="cvb-site-nav" aria-label="{{ cv_ui.nav_label }}">
-    <a href="{{ home_path }}#convertir">{{ cv_ui.nav_convert }}</a>
-    <a href="{{ home_path }}#formatos">{{ cv_ui.nav_formats }}</a>
-    <a href="{{ home_path }}#ayuda">{{ cv_ui.nav_help }}</a>
+  <nav class="cvb-site-nav" id="cvbSiteNav" aria-label="{{ cv_ui.nav_label }}">
+    <a href="{{ nav_paths.convert }}">{{ cv_ui.nav_convert }}</a>
+    <a href="{{ nav_paths.formats }}">{{ cv_ui.nav_formats }}</a>
+    <a href="{{ nav_paths.help }}">{{ cv_ui.nav_help }}</a>
     <a class="is-current" id="cvbNavCreate" href="{{ cv_path }}">{{ cv_ui.nav_create }}</a>
   </nav>
   <div class="converti-header-tools">
@@ -36,10 +36,13 @@
       <option value="/pt-br/criar-cv" {% if locale=='pt-br' %}selected{% endif %}>PT-BR</option>
     </select>
   </div>
+  <button type="button" class="cvb-mobile-menu-toggle" id="cvbMobileMenuToggle" aria-controls="cvbSiteNav" aria-expanded="false" aria-label="Menú">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
 </header>
 
 <main class="cvb-main">
-  <section class="cvb-toolbar" aria-label="{{ cv_ui.customize }}">
+  <section class="cvb-toolbar" id="cvbToolbar" aria-label="{{ cv_ui.customize }}">
     <div class="cvb-template-group">
       <span class="cvb-toolbar-label">{{ cv_ui.templates }}</span>
       <div class="cvb-template-buttons" id="cvbTemplates">
@@ -108,7 +111,12 @@
     </svg>
   </div>
 
-  <section class="cvb-workspace" id="cv-editor">
+  <div class="cvb-mobile-view-tabs" id="cvbMobileViewTabs" role="tablist" aria-label="{{ cv_ui.preview }}">
+    <button type="button" class="is-active" id="cvbMobileEdit" role="tab" aria-selected="true">{{ cv_ui.editor }}</button>
+    <button type="button" id="cvbMobilePreview" role="tab" aria-selected="false">{{ cv_ui.preview }}</button>
+  </div>
+
+  <section class="cvb-workspace is-mobile-edit" id="cv-editor">
     <aside class="cvb-editor" aria-label="{{ cv_ui.editor }}">
       <div class="cvb-editor-head">
         <div class="cvb-editor-title"><span>{{ cv_ui.kicker }}</span><h1>{{ cv_ui.hero_title }}</h1><p>{{ cv_ui.editor_hint }}</p></div>
@@ -245,7 +253,7 @@
 </main>
 <footer class="cvb-site-footer">Converti · <a href="{{ privacy_path }}">{{ cv_ui.privacy_label }}</a></footer>
 <script>window.CVB_I18N={{ cv_js|tojson }};</script>
-<script src="{{ url_for('static', filename='js/create_cv.js') }}?v=clean-20260821" defer></script>
+<script src="{{ url_for('static', filename='js/create_cv.js') }}?v=mobile-20260822" defer></script>
 
 </body>
 </html>

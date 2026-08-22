@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Converti: convierte audio, imágenes y documentos de forma sencilla y privada.">
+<meta name="description" content="Converti: convierte audio, imágenes, PDF y documentos online de forma sencilla, privada y sin instalar programas.">
 <title>Converti · Conversión de archivos sencilla y privada</title>
-<link rel="canonical" href="https://converti.lat/">
-<link rel="alternate" hreflang="es" href="https://converti.lat/">
-<link rel="alternate" hreflang="en" href="https://converti.lat/en/">
-<link rel="alternate" hreflang="fr" href="https://converti.lat/fr/">
-<link rel="alternate" hreflang="pt-BR" href="https://converti.lat/pt-br/">
-<link rel="alternate" hreflang="x-default" href="https://converti.lat/en/">
+<link rel="canonical" href="{{ canonical_override|default('https://converti.lat/') }}">
+<link rel="alternate" hreflang="es" href="{{ alternate_es|default('https://converti.lat/') }}">
+<link rel="alternate" hreflang="en" href="{{ alternate_en|default('https://converti.lat/en/') }}">
+<link rel="alternate" hreflang="fr" href="{{ alternate_fr|default('https://converti.lat/fr/') }}">
+<link rel="alternate" hreflang="pt-BR" href="{{ alternate_ptbr|default('https://converti.lat/pt-br/') }}">
+<link rel="alternate" hreflang="x-default" href="{{ alternate_default|default('https://converti.lat/') }}">
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/icon1.png') }}?v=1">
 <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/icon1.png') }}?v=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -826,13 +826,13 @@ footer a{
 </head>
 <body>
 <header class="header">
-    <a class="brand" href="#convertir" aria-label="Converti">
+    <a class="brand" href="/convertir" aria-label="Converti">
         <img class="brand-logo" src="/static/images/logo_converti.png" alt="Converti">
     </a>
     <nav class="nav">
-        <a href="#convertir">Convertir</a>
-        <a href="#formatos">Formatos</a>
-        <a href="#ayuda">Ayuda</a>
+        <a href="/convertir">Convertir</a>
+        <a href="/formatos">Formatos</a>
+        <a href="/ayuda">Ayuda</a>
     
         <a class="nav-cv" href="/crear-cv">Crear CV</a></nav>
     <div class="converti-header-tools">

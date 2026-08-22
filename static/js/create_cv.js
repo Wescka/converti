@@ -38,6 +38,19 @@ $('#cvbDownload')?.addEventListener('click',exportCv);
 $('#cvbClear')?.addEventListener('click',()=>{if(confirm(I.clear_confirm||'¿Limpiar el CV?')){resetDraft();closeAssistant()}});
 $('#cvbLang')?.addEventListener('change',e=>location.href=e.target.value);
 
+const siteHeader=$('.cvb-site-header'),siteNav=$('#cvbSiteNav'),mobileMenuToggle=$('#cvbMobileMenuToggle');
+function closeMobileMenu(){
+  siteHeader?.classList.remove('is-menu-open');
+  mobileMenuToggle?.setAttribute('aria-expanded','false');
+}
+mobileMenuToggle?.addEventListener('click',()=>{
+  const open=!siteHeader?.classList.contains('is-menu-open');
+  siteHeader?.classList.toggle('is-menu-open',open);
+  mobileMenuToggle.setAttribute('aria-expanded',String(open));
+});
+siteNav?.addEventListener('click',e=>{if(e.target.closest('a'))closeMobileMenu()});
+window.addEventListener('resize',()=>{if(window.innerWidth>720)closeMobileMenu()},{passive:true});
+
 const navCreate=$('#cvbNavCreate');
 navCreate?.addEventListener('click',e=>{
   try{
@@ -73,7 +86,7 @@ function applyCv(data){if(!data||typeof data!=='object')return;['name','title','
 const aiStatus=$('#cvbAiStatus');
 function setAiMessage(text,kind=''){if(!aiStatus)return;aiStatus.textContent=text||'';aiStatus.className=`cvb-ai-status ${kind?`is-${kind}`:''}`}
 function setAiBusy(busy){$$('#cvbAiPanel button,.cvb-inline-ai,#cvbAiCurrent,#cvbAiAts').forEach(b=>b.disabled=busy)}
-async function runAi(action,{useImport=false}={}){const file=$('#cvbAiFile')?.files?.[0],text=$('#cvbAiText')?.value?.trim()||'';if(useImport&&!file&&!text){setAiMessage(I.ai_need_content||'Sube o pega contenido primero.','error');return}setAiBusy(true);setAiMessage(useImport?(I.ai_extracting||'Leyendo CV…'):(I.ai_processing||'Mejorando CV…'),'loading');try{let r;if(useImport){const fd=new FormData();fd.append('action',action);fd.append('locale',document.documentElement.lang==='pt-BR'?'pt-br':document.documentElement.lang.split('-')[0]);fd.append('current',JSON.stringify(currentCv()));if(text)fd.append('text',text);if(file)fd.append('file',file);r=await fetch('/api/cv/ai',{method:'POST',body:fd})}else{r=await fetch('/api/cv/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,locale:document.documentElement.lang==='pt-BR'?'pt-br':document.documentElement.lang.split('-')[0],current:currentCv(),text})})}const d=await r.json().catch(()=>({}));if(!r.ok||!d.ok){throw new Error(d.message||I.ai_unavailable||'IA no disponible.')}applyCv(d.cv);setAiMessage(I.ai_done||'Listo. Revisa el resultado.','success');closeAssistant();$('.cvb-editor')?.scrollTo({top:0,behavior:'smooth'})}catch(err){setAiMessage(err.message||I.ai_unavailable||'IA no disponible.','error')}finally{setAiBusy(false)}}
+async function runAi(action,{useImport=false}={}){const file=$('#cvbAiFile')?.files?.[0],text=$('#cvbAiText')?.value?.trim()||'';if(useImport&&!file&&!text){setAiMessage(I.ai_need_content||'Sube o pega contenido primero.','error');return}setAiBusy(true);setAiMessage(useImport?(I.ai_extracting||'Leyendo CV…'):(I.ai_processing||'Mejorando CV…'),'loading');try{let r;if(useImport){const fd=new FormData();fd.append('action',action);fd.append('locale',document.documentElement.lang==='pt-BR'?'pt-br':document.documentElement.lang.split('-')[0]);fd.append('current',JSON.stringify(currentCv()));if(text)fd.append('text',text);if(file)fd.append('file',file);r=await fetch('/api/cv/ai',{method:'POST',body:fd})}else{r=await fetch('/api/cv/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,locale:document.documentElement.lang==='pt-BR'?'pt-br':document.documentElement.lang.split('-')[0],current:currentCv(),text})})}const d=await r.json().catch(()=>({}));if(!r.ok||!d.ok){throw new Error(d.message||I.ai_unavailable||'IA no disponible.')}applyCv(d.cv);setAiMessage(I.ai_done||'Listo. Revisa el resultado.','success');closeAssistant();if(window.matchMedia('(max-width:720px)').matches){revealGeneratedCvOnMobile()}else{$('.cvb-editor')?.scrollTo({top:0,behavior:'smooth'})}}catch(err){setAiMessage(err.message||I.ai_unavailable||'IA no disponible.','error')}finally{setAiBusy(false)}}
 $('#cvbAiFile')?.addEventListener('change',e=>{const f=e.target.files?.[0],nameEl=$('#cvbAiFileName'),frame=$('#cvbImportPdfPreview'),empty=$('#cvbImportPreviewEmpty');if(nameEl)nameEl.textContent=f?f.name:'';if(!frame||!empty)return;if(importPreviewUrl){URL.revokeObjectURL(importPreviewUrl);importPreviewUrl=''}if(f&&f.type==='application/pdf'){importPreviewUrl=URL.createObjectURL(f);frame.src=importPreviewUrl;frame.style.display='block';empty.style.display='none'}else{frame.removeAttribute('src');frame.style.display='none';empty.style.display='grid';if(f)empty.textContent=f.name+' · DOCX'}});
 
 async function generateApplicationEmail(){
@@ -104,6 +117,32 @@ function updateExportLabel(){const span=$('#cvbDownload span'),fmt=$('#cvbExport
 $('#cvbExportFormat')?.addEventListener('change',updateExportLabel);updateExportLabel();
 let parallaxQueued=false;function updateParallax(){parallaxQueued=false;const y=Math.min(180,window.scrollY*.08);$$('.cvb-side-art').forEach((el,i)=>el.style.setProperty('--parallax-y',`${i?y:-y}px`))}
 window.addEventListener('scroll',()=>{if(!parallaxQueued){parallaxQueued=true;requestAnimationFrame(updateParallax)}},{passive:true});updateParallax();
+
+const workspace=$('#cv-editor'),mobileEdit=$('#cvbMobileEdit'),mobilePreview=$('#cvbMobilePreview');
+function setMobileView(mode){
+  if(!workspace)return;
+  const preview=mode==='preview';
+  workspace.classList.toggle('is-mobile-preview',preview);
+  workspace.classList.toggle('is-mobile-edit',!preview);
+  mobileEdit?.classList.toggle('is-active',!preview); mobilePreview?.classList.toggle('is-active',preview);
+  mobileEdit?.setAttribute('aria-selected',String(!preview)); mobilePreview?.setAttribute('aria-selected',String(preview));
+  if(preview)requestAnimationFrame(fitPreview);
+}
+function revealGeneratedCvOnMobile(){
+  if(!window.matchMedia('(max-width:720px)').matches)return;
+  closeMobileMenu();
+  setMobileView('preview');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    const target=$('#cvbToolbar')||$('#cvbMobileViewTabs')||workspace;
+    const headerH=$('.cvb-site-header')?.getBoundingClientRect().height||66;
+    const top=Math.max(0,target.getBoundingClientRect().top+window.scrollY-headerH-6);
+    window.scrollTo({top,behavior:'smooth'});
+    requestAnimationFrame(fitPreview);
+  }));
+}
+mobileEdit?.addEventListener('click',()=>setMobileView('edit'));
+mobilePreview?.addEventListener('click',()=>setMobileView('preview'));
+
 resetDraft();
 
 function fitPreview(){

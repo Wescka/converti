@@ -4,6 +4,8 @@ from __future__ import annotations
 import base64
 import io
 import re
+import zipfile
+from xml.sax.saxutils import escape as xml_escape
 from typing import Any
 
 from reportlab.lib import colors
@@ -64,6 +66,10 @@ def _rgb(value: str) -> RGBColor:
 
 def _safe(v: Any) -> str:
     return str(v or "").strip()
+
+def _pdf_text(v: Any) -> str:
+    """Escape user text before passing it to ReportLab Paragraph markup."""
+    return xml_escape(_safe(v), {"\"": "&quot;"})
 
 
 def _photo_bytes(data_url: str) -> bytes | None:
@@ -215,14 +221,14 @@ def generate_cv_pdf(cv: dict, accent="#2a7bff", template="modern", locale="es", 
     doc.addPageTemplates([PageTemplate(id="cv", frames=[frame], onPage=draw_sidebar)])
 
     story = [
-        Paragraph(_safe(cv.get("name")) or "CV", styles["name"]),
-        Paragraph(_safe(cv.get("title")), styles["title"]),
+        Paragraph(_pdf_text(cv.get("name")) or "CV", styles["name"]),
+        Paragraph(_pdf_text(cv.get("title")), styles["title"]),
         Spacer(1, 1.5*mm),
     ]
     if not modern:
         contact = " · ".join(x for x in [_safe(cv.get("email")),_safe(cv.get("phone")),_safe(cv.get("city")),_safe(cv.get("website"))] if x)
         if contact:
-            story.append(Paragraph(contact, styles["meta"]))
+            story.append(Paragraph(_pdf_text(contact), styles["meta"]))
             story.append(Spacer(1, 2*mm))
 
     def heading(key):
@@ -230,7 +236,7 @@ def generate_cv_pdf(cv: dict, accent="#2a7bff", template="modern", locale="es", 
 
     if _safe(cv.get("profile")):
         heading("profile")
-        story.append(Paragraph(_safe(cv.get("profile")), styles["body"]))
+        story.append(Paragraph(_pdf_text(cv.get("profile")), styles["body"]))
 
     if cv.get("experience"):
         heading("experience")
@@ -240,12 +246,12 @@ def generate_cv_pdf(cv: dict, accent="#2a7bff", template="modern", locale="es", 
             head = role or company
             entry_flow = []
             if head:
-                parts = [f"<b>{head}</b>"]
-                if company and company != head: parts.append(f" · {company}")
-                if period: parts.append(f"   <font color='#667085'>{period}</font>")
+                parts = [f"<b>{_pdf_text(head)}</b>"]
+                if company and company != head: parts.append(f" · {_pdf_text(company)}")
+                if period: parts.append(f"   <font color='#667085'>{_pdf_text(period)}</font>")
                 entry_flow.append(Paragraph("".join(parts), styles["entry"]))
             if desc:
-                entry_flow.append(Paragraph(desc, styles["body"]))
+                entry_flow.append(Paragraph(_pdf_text(desc), styles["body"]))
             entry_flow.append(Spacer(1, 1.3*mm))
             if entry_flow:
                 story.append(KeepTogether(entry_flow))
@@ -257,25 +263,25 @@ def generate_cv_pdf(cv: dict, accent="#2a7bff", template="modern", locale="es", 
             degree, school, period, desc = map(_safe, (item.get("degree"),item.get("school"),item.get("period"),item.get("description")))
             line = degree or school
             if line:
-                parts=[f"<b>{line}</b>"]
-                if school and school != line: parts.append(f" · {school}")
-                if period: parts.append(f"   <font color='#667085'>{period}</font>")
+                parts=[f"<b>{_pdf_text(line)}</b>"]
+                if school and school != line: parts.append(f" · {_pdf_text(school)}")
+                if period: parts.append(f"   <font color='#667085'>{_pdf_text(period)}</font>")
                 story.append(Paragraph("".join(parts), styles["entry"]))
-            if desc: story.append(Paragraph(desc, styles["body"]))
+            if desc: story.append(Paragraph(_pdf_text(desc), styles["body"]))
 
     if not modern and cv.get("skills"):
         heading("skills")
-        story.append(Paragraph(" · ".join(_safe(x.get("name")) for x in cv["skills"] if isinstance(x,dict) and x.get("name"))[:1600], styles["body"]))
+        story.append(Paragraph(_pdf_text(" · ".join(_safe(x.get("name")) for x in cv["skills"] if isinstance(x,dict) and x.get("name"))[:1600]), styles["body"]))
     if not modern and cv.get("languages"):
         heading("languages")
-        story.append(Paragraph(" · ".join((_safe(x.get("name")) + (f" — {_safe(x.get('level'))}" if x.get("level") else "")) for x in cv["languages"] if isinstance(x,dict) and x.get("name")), styles["body"]))
+        story.append(Paragraph(_pdf_text(" · ".join((_safe(x.get("name")) + (f" — {_safe(x.get('level'))}" if x.get("level") else "")) for x in cv["languages"] if isinstance(x,dict) and x.get("name"))), styles["body"]))
 
     if cv.get("certifications"):
         heading("certifications")
         for item in cv["certifications"]:
             if not isinstance(item,dict): continue
             line = " · ".join(x for x in [_safe(item.get("name")),_safe(item.get("issuer")),_safe(item.get("year"))] if x)
-            if line: story.append(Paragraph(line, styles["body"]))
+            if line: story.append(Paragraph(_pdf_text(line), styles["body"]))
 
     doc.build(story)
     return out.getvalue()
@@ -339,6 +345,7 @@ def _docx_heading(container, text, accent, side=False):
     p = container.add_paragraph()
     p.paragraph_format.space_before = Pt(7)
     p.paragraph_format.space_after = Pt(3)
+    p.paragraph_format.keep_with_next = True
     r = p.add_run(_safe(text).upper())
     r.font.name = "Aptos"
     r.font.size = Pt(8.5 if not side else 8)
@@ -359,6 +366,7 @@ def _main_sections(container, cv, accent, labels):
             p=container.add_paragraph()
             p.paragraph_format.space_after=Pt(5)
             p.paragraph_format.keep_together=True
+            p.paragraph_format.widow_control=True
             r=p.add_run(role or company); r.bold=True; r.font.name="Aptos"; r.font.size=Pt(9); r.font.color.rgb=_rgb("#122447")
             if period:
                 rr=p.add_run("    "+period); rr.font.name="Aptos"; rr.font.size=Pt(7.8); rr.font.color.rgb=_rgb("#7b879d")
@@ -455,3 +463,25 @@ def generate_cv_docx(cv: dict, accent="#2a7bff", template="modern", locale="es",
     bio=io.BytesIO()
     doc.save(bio)
     return bio.getvalue()
+
+
+def validate_cv_docx_bytes(payload: bytes) -> None:
+    """Reject corrupt or non-DOCX export payloads before they are sent to the user."""
+    if not payload or not payload.startswith(b"PK"):
+        raise ValueError("El archivo Word generado no tiene una estructura DOCX válida.")
+    try:
+        with zipfile.ZipFile(io.BytesIO(payload)) as zf:
+            names = set(zf.namelist())
+            required = {"[Content_Types].xml", "word/document.xml", "_rels/.rels"}
+            if not required.issubset(names):
+                raise ValueError("El archivo Word generado está incompleto.")
+            document_xml = zf.read("word/document.xml")
+            if b"<w:document" not in document_xml:
+                raise ValueError("El documento Word generado no contiene un documento editable válido.")
+    except zipfile.BadZipFile as exc:
+        raise ValueError("El archivo Word generado está corrupto.") from exc
+
+def validate_cv_pdf_bytes(payload: bytes) -> None:
+    """Basic structural validation that catches empty/corrupt PDF exports."""
+    if not payload or not payload.startswith(b"%PDF-") or b"%%EOF" not in payload[-4096:]:
+        raise ValueError("El PDF generado no tiene una estructura válida.")

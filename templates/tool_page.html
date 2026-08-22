@@ -402,13 +402,13 @@ footer{font-size:13px;line-height:1.65;font-weight:500}
   </a>
   <nav class="nav">
     {% if locale == "en" %}
-      <a href="{{ home_path }}#convertir">Convert</a><a href="{{ home_path }}#formatos">Formats</a><a href="{{ home_path }}#ayuda">Help</a>
+      <a href="{{ nav_paths.convert }}">Convert</a><a href="{{ nav_paths.formats }}">Formats</a><a href="{{ nav_paths.help }}">Help</a>
     {% elif locale == "fr" %}
-      <a href="{{ home_path }}#convertir">Convertir</a><a href="{{ home_path }}#formatos">Formats</a><a href="{{ home_path }}#ayuda">Aide</a>
+      <a href="{{ nav_paths.convert }}">Convertir</a><a href="{{ nav_paths.formats }}">Formats</a><a href="{{ nav_paths.help }}">Aide</a>
     {% elif locale == "pt-br" %}
-      <a href="{{ home_path }}#convertir">Converter</a><a href="{{ home_path }}#formatos">Formatos</a><a href="{{ home_path }}#ayuda">Ajuda</a>
+      <a href="{{ nav_paths.convert }}">Converter</a><a href="{{ nav_paths.formats }}">Formatos</a><a href="{{ nav_paths.help }}">Ajuda</a>
     {% else %}
-      <a href="{{ home_path }}#convertir">Convertir</a><a href="{{ home_path }}#formatos">Formatos</a><a href="{{ home_path }}#ayuda">Ayuda</a>
+      <a href="{{ nav_paths.convert }}">Convertir</a><a href="{{ nav_paths.formats }}">Formatos</a><a href="{{ nav_paths.help }}">Ayuda</a>
     {% endif %}
     {% if locale == "en" %}<a class="nav-cv" href="/en/create-cv">Create CV</a>
     {% elif locale == "fr" %}<a class="nav-cv" href="/fr/creer-cv">Créer un CV</a>
@@ -434,7 +434,7 @@ footer{font-size:13px;line-height:1.65;font-weight:500}
     </div>
 
     <div class="actions">
-      <a class="primary" href="{{ home_path }}#convertir"><span>{{ ui.open }}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m14 7 5 5-5 5"/></svg></a>
+      <a class="primary" href="{{ nav_paths.convert }}"><span>{{ ui.open }}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m14 7 5 5-5 5"/></svg></a>
       <a class="secondary" href="{{ home_path }}">{{ ui.back }}</a>
     </div>
 

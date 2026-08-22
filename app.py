@@ -16,7 +16,7 @@ import zipfile
 from io import BytesIO
 from pathlib import Path
 
-from flask import Flask, jsonify, render_template, request, send_from_directory, send_file, url_for
+from flask import Flask, jsonify, render_template, request, send_from_directory, send_file, url_for, redirect
 from werkzeug.exceptions import RequestEntityTooLarge
 
 # -----------------------------------------------------------------------------
@@ -74,7 +74,7 @@ _priorizar_ffmpeg_moderno()
 
 from capabilities import detect_category, targets_for
 from config import CLEAN_INTERVAL_SECONDS, MAX_MB, TEMP_DIR, TEMP_TTL_SECONDS
-from cv_exports import generate_cv_pdf, generate_cv_docx
+from cv_exports import generate_cv_pdf, generate_cv_docx, validate_cv_docx_bytes, validate_cv_pdf_bytes
 from converters import (
     convert_image,
     convert_media,
@@ -394,7 +394,12 @@ def cleanup_loop():
 
 
 def client_key() -> str:
-    return request.headers.get("X-Forwarded-For", request.remote_addr or "local").split(",")[0].strip()
+    """Return a stable client identifier without trusting arbitrary X-Forwarded-For.
+
+    Converti is currently behind Cloudflare Tunnel, where CF-Connecting-IP is the
+    authoritative original address. Direct/local traffic falls back to remote_addr.
+    """
+    return (request.headers.get("CF-Connecting-IP") or request.remote_addr or "local").strip()
 
 
 def preview_summary(path: Path, ext: str) -> str | None:
@@ -718,8 +723,27 @@ def preview_kind(mime: str, ext: str) -> str:
     return "file"
 
 
+_LAST_CLEANUP = 0.0
+_CLEANUP_LOCK = threading.Lock()
+
+def _maybe_cleanup_temporaries() -> None:
+    """Run TTL cleanup opportunistically in every deployment mode, including Gunicorn."""
+    global _LAST_CLEANUP
+    now = time.time()
+    if now - _LAST_CLEANUP < CLEAN_INTERVAL_SECONDS:
+        return
+    if not _CLEANUP_LOCK.acquire(blocking=False):
+        return
+    try:
+        if now - _LAST_CLEANUP >= CLEAN_INTERVAL_SECONDS:
+            cleanup_once()
+            _LAST_CLEANUP = now
+    finally:
+        _CLEANUP_LOCK.release()
+
 @app.before_request
 def guard_rate_limit():
+    _maybe_cleanup_temporaries()
     # Las herramientas de IA de CV no usan un límite local de créditos/solicitudes.
     # El rate limit general se mantiene únicamente para el resto de APIs de conversión.
     if request.path in {"/api/cv/ai", "/api/cv/application-email", "/api/cv/ai/status"}:
@@ -727,6 +751,18 @@ def guard_rate_limit():
     if request.path.startswith("/api/") and not rate_limit_ok(client_key()):
         return jsonify(error="Demasiadas solicitudes. Intenta de nuevo en un minuto."), 429
 
+
+@app.after_request
+def add_security_headers(response):
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
+    response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    response.headers.setdefault("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
+    if request.path.startswith("/api/"):
+        response.headers.setdefault("Cache-Control", "no-store")
+    if request.is_secure or request.headers.get("CF-Visitor", "").find('"scheme":"https"') >= 0:
+        response.headers.setdefault("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+    return response
 
 @app.get("/")
 def home():
@@ -746,6 +782,65 @@ def home_fr():
 @app.get("/pt-br/")
 def home_ptbr():
     return render_template("index_ptbr.html", max_mb=MAX_MB)
+
+# Rutas reales para navegación principal. El home se mantiene como portada;
+# /convertir abre la herramienta principal sin depender de anchors/hash.
+@app.get("/convertir")
+def convert_page_es():
+    return render_template("index.html", max_mb=MAX_MB, canonical_override="https://converti.lat/convertir", alternate_es="https://converti.lat/convertir", alternate_en="https://converti.lat/en/convert", alternate_fr="https://converti.lat/fr/convertir", alternate_ptbr="https://converti.lat/pt-br/converter", alternate_default="https://converti.lat/convertir")
+
+@app.get("/en/convert")
+def convert_page_en():
+    return render_template("index_en.html", max_mb=MAX_MB, canonical_override="https://converti.lat/en/convert", alternate_es="https://converti.lat/convertir", alternate_en="https://converti.lat/en/convert", alternate_fr="https://converti.lat/fr/convertir", alternate_ptbr="https://converti.lat/pt-br/converter", alternate_default="https://converti.lat/convertir")
+
+@app.get("/fr/convertir")
+def convert_page_fr():
+    return render_template("index_fr.html", max_mb=MAX_MB, canonical_override="https://converti.lat/fr/convertir", alternate_es="https://converti.lat/convertir", alternate_en="https://converti.lat/en/convert", alternate_fr="https://converti.lat/fr/convertir", alternate_ptbr="https://converti.lat/pt-br/converter", alternate_default="https://converti.lat/convertir")
+
+@app.get("/pt-br/converter")
+def convert_page_ptbr():
+    return render_template("index_ptbr.html", max_mb=MAX_MB, canonical_override="https://converti.lat/pt-br/converter", alternate_es="https://converti.lat/convertir", alternate_en="https://converti.lat/en/convert", alternate_fr="https://converti.lat/fr/convertir", alternate_ptbr="https://converti.lat/pt-br/converter", alternate_default="https://converti.lat/convertir")
+
+SECTION_UI = {
+    "es": {"formats_title":"Formatos disponibles","formats_lead":"Consulta los formatos que Converti puede procesar según el tipo de archivo y los motores disponibles.","help_title":"Cómo funciona Converti","help_lead":"Una guía breve para convertir archivos de forma segura y sencilla.","convert":"Convertir","formats":"Formatos","help":"Ayuda","create":"Crear CV","home":"Inicio","format_cards":[("Audio","MP3, WAV, FLAC, OGG, OPUS, M4A y AAC cuando FFmpeg está disponible."),("Imágenes","PNG, JPG, WEBP, BMP, GIF, TIFF y PDF según el motor disponible."),("Documentos y datos","PDF, DOCX, TXT, HTML, Markdown, CSV, XLSX, JSON y XML según la ruta compatible.")],"steps":[("1","Selecciona","Elige uno o varios archivos. Converti valida el contenido y detecta el formato real."),("2","Elige","Se muestran únicamente los formatos de salida compatibles con el archivo y los motores activos."),("3","Convierte","El procesamiento se realiza en el servidor y el resultado temporal queda disponible para descargar.")]},
+    "en": {"formats_title":"Available formats","formats_lead":"See the formats Converti can process based on the uploaded file and the engines currently available.","help_title":"How Converti works","help_lead":"A short guide to converting files safely and easily.","convert":"Convert","formats":"Formats","help":"Help","create":"Create CV","home":"Home","format_cards":[("Audio","MP3, WAV, FLAC, OGG, OPUS, M4A and AAC when FFmpeg is available."),("Images","PNG, JPG, WEBP, BMP, GIF, TIFF and PDF depending on the available engine."),("Documents and data","PDF, DOCX, TXT, HTML, Markdown, CSV, XLSX, JSON and XML when a compatible route is available.")],"steps":[("1","Select","Choose one or more files. Converti validates the content and detects the actual format."),("2","Choose","Only output formats compatible with the file and active engines are offered."),("3","Convert","Processing runs on the server and the temporary result becomes available to download.")]},
+    "fr": {"formats_title":"Formats disponibles","formats_lead":"Consultez les formats que Converti peut traiter selon le fichier et les moteurs disponibles.","help_title":"Comment fonctionne Converti","help_lead":"Un guide rapide pour convertir des fichiers simplement et en toute sécurité.","convert":"Convertir","formats":"Formats","help":"Aide","create":"Créer un CV","home":"Accueil","format_cards":[("Audio","MP3, WAV, FLAC, OGG, OPUS, M4A et AAC lorsque FFmpeg est disponible."),("Images","PNG, JPG, WEBP, BMP, GIF, TIFF et PDF selon le moteur disponible."),("Documents et données","PDF, DOCX, TXT, HTML, Markdown, CSV, XLSX, JSON et XML lorsqu’une route compatible est disponible.")],"steps":[("1","Sélectionnez","Choisissez un ou plusieurs fichiers. Converti valide le contenu et détecte le format réel."),("2","Choisissez","Seuls les formats compatibles avec le fichier et les moteurs actifs sont proposés."),("3","Convertissez","Le traitement s’effectue sur le serveur et le résultat temporaire peut ensuite être téléchargé.")]},
+    "pt-br": {"formats_title":"Formatos disponíveis","formats_lead":"Veja os formatos que o Converti pode processar conforme o arquivo e os mecanismos disponíveis.","help_title":"Como o Converti funciona","help_lead":"Um guia rápido para converter arquivos de forma simples e segura.","convert":"Converter","formats":"Formatos","help":"Ajuda","create":"Criar CV","home":"Início","format_cards":[("Áudio","MP3, WAV, FLAC, OGG, OPUS, M4A e AAC quando o FFmpeg está disponível."),("Imagens","PNG, JPG, WEBP, BMP, GIF, TIFF e PDF conforme o mecanismo disponível."),("Documentos e dados","PDF, DOCX, TXT, HTML, Markdown, CSV, XLSX, JSON e XML quando existe uma rota compatível.")],"steps":[("1","Selecione","Escolha um ou mais arquivos. O Converti valida o conteúdo e detecta o formato real."),("2","Escolha","São exibidos apenas formatos de saída compatíveis com o arquivo e os mecanismos ativos."),("3","Converta","O processamento ocorre no servidor e o resultado temporário fica disponível para download.")]},
+}
+
+SECTION_PATHS = {
+    "es":{"home":"/","convert":"/convertir","formats":"/formatos","help":"/ayuda","create":"/crear-cv"},
+    "en":{"home":"/en/","convert":"/en/convert","formats":"/en/formats","help":"/en/help","create":"/en/create-cv"},
+    "fr":{"home":"/fr/","convert":"/fr/convertir","formats":"/fr/formats","help":"/fr/aide","create":"/fr/creer-cv"},
+    "pt-br":{"home":"/pt-br/","convert":"/pt-br/converter","formats":"/pt-br/formatos","help":"/pt-br/ajuda","create":"/pt-br/criar-cv"},
+}
+
+def _render_section(locale: str, section: str):
+    ui = SECTION_UI[locale]
+    paths = SECTION_PATHS[locale]
+    is_formats = section == "formats"
+    title = ui["formats_title"] if is_formats else ui["help_title"]
+    lead = ui["formats_lead"] if is_formats else ui["help_lead"]
+    canonical = "https://converti.lat" + paths[section]
+    alternates = {code: "https://converti.lat" + SECTION_PATHS[code][section] for code in SECTION_PATHS}
+    return render_template("section_page.html", locale=locale, ui=ui, paths=paths, section=section, title=title, lead=lead, canonical_url=canonical, alternates=alternates, max_mb=MAX_MB)
+
+@app.get("/formatos")
+def formats_es(): return _render_section("es", "formats")
+@app.get("/ayuda")
+def help_es(): return _render_section("es", "help")
+@app.get("/en/formats")
+def formats_en(): return _render_section("en", "formats")
+@app.get("/en/help")
+def help_en(): return _render_section("en", "help")
+@app.get("/fr/formats")
+def formats_fr(): return _render_section("fr", "formats")
+@app.get("/fr/aide")
+def help_fr(): return _render_section("fr", "help")
+@app.get("/pt-br/formatos")
+def formats_ptbr(): return _render_section("pt-br", "formats")
+@app.get("/pt-br/ajuda")
+def help_ptbr(): return _render_section("pt-br", "help")
 
 
 @app.get("/privacidad")
@@ -1135,6 +1230,20 @@ def _cv_extract_upload(file_storage) -> str:
     if len(data) > _CV_AI_MAX_FILE:
         raise ValueError("El CV supera el límite de 8 MB.")
     suffix = ".pdf" if name.endswith(".pdf") else ".docx"
+    if suffix == ".pdf" and not data.lstrip().startswith(b"%PDF-"):
+        raise ValueError("El archivo no contiene un PDF válido.")
+    if suffix == ".docx":
+        if not data.startswith(b"PK"):
+            raise ValueError("El archivo no contiene un DOCX válido.")
+        try:
+            with zipfile.ZipFile(BytesIO(data)) as zf:
+                names = set(zf.namelist())
+                if "word/document.xml" not in names or "[Content_Types].xml" not in names:
+                    raise ValueError("El archivo no contiene un DOCX válido.")
+                if any(name.lower().endswith("vbaproject.bin") for name in names):
+                    raise ValueError("Por seguridad, no se admiten documentos Word con macros.")
+        except zipfile.BadZipFile as exc:
+            raise ValueError("El archivo DOCX está dañado.") from exc
     tmp_name = None
     try:
         with tempfile.NamedTemporaryFile(prefix="converti_cv_", suffix=suffix, delete=False) as tmp:
@@ -1213,6 +1322,23 @@ REGLAS ABSOLUTAS:
     payload = {"source_text": source_text[:_CV_AI_MAX_TEXT], "current_cv": current}
     return rules + "\nINSTRUCCIÓN ESPECÍFICA: " + action_rules + "\nDATOS DEL USUARIO:\n" + json.dumps(payload, ensure_ascii=False)
 
+def _parse_ai_json(text: str) -> dict:
+    """Parse model JSON defensively, including accidental Markdown fences."""
+    raw = (text or "").strip()
+    if raw.startswith("```"):
+        raw = re.sub(r"^```(?:json)?\s*", "", raw, flags=re.I)
+        raw = re.sub(r"\s*```$", "", raw)
+    try:
+        obj = json.loads(raw)
+    except json.JSONDecodeError:
+        start, end = raw.find("{"), raw.rfind("}")
+        if start < 0 or end <= start:
+            raise ValueError("La IA no devolvió un objeto JSON reconocible.")
+        obj = json.loads(raw[start:end + 1])
+    if not isinstance(obj, dict):
+        raise ValueError("La IA devolvió una estructura inesperada.")
+    return obj
+
 def _cv_call_gemini(prompt: str) -> dict:
     key = os.environ.get("GEMINI_API_KEY", "").strip()
     if not key:
@@ -1244,7 +1370,7 @@ def _cv_call_gemini(prompt: str) -> dict:
     try:
         parts = raw["candidates"][0]["content"]["parts"]
         text = "".join(p.get("text","") for p in parts if isinstance(p, dict))
-        return _cv_clean_payload(json.loads(text))
+        return _cv_clean_payload(_parse_ai_json(text))
     except Exception as exc:
         log.warning("Respuesta Gemini inesperada: %s", raw)
         raise RuntimeError(f"Gemini devolvió una respuesta inválida: {exc}")
@@ -1265,6 +1391,7 @@ def cv_export_docx():
             locale=locale,
             photo_data=str(body.get("photo") or ""),
         )
+        validate_cv_docx_bytes(payload)
         safe=re.sub(r"[^A-Za-z0-9_-]+","_",cv.get("name") or "CV_Converti").strip("_")[:70] or "CV_Converti"
         return send_file(
             BytesIO(payload), as_attachment=True,
@@ -1290,6 +1417,7 @@ def cv_export_pdf():
             locale=locale,
             photo_data=str(body.get("photo") or ""),
         )
+        validate_cv_pdf_bytes(payload)
         safe=re.sub(r"[^A-Za-z0-9_-]+","_",cv.get("name") or "CV_Converti").strip("_")[:70] or "CV_Converti"
         return send_file(
             BytesIO(payload), as_attachment=True,
@@ -1318,7 +1446,7 @@ def _cv_call_gemini_email(prompt: str) -> dict:
         raw=json.loads(resp.read().decode("utf-8"))
     parts=raw["candidates"][0]["content"]["parts"]
     text="".join(x.get("text","") for x in parts if isinstance(x,dict))
-    result=json.loads(text)
+    result=_parse_ai_json(text)
     return {"subject":str(result.get("subject") or "").strip()[:300],"body":str(result.get("body") or "").strip()[:8000]}
 
 @app.post("/api/cv/application-email")
@@ -1677,6 +1805,9 @@ def sitemap():
         urls.append("https://converti.lat" + p["home"])
         urls.append("https://converti.lat" + p["privacy"])
         urls.append("https://converti.lat" + CV_PATHS[locale])
+        urls.append("https://converti.lat" + SECTION_PATHS[locale]["convert"])
+        urls.append("https://converti.lat" + SECTION_PATHS[locale]["formats"])
+        urls.append("https://converti.lat" + SECTION_PATHS[locale]["help"])
         for slug, _, _ in SEO_ROUTES_I18N[locale]:
             urls.append(_tool_url(locale, slug))
     body = "".join(f"<url><loc>{u}</loc></url>" for u in urls)
@@ -1695,7 +1826,7 @@ def _render_tool(locale: str, slug: str):
         "tool_page.html",
         title=match[1], description=match[2], slug=slug, max_mb=MAX_MB,
         seo=SEO_CONTENT_I18N.get(locale, {}).get(slug, {}), locale=locale, ui=ui,
-        home_path=paths["home"], tool_base=paths["tool"], canonical_url=_tool_url(locale, slug), alternates=alternates,
+        home_path=paths["home"], tool_base=paths["tool"], canonical_url=_tool_url(locale, slug), alternates=alternates, nav_paths=SECTION_PATHS[locale],
     )
 
 
@@ -1897,6 +2028,14 @@ def convert():
             expires_minutes=TEMP_TTL_SECONDS//60,
             elapsed_seconds=round(time.perf_counter() - started, 2),
         )
+    except ValueError as exc:
+        if heartbeat:
+            heartbeat.stop()
+            heartbeat = None
+        log.info("conversion_rejected: %s", exc)
+        if track_progress and job_id:
+            _progress_set(job_id, 100, "La conversión no pudo iniciarse.", done=True, error=True)
+        return jsonify(error=str(exc)), 400
     except Exception as exc:
         if heartbeat:
             heartbeat.stop()
@@ -1988,4 +2127,4 @@ def too_large(_):
 if __name__ == "__main__":
     cleanup_once()
     threading.Thread(target=cleanup_loop, daemon=True).start()
-    app.run(host="0.0.0.0", port=int(os.getenv("PORT", "5000")), debug=True, use_reloader=False)
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", "5000")), debug=os.getenv("FLASK_DEBUG", "0") == "1", use_reloader=False)
