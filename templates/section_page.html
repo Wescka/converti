@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/site_ui.css') }}?v=20260821-audit">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/site_ui.css') }}?v=20260822-stable">
   <style>
     :root{--navy:#0b1234;--blue:#2a7bff;--muted:#63708f;--line:#e1e8f3;--soft:#f6f9ff}
     *{box-sizing:border-box}body{margin:0;font-family:"Plus Jakarta Sans",system-ui,sans-serif;color:var(--navy);background:linear-gradient(180deg,#fff,#f7faff)}
@@ -37,6 +37,9 @@
       <option value="{{ alternates['fr'].replace('https://converti.lat','') }}" {% if locale=='fr' %}selected{% endif %}>FR</option>
       <option value="{{ alternates['pt-br'].replace('https://converti.lat','') }}" {% if locale=='pt-br' %}selected{% endif %}>PT-BR</option>
     </select></div>
+  <button type="button" class="converti-mobile-menu-toggle" aria-expanded="false" aria-label="Menu">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
 </header>
 <main class="section-wrap">
   <span class="section-kicker">Converti</span><h1>{{ title }}</h1><p class="lead">{{ lead }}</p>
@@ -49,5 +52,6 @@
     <div class="actions"><a class="primary" href="{{ paths.convert }}">{{ ui.convert }}</a><a class="secondary" href="{{ paths.home }}">{{ ui.home }}</a></div>
   </section>
 </main>
+<script src="/static/js/site_ui.js?v=20260822-stable" defer></script>
 </body>
 </html>

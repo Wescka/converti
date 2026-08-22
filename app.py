@@ -1673,7 +1673,7 @@ def _render_cv_seo(locale, slug):
         {"@type":"WebApplication","name":"Converti CV","applicationCategory":"BusinessApplication","operatingSystem":"Web","url":"https://converti.lat"+CV_PATHS[locale],"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
         {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Converti","item":"https://converti.lat"+SECTION_PATHS[locale]["home"]},{"@type":"ListItem","position":2,"name":SECTION_UI[locale]["create"],"item":"https://converti.lat"+CV_PATHS[locale]},{"@type":"ListItem","position":3,"name":page["h1"],"item":canonical}]}
     ]}
-    return render_template("cv_seo_page.html", page=page, ui=page, paths=SECTION_PATHS[locale], canonical_url=canonical, alternates=alternates, related=related, schema_json=json.dumps(schema, ensure_ascii=False))
+    return render_template("cv_seo_page.html", page=page, ui=page, paths=SECTION_PATHS[locale], locale=locale, canonical_url=canonical, alternates=alternates, related=related, schema_json=json.dumps(schema, ensure_ascii=False))
 
 @app.get("/cv/<slug>")
 def cv_seo_es(slug): return _render_cv_seo("es", slug)

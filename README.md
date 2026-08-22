@@ -69,11 +69,14 @@ templates/
   privacy_fr.html
   privacy_ptbr.html
   tool_page.html
+  section_page.html
+  cv_seo_page.html
 
 static/
   css/create_cv.css
   css/site_ui.css
   js/create_cv.js
+  js/site_ui.js
   images/logo_converti.png
   images/icon1.png
 ```
@@ -213,3 +216,16 @@ python -m unittest tests/test_static_quality.py -v
 - Se reforzaron canonical, hreflang, robots, Open Graph y datos estructurados WebApplication/BreadcrumbList en Converti CV.
 - El editor `/crear-cv` enlaza internamente las nuevas landing pages para facilitar descubrimiento y rastreo.
 - `robots.txt` permite el sitio público y excluye `/api/` y `/download/` del rastreo.
+
+
+## Corrección integral 2026-08-22 — navegación, subpáginas y móvil
+
+- Se eliminó la mezcla accidental de copias de templates/CSS/JS en la raíz del repositorio. La única fuente válida vuelve a ser `templates/` y `static/`.
+- Se eliminaron `.pyc`, `__pycache__`, el archivo accidental `download` y `env.example` duplicado.
+- `site_ui.css` se consolidó en una sola implementación para evitar que estilos antiguos de la home, privacidad, herramientas y landings SEO se sobrescribieran entre sí.
+- Todas las páginas y subpáginas con header común usan navegación móvil dedicada: logo + idioma + botón de menú; los cuatro enlaces se despliegan en una cuadrícula táctil.
+- Converti CV conserva su navegación móvil propia y el flujo Editar/Vista previa.
+- Las landings SEO de CV conservan canonical, hreflang, schema y contenido indexable, pero ya no llevan CSS de header duplicado.
+- Se corrigió el `locale` de las páginas SEO de CV para que el selector de idioma marque correctamente ES/EN/FR/PT-BR.
+- Se añadió `static/js/site_ui.js` para controlar el menú móvil común sin duplicar JavaScript en cada template.
+- Se cambió el versionado de assets a `20260822-stable` para evitar que Cloudflare o el navegador mezclen CSS/JS antiguos después del despliegue.

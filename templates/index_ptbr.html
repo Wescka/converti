@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="O Converti converte áudio, imagens, PDFs e documentos online de forma simples, privada e sem instalar programas.">
 <title>Converti · Conversão de arquivos simples e privada</title>
 <link rel="canonical" href="{{ canonical_override|default('https://converti.lat/pt-br/') }}">
@@ -819,7 +819,7 @@ footer a{
   gtag('config', 'G-XLZM56PZHM');
 </script>
 
-<link rel="stylesheet" href="/static/css/site_ui.css?v=clean-20260821">
+<link rel="stylesheet" href="/static/css/site_ui.css?v=20260822-stable">
   <link rel="prefetch" href="/pt-br/criar-cv">
   <link rel="prefetch" href="/static/css/create_cv.css" as="style">
   <link rel="prefetch" href="/static/js/create_cv.js" as="script">
@@ -840,6 +840,9 @@ footer a{
         <option value="es">ES</option><option value="en">EN</option><option value="fr">FR</option><option value="pt-br">PT-BR</option>
     </select>
     </div>
+  <button type="button" class="converti-mobile-menu-toggle" aria-expanded="false" aria-label="Menu">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
 </header>
 <aside class="converti-crosspromo" aria-label="Também está se candidatando a uma vaga?">
   <div><strong>Também está se candidatando a uma vaga?</strong><span>Crie seu currículo e redija e-mails profissionais de candidatura com ajuda da IA.</span></div>
@@ -1092,4 +1095,5 @@ convertButton.onclick=()=>{
 };
 (async()=>{try{const r=await fetch('/api/status'),j=await r.json();const labels={ffmpeg:'FFmpeg',ffprobe:'FFprobe',libreoffice:'LibreOffice',pandoc:'Pandoc',imagemagick:'ImageMagick',tesseract_ocr:'Tesseract OCR',python_magic:'python-magic'};engineGrid.innerHTML='';Object.entries(labels).forEach(([k,v])=>{const d=document.createElement('div');d.className='engine '+(j.tools[k]?'ok':'missing');d.innerHTML=svgIcon(j.tools[k]?'check':'x')+' <span>'+v+'</span>';engineGrid.appendChild(d)})}catch{}})();
 </script>
+<script src="/static/js/site_ui.js?v=20260822-stable" defer></script>
 </body></html>
