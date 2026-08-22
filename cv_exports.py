@@ -254,7 +254,13 @@ def generate_cv_pdf(cv: dict, accent="#2a7bff", template="modern", locale="es", 
                 entry_flow.append(Paragraph(_pdf_text(desc), styles["body"]))
             entry_flow.append(Spacer(1, 1.3*mm))
             if entry_flow:
-                story.append(KeepTogether(entry_flow))
+                # Keep normal entries together when possible, but let very long
+                # descriptions flow naturally across pages instead of forcing a
+                # giant block that can overflow or fail layout.
+                if len(desc) <= 900:
+                    story.append(KeepTogether(entry_flow))
+                else:
+                    story.extend(entry_flow)
 
     if cv.get("education"):
         heading("education")
@@ -328,11 +334,16 @@ def _remove_table_borders(table):
         tag.set(qn("w:val"), "nil")
 
 
-def _paragraph(container, text="", size=9, bold=False, color="#475467", space_after=2, align=None):
+def _paragraph(container, text="", size=9.5, bold=False, color="#475467", space_after=2.5, align=None,
+               keep_with_next=False, keep_together=False):
     p = container.add_paragraph()
     if align is not None:
         p.alignment = align
-    p.paragraph_format.space_after = Pt(space_after)
+    pf = p.paragraph_format
+    pf.space_after = Pt(space_after)
+    pf.keep_with_next = keep_with_next
+    pf.keep_together = keep_together
+    pf.widow_control = True
     r = p.add_run(_safe(text))
     r.font.name = "Aptos"
     r.font.size = Pt(size)
@@ -343,50 +354,98 @@ def _paragraph(container, text="", size=9, bold=False, color="#475467", space_af
 
 def _docx_heading(container, text, accent, side=False):
     p = container.add_paragraph()
-    p.paragraph_format.space_before = Pt(7)
-    p.paragraph_format.space_after = Pt(3)
+    p.paragraph_format.space_before = Pt(8)
+    p.paragraph_format.space_after = Pt(3.5)
     p.paragraph_format.keep_with_next = True
+    p.paragraph_format.widow_control = True
     r = p.add_run(_safe(text).upper())
     r.font.name = "Aptos"
-    r.font.size = Pt(8.5 if not side else 8)
+    r.font.size = Pt(9.4 if not side else 8.6)
     r.bold = True
     r.font.color.rgb = RGBColor(255,255,255) if side else _rgb(accent)
     return p
 
 
+def _set_fixed_table_layout(table, widths):
+    """Use real fixed column widths in Word/LibreOffice and avoid auto-compression."""
+    table.autofit = False
+    tblPr = table._tbl.tblPr
+    layout = tblPr.first_child_found_in("w:tblLayout")
+    if layout is None:
+        layout = OxmlElement("w:tblLayout")
+        tblPr.append(layout)
+    layout.set(qn("w:type"), "fixed")
+    grid = table._tbl.tblGrid
+    for col, width in zip(grid.gridCol_lst, widths):
+        col.set(qn("w:w"), str(int(width * 1440)))
+    for row in table.rows:
+        trPr = row._tr.get_or_add_trPr()
+        cant = trPr.find(qn("w:cantSplit"))
+        if cant is not None:
+            trPr.remove(cant)
+
+
+def _docx_entry(container, role, company, period, desc, accent):
+    """Entry header stays with the first body line; the body itself may paginate."""
+    if role or company or period:
+        p = container.add_paragraph()
+        pf = p.paragraph_format
+        pf.space_before = Pt(1.5)
+        pf.space_after = Pt(1)
+        pf.keep_with_next = bool(desc or company)
+        pf.widow_control = True
+        if role or company:
+            r = p.add_run(role or company)
+            r.bold = True; r.font.name = "Aptos"; r.font.size = Pt(10)
+            r.font.color.rgb = _rgb("#122447")
+        if period:
+            rr = p.add_run(("    " if (role or company) else "") + period)
+            rr.font.name = "Aptos"; rr.font.size = Pt(8.4); rr.font.color.rgb = _rgb("#7b879d")
+        if company and company != (role or company):
+            cp = container.add_paragraph()
+            cp.paragraph_format.space_after = Pt(1)
+            cp.paragraph_format.keep_with_next = bool(desc)
+            cp.paragraph_format.widow_control = True
+            rr = cp.add_run(company)
+            rr.bold = True; rr.font.name = "Aptos"; rr.font.size = Pt(8.8); rr.font.color.rgb = _rgb(accent)
+    if desc:
+        _paragraph(container, desc, 9.1, color="#536078", space_after=5, keep_together=False)
+
+
 def _main_sections(container, cv, accent, labels):
     if _safe(cv.get("profile")):
         _docx_heading(container, labels["profile"], accent)
-        _paragraph(container, cv.get("profile"), 9, color="#475467", space_after=4)
+        _paragraph(container, cv.get("profile"), 9.4, color="#475467", space_after=5)
     if cv.get("experience"):
         _docx_heading(container, labels["experience"], accent)
         for item in cv["experience"]:
             if not isinstance(item,dict): continue
             role, company, period, desc = map(_safe, (item.get("role"),item.get("company"),item.get("period"),item.get("description")))
-            p=container.add_paragraph()
-            p.paragraph_format.space_after=Pt(5)
-            p.paragraph_format.keep_together=True
-            p.paragraph_format.widow_control=True
-            r=p.add_run(role or company); r.bold=True; r.font.name="Aptos"; r.font.size=Pt(9); r.font.color.rgb=_rgb("#122447")
-            if period:
-                rr=p.add_run("    "+period); rr.font.name="Aptos"; rr.font.size=Pt(7.8); rr.font.color.rgb=_rgb("#7b879d")
-            if company and company != (role or company):
-                rr=p.add_run("\n"+company); rr.bold=True; rr.font.name="Aptos"; rr.font.size=Pt(8); rr.font.color.rgb=_rgb(accent)
-            if desc:
-                rr=p.add_run("\n"+desc); rr.font.name="Aptos"; rr.font.size=Pt(8.4); rr.font.color.rgb=_rgb("#536078")
+            _docx_entry(container, role, company, period, desc, accent)
     if cv.get("education"):
         _docx_heading(container, labels["education"], accent)
         for item in cv["education"]:
             if not isinstance(item,dict): continue
-            line=" · ".join(x for x in [_safe(item.get("degree")),_safe(item.get("school")),_safe(item.get("period"))] if x)
-            if line: _paragraph(container,line,8.6,bold=True,color="#122447",space_after=1)
-            if _safe(item.get("description")): _paragraph(container,item.get("description"),8.2,color="#536078",space_after=3)
+            degree, school, period, desc = map(_safe, (item.get("degree"),item.get("school"),item.get("period"),item.get("description")))
+            if degree or school or period:
+                p = container.add_paragraph()
+                p.paragraph_format.space_after = Pt(1)
+                p.paragraph_format.keep_with_next = bool(desc)
+                p.paragraph_format.widow_control = True
+                r = p.add_run(degree or school)
+                r.bold=True; r.font.name="Aptos"; r.font.size=Pt(9.6); r.font.color.rgb=_rgb("#122447")
+                if school and school != (degree or school):
+                    rr=p.add_run(" · "+school); rr.font.name="Aptos"; rr.font.size=Pt(9); rr.font.color.rgb=_rgb("#122447")
+                if period:
+                    rr=p.add_run("    "+period); rr.font.name="Aptos"; rr.font.size=Pt(8.3); rr.font.color.rgb=_rgb("#7b879d")
+            if desc:
+                _paragraph(container, desc, 9, color="#536078", space_after=4)
     if cv.get("certifications"):
         _docx_heading(container, labels["certifications"], accent)
         for item in cv["certifications"]:
             if not isinstance(item,dict): continue
             line=" · ".join(x for x in [_safe(item.get("name")),_safe(item.get("issuer")),_safe(item.get("year"))] if x)
-            if line: _paragraph(container,line,8.4,color="#475467",space_after=2)
+            if line: _paragraph(container,line,9,color="#475467",space_after=3)
 
 
 def generate_cv_docx(cv: dict, accent="#2a7bff", template="modern", locale="es", photo_data="") -> bytes:
@@ -396,12 +455,12 @@ def generate_cv_docx(cv: dict, accent="#2a7bff", template="modern", locale="es",
     doc = Document()
     sec = doc.sections[0]
     sec.page_width, sec.page_height = Inches(8.27), Inches(11.69)
-    sec.top_margin = sec.bottom_margin = Inches(0.42)
-    sec.left_margin = sec.right_margin = Inches(0.42)
+    sec.top_margin = sec.bottom_margin = Inches(0.48)
+    sec.left_margin = sec.right_margin = Inches(0.44)
     sec.header_distance = sec.footer_distance = Inches(0.2)
     normal = doc.styles["Normal"]
     normal.font.name = "Aptos"
-    normal.font.size = Pt(9)
+    normal.font.size = Pt(9.5)
 
     photo = _photo_bytes(photo_data)
 
@@ -409,16 +468,17 @@ def generate_cv_docx(cv: dict, accent="#2a7bff", template="modern", locale="es",
         table = doc.add_table(rows=1, cols=2)
         table.alignment = WD_TABLE_ALIGNMENT.CENTER
         table.autofit = False
-        table.columns[0].width = Inches(2.15)
-        table.columns[1].width = Inches(5.25)
+        table.columns[0].width = Inches(2.03)
+        table.columns[1].width = Inches(5.30)
+        _set_fixed_table_layout(table, (2.03, 5.30))
         _remove_table_borders(table)
         left, right = table.cell(0,0), table.cell(0,1)
-        left.width, right.width = Inches(2.15), Inches(5.25)
+        left.width, right.width = Inches(2.03), Inches(5.30)
         left.vertical_alignment = WD_ALIGN_VERTICAL.TOP
         right.vertical_alignment = WD_ALIGN_VERTICAL.TOP
         _set_cell_shading(left, "#13294b")
-        _set_cell_margins(left, 180, 180, 180, 180)
-        _set_cell_margins(right, 170, 300, 170, 160)
+        _set_cell_margins(left, 190, 190, 190, 190)
+        _set_cell_margins(right, 190, 250, 190, 150)
 
         # Remove empty initial paragraphs only visually by reusing them.
         p = left.paragraphs[0]; p.alignment=WD_ALIGN_PARAGRAPH.CENTER; p.paragraph_format.space_after=Pt(8)
@@ -426,25 +486,25 @@ def generate_cv_docx(cv: dict, accent="#2a7bff", template="modern", locale="es",
             try: p.add_run().add_picture(io.BytesIO(photo), width=Inches(0.95))
             except Exception: p.add_run(_initials(cv.get("name","")))
         else:
-            r=p.add_run(_initials(cv.get("name",""))); r.bold=True; r.font.size=Pt(13); r.font.color.rgb=RGBColor(255,255,255)
+            r=p.add_run(_initials(cv.get("name",""))); r.bold=True; r.font.size=Pt(14); r.font.color.rgb=RGBColor(255,255,255)
 
         _docx_heading(left, labels["contact"], accent, side=True)
         for item in (cv.get("email"),cv.get("phone"),cv.get("city"),cv.get("website")):
-            if _safe(item): _paragraph(left,item,7.5,color="#e6eef9",space_after=2)
+            if _safe(item): _paragraph(left,item,8.2,color="#e6eef9",space_after=2.2)
         skills=[x.get("name","") for x in cv.get("skills",[]) if isinstance(x,dict) and x.get("name")][:8]
         if skills:
             _docx_heading(left, labels["skills"], accent, side=True)
-            for item in skills: _paragraph(left,"• "+item,7.3,color="#ffffff",space_after=1)
+            for item in skills: _paragraph(left,"• "+item,8.0,color="#ffffff",space_after=1.4)
         langs=[x for x in cv.get("languages",[]) if isinstance(x,dict) and x.get("name")]
         if langs:
             _docx_heading(left, labels["languages"], accent, side=True)
             for x in langs[:8]:
-                _paragraph(left,f"{_safe(x.get('name'))}  {_safe(x.get('level'))}",7.3,color="#ffffff",space_after=1)
+                _paragraph(left,f"{_safe(x.get('name'))}  {_safe(x.get('level'))}",8.0,color="#ffffff",space_after=1.4)
 
         # Reuse first right paragraph for heading.
         p=right.paragraphs[0]; p.paragraph_format.space_after=Pt(1)
-        r=p.add_run(_safe(cv.get("name")) or "CV"); r.bold=True; r.font.name="Aptos"; r.font.size=Pt(21); r.font.color.rgb=_rgb("#122447")
-        if _safe(cv.get("title")): _paragraph(right,cv.get("title"),9.5,bold=True,color=accent,space_after=7)
+        r=p.add_run(_safe(cv.get("name")) or "CV"); r.bold=True; r.font.name="Aptos"; r.font.size=Pt(22); r.font.color.rgb=_rgb("#122447")
+        if _safe(cv.get("title")): _paragraph(right,cv.get("title"),10.2,bold=True,color=accent,space_after=7)
         _main_sections(right,cv,accent,labels)
     else:
         p=doc.add_paragraph(); p.alignment=WD_ALIGN_PARAGRAPH.LEFT; p.paragraph_format.space_after=Pt(2)
