@@ -114,6 +114,20 @@ class StaticQualityTests(unittest.TestCase):
         self.assertIn("width:min(1240px,calc(100% - 32px))", html)
 
 
+    def test_image_conversion_exposes_document_outputs(self):
+        capabilities = (ROOT / "capabilities.py").read_text(encoding="utf-8")
+        converters = (ROOT / "converters.py").read_text(encoding="utf-8")
+        app = (ROOT / "app.py").read_text(encoding="utf-8")
+        for target in ("docx", "pptx", "html", "pdf"):
+            self.assertIn(f'"{target}"', capabilities)
+        self.assertIn("def images_to_document", converters)
+        self.assertIn("validate_image_source", converters)
+        self.assertIn("images_to_document(sources, target, tools, options)", app)
+
+    def test_imagemagick_supports_magick_or_convert_binary(self):
+        source = (ROOT / "security_utils.py").read_text(encoding="utf-8")
+        self.assertRegex(source, r'magick=find_tool\(\s*"magick",\s*"convert",')
+
 
 if __name__ == "__main__":
     unittest.main()

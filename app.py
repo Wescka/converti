@@ -82,6 +82,8 @@ from converters import (
     convert_with_pandoc,
     convert_with_soffice,
     images_to_pdf,
+    images_to_document,
+    validate_image_source,
     package_outputs,
     pdf_to_images,
     pdf_to_textual,
@@ -202,6 +204,19 @@ def _effective_targets(category: str, source_ext: str, tools) -> list[str]:
         ]
         result = [x for x in native_video if x != ext] + [
             x for x in result if x not in native_video and x != ext
+        ]
+
+    if category == "image":
+        # Document containers are implemented natively by Converti and must
+        # remain available even when ImageMagick's advertised writable formats
+        # are incomplete. OCR text is conditional on Tesseract.
+        image_docs = ["pdf", "docx", "pptx", "html"]
+        if getattr(tools, "tesseract", None):
+            image_docs.append("txt")
+        if getattr(tools, "soffice", None):
+            image_docs += ["odt", "rtf"]
+        result = [x for x in image_docs if x != ext] + [
+            x for x in result if x not in image_docs and x != ext
         ]
 
     # Stable order, no duplicates.
@@ -823,7 +838,7 @@ SECTION_DETAIL_UI = {
         "categories": [
             ("Audio", "Entrada habitual", "MP3 · WAV · FLAC · OGG · OPUS · AAC · M4A · WMA · AIFF · AMR · APE · ALAC · AC3", "Salidas principales: MP3, WAV, FLAC, OGG, OPUS, M4A y AAC."),
             ("Vídeo", "Entrada habitual", "MP4 · MKV · AVI · WEBM · MOV · MPEG · MPG · M4V · FLV · WMV · 3GP · TS · MTS · M2TS · VOB · OGV", "Salidas principales: MP4, MKV, AVI, WEBM y MOV. También puede extraer audio cuando FFmpeg está activo."),
-            ("Imágenes", "Entrada habitual", "JPG · JPEG · PNG · WEBP · BMP · GIF · TIFF · ICO · AVIF · HEIC · HEIF · SVG · PSD", "Salidas principales: PNG, JPG, WEBP, BMP, GIF, TIFF y PDF."),
+            ("Imágenes", "Entrada habitual", "JPG · JPEG · PNG · WEBP · BMP · GIF · TIFF · ICO · AVIF · HEIC · HEIF · SVG · PSD", "Salidas: PNG, JPG, WEBP, BMP, GIF y TIFF; también PDF, DOCX, PPTX y HTML. TXT por OCR y ODT/RTF cuando los motores estén disponibles."),
             ("PDF y documentos", "Entrada habitual", "PDF · DOC · DOCX · ODT · RTF · PPT · PPTX · ODP · EPUB", "PDF puede convertirse a DOCX, TXT, Markdown, HTML, PNG o JPG. DOCX puede convertirse a PDF, TXT, HTML y Markdown, con formatos adicionales cuando los motores están disponibles."),
             ("Datos", "Entrada habitual", "CSV · XLSX · XLS · ODS · JSON · XML", "Rutas principales entre CSV, XLSX, JSON, XML y TXT. Algunas entradas antiguas dependen de lectores adicionales."),
             ("Texto", "Entrada habitual", "TXT · Markdown · RST · HTML · TEX · LaTeX", "Con Pandoc disponible, Converti puede generar HTML, Markdown, TXT, DOCX, ODT, RTF y EPUB según el formato de origen."),
@@ -868,7 +883,7 @@ SECTION_DETAIL_UI = {
         "categories":[
             ("Audio","Common inputs","MP3 · WAV · FLAC · OGG · OPUS · AAC · M4A · WMA · AIFF · AMR · APE · ALAC · AC3","Main outputs: MP3, WAV, FLAC, OGG, OPUS, M4A and AAC."),
             ("Video","Common inputs","MP4 · MKV · AVI · WEBM · MOV · MPEG · MPG · M4V · FLV · WMV · 3GP · TS · MTS · M2TS · VOB · OGV","Main outputs: MP4, MKV, AVI, WEBM and MOV. Audio extraction is also available when FFmpeg is active."),
-            ("Images","Common inputs","JPG · JPEG · PNG · WEBP · BMP · GIF · TIFF · ICO · AVIF · HEIC · HEIF · SVG · PSD","Main outputs: PNG, JPG, WEBP, BMP, GIF, TIFF and PDF."),
+            ("Images","Common inputs","JPG · JPEG · PNG · WEBP · BMP · GIF · TIFF · ICO · AVIF · HEIC · HEIF · SVG · PSD","Outputs: PNG, JPG, WEBP, BMP, GIF and TIFF; also PDF, DOCX, PPTX and HTML. TXT via OCR and ODT/RTF when the required engines are available."),
             ("PDF & documents","Common inputs","PDF · DOC · DOCX · ODT · RTF · PPT · PPTX · ODP · EPUB","PDF can output DOCX, TXT, Markdown, HTML, PNG or JPG. DOCX can output PDF, TXT, HTML and Markdown, plus extra formats when engines are available."),
             ("Data","Common inputs","CSV · XLSX · XLS · ODS · JSON · XML","Main routes between CSV, XLSX, JSON, XML and TXT. Some legacy inputs require additional readers."),
             ("Text","Common inputs","TXT · Markdown · RST · HTML · TEX · LaTeX","With Pandoc available, Converti can generate HTML, Markdown, TXT, DOCX, ODT, RTF and EPUB depending on the source."),
@@ -882,7 +897,7 @@ SECTION_DETAIL_UI = {
     },
     "fr": {
         "formats_eyebrow":"Conversion de fichiers","formats_intro":"Converti détecte le format réel du fichier et ne propose que les sorties prises en charge par les moteurs actifs.",
-        "categories":[("Audio","Entrées courantes","MP3 · WAV · FLAC · OGG · OPUS · AAC · M4A · WMA · AIFF · AMR · APE · ALAC · AC3","Sorties principales : MP3, WAV, FLAC, OGG, OPUS, M4A et AAC."),("Vidéo","Entrées courantes","MP4 · MKV · AVI · WEBM · MOV · MPEG · MPG · M4V · FLV · WMV · 3GP · TS · MTS · M2TS · VOB · OGV","Sorties principales : MP4, MKV, AVI, WEBM et MOV. Extraction audio possible avec FFmpeg."),("Images","Entrées courantes","JPG · JPEG · PNG · WEBP · BMP · GIF · TIFF · ICO · AVIF · HEIC · HEIF · SVG · PSD","Sorties principales : PNG, JPG, WEBP, BMP, GIF, TIFF et PDF."),("PDF et documents","Entrées courantes","PDF · DOC · DOCX · ODT · RTF · PPT · PPTX · ODP · EPUB","PDF vers DOCX, TXT, Markdown, HTML, PNG ou JPG. DOCX vers PDF, TXT, HTML et Markdown, plus d'autres formats selon les moteurs."),("Données","Entrées courantes","CSV · XLSX · XLS · ODS · JSON · XML","Conversions principales entre CSV, XLSX, JSON, XML et TXT."),("Texte","Entrées courantes","TXT · Markdown · RST · HTML · TEX · LaTeX","Avec Pandoc, sorties HTML, Markdown, TXT, DOCX, ODT, RTF et EPUB selon la source.")],
+        "categories":[("Audio","Entrées courantes","MP3 · WAV · FLAC · OGG · OPUS · AAC · M4A · WMA · AIFF · AMR · APE · ALAC · AC3","Sorties principales : MP3, WAV, FLAC, OGG, OPUS, M4A et AAC."),("Vidéo","Entrées courantes","MP4 · MKV · AVI · WEBM · MOV · MPEG · MPG · M4V · FLV · WMV · 3GP · TS · MTS · M2TS · VOB · OGV","Sorties principales : MP4, MKV, AVI, WEBM et MOV. Extraction audio possible avec FFmpeg."),("Images","Entrées courantes","JPG · JPEG · PNG · WEBP · BMP · GIF · TIFF · ICO · AVIF · HEIC · HEIF · SVG · PSD","Sorties : PNG, JPG, WEBP, BMP, GIF et TIFF ; également PDF, DOCX, PPTX et HTML. TXT via OCR et ODT/RTF lorsque les moteurs requis sont disponibles."),("PDF et documents","Entrées courantes","PDF · DOC · DOCX · ODT · RTF · PPT · PPTX · ODP · EPUB","PDF vers DOCX, TXT, Markdown, HTML, PNG ou JPG. DOCX vers PDF, TXT, HTML et Markdown, plus d'autres formats selon les moteurs."),("Données","Entrées courantes","CSV · XLSX · XLS · ODS · JSON · XML","Conversions principales entre CSV, XLSX, JSON, XML et TXT."),("Texte","Entrées courantes","TXT · Markdown · RST · HTML · TEX · LaTeX","Avec Pandoc, sorties HTML, Markdown, TXT, DOCX, ODT, RTF et EPUB selon la source.")],
         "popular_title":"Conversions populaires","popular":[("PDF vers Word","/fr/convertir/pdf-a-word"),("Word vers PDF","/fr/convertir/word-a-pdf"),("PDF vers JPG","/fr/convertir/pdf-a-jpg"),("PDF vers PNG","/fr/convertir/pdf-a-png"),("JPG vers PDF","/fr/convertir/jpg-a-pdf"),("PNG vers JPG","/fr/convertir/png-a-jpg"),("CSV vers XLSX","/fr/convertir/csv-a-xlsx"),("XLSX vers CSV","/fr/convertir/xlsx-a-csv"),("MP3 vers WAV","/fr/convertir/mp3-a-wav")],
         "note":"La disponibilité exacte dépend des moteurs installés sur le serveur. Converti valide chaque fichier avant de proposer une conversion.",
         "faq_title":"Questions fréquentes sur les formats","faq":[("Pourquoi tous les formats ne sont-ils pas proposés ?","Converti analyse le type réel du fichier et affiche uniquement les sorties compatibles avec le contenu et les moteurs actifs."),("Puis-je convertir un PDF numérisé en Word ?","Oui lorsque l'OCR est disponible. Les PDF complexes peuvent nécessiter quelques ajustements dans le DOCX."),("Mes fichiers sont-ils conservés ?","Non de façon permanente. Ils sont traités temporairement puis supprimés selon la politique de nettoyage."),("Changer seulement l'extension suffit-il ?","Non. Converti valide aussi le type et le contenu réels du fichier.")],
@@ -892,7 +907,7 @@ SECTION_DETAIL_UI = {
     },
     "pt-br": {
         "formats_eyebrow":"Conversão de arquivos","formats_intro":"O Converti detecta o formato real do arquivo e oferece apenas saídas compatíveis com os mecanismos ativos.",
-        "categories":[("Áudio","Entradas comuns","MP3 · WAV · FLAC · OGG · OPUS · AAC · M4A · WMA · AIFF · AMR · APE · ALAC · AC3","Saídas principais: MP3, WAV, FLAC, OGG, OPUS, M4A e AAC."),("Vídeo","Entradas comuns","MP4 · MKV · AVI · WEBM · MOV · MPEG · MPG · M4V · FLV · WMV · 3GP · TS · MTS · M2TS · VOB · OGV","Saídas principais: MP4, MKV, AVI, WEBM e MOV. Também é possível extrair áudio com FFmpeg."),("Imagens","Entradas comuns","JPG · JPEG · PNG · WEBP · BMP · GIF · TIFF · ICO · AVIF · HEIC · HEIF · SVG · PSD","Saídas principais: PNG, JPG, WEBP, BMP, GIF, TIFF e PDF."),("PDF e documentos","Entradas comuns","PDF · DOC · DOCX · ODT · RTF · PPT · PPTX · ODP · EPUB","PDF para DOCX, TXT, Markdown, HTML, PNG ou JPG. DOCX para PDF, TXT, HTML e Markdown, com formatos extras quando os mecanismos estão disponíveis."),("Dados","Entradas comuns","CSV · XLSX · XLS · ODS · JSON · XML","Rotas principais entre CSV, XLSX, JSON, XML e TXT."),("Texto","Entradas comuns","TXT · Markdown · RST · HTML · TEX · LaTeX","Com Pandoc disponível, saídas HTML, Markdown, TXT, DOCX, ODT, RTF e EPUB conforme a origem.")],
+        "categories":[("Áudio","Entradas comuns","MP3 · WAV · FLAC · OGG · OPUS · AAC · M4A · WMA · AIFF · AMR · APE · ALAC · AC3","Saídas principais: MP3, WAV, FLAC, OGG, OPUS, M4A e AAC."),("Vídeo","Entradas comuns","MP4 · MKV · AVI · WEBM · MOV · MPEG · MPG · M4V · FLV · WMV · 3GP · TS · MTS · M2TS · VOB · OGV","Saídas principais: MP4, MKV, AVI, WEBM e MOV. Também é possível extrair áudio com FFmpeg."),("Imagens","Entradas comuns","JPG · JPEG · PNG · WEBP · BMP · GIF · TIFF · ICO · AVIF · HEIC · HEIF · SVG · PSD","Saídas: PNG, JPG, WEBP, BMP, GIF e TIFF; também PDF, DOCX, PPTX e HTML. TXT via OCR e ODT/RTF quando os mecanismos necessários estiverem disponíveis."),("PDF e documentos","Entradas comuns","PDF · DOC · DOCX · ODT · RTF · PPT · PPTX · ODP · EPUB","PDF para DOCX, TXT, Markdown, HTML, PNG ou JPG. DOCX para PDF, TXT, HTML e Markdown, com formatos extras quando os mecanismos estão disponíveis."),("Dados","Entradas comuns","CSV · XLSX · XLS · ODS · JSON · XML","Rotas principais entre CSV, XLSX, JSON, XML e TXT."),("Texto","Entradas comuns","TXT · Markdown · RST · HTML · TEX · LaTeX","Com Pandoc disponível, saídas HTML, Markdown, TXT, DOCX, ODT, RTF e EPUB conforme a origem.")],
         "popular_title":"Conversões populares","popular":[("PDF para Word","/pt-br/converter/pdf-a-word"),("Word para PDF","/pt-br/converter/word-a-pdf"),("PDF para JPG","/pt-br/converter/pdf-a-jpg"),("PDF para PNG","/pt-br/converter/pdf-a-png"),("JPG para PDF","/pt-br/converter/jpg-a-pdf"),("PNG para JPG","/pt-br/converter/png-a-jpg"),("CSV para XLSX","/pt-br/converter/csv-a-xlsx"),("XLSX para CSV","/pt-br/converter/xlsx-a-csv"),("MP3 para WAV","/pt-br/converter/mp3-a-wav")],
         "note":"A disponibilidade exata depende dos mecanismos instalados no servidor. O Converti valida cada arquivo antes de oferecer uma conversão.",
         "faq_title":"Perguntas frequentes sobre formatos","faq":[("Por que nem todos os formatos aparecem para meu arquivo?","O Converti analisa o tipo real do arquivo e mostra apenas saídas compatíveis com o conteúdo e os mecanismos ativos."),("Posso converter um PDF digitalizado para Word?","Sim, quando OCR está disponível. PDFs complexos podem precisar de pequenos ajustes no DOCX."),("Meus arquivos ficam armazenados?","Não permanentemente. Eles são processados de forma temporária e removidos conforme a política de limpeza."),("Trocar apenas a extensão resolve?","Não. O Converti também valida o tipo e o conteúdo reais do arquivo.")],
@@ -2195,6 +2210,8 @@ def analyze():
         validate_not_executable(temp, original, mime)
         category = detect_category(mime, ext)
         tools = get_toolchain()
+        if category == "image":
+            validate_image_source(temp, ext, tools)
         targets = _effective_targets(category, ext, tools)
         wants_preview = request.form.get("preview", "0") == "1"
         return jsonify(
@@ -2263,6 +2280,7 @@ def convert():
             _progress_set(job_id, 0, "Preparando conversión… 0%")
         originals = []
         analyses = []
+        tools = get_toolchain()
         for uploaded in uploads:
             original = safe_original_name(uploaded.filename)
             ext = safe_ext(original) or "bin"
@@ -2271,6 +2289,8 @@ def convert():
             mime = detect_mime(src, original)
             validate_not_executable(src, original, mime)
             category = detect_category(mime, ext)
+            if category == "image":
+                validate_image_source(src, ext, tools)
             sources.append(src)
             originals.append(original)
             analyses.append((mime, category, ext))
@@ -2284,12 +2304,11 @@ def convert():
                 heartbeat = _ProgressHeartbeat(job_id)
                 heartbeat.start_thread()
 
-        tools = get_toolchain()
         base = Path(originals[0]).stem or "converti"
 
-        if len(sources) > 1 and target == "pdf" and all(cat == "image" for _,cat,_ in analyses):
+        if len(sources) > 1 and all(cat == "image" for _,cat,_ in analyses) and target in {"pdf", "docx", "pptx", "html", "txt", "odt", "rtf"}:
             with JOB_SEMAPHORE:
-                outputs = images_to_pdf(sources, options)
+                outputs = images_to_document(sources, target, tools, options)
         elif len(sources) > 1:
             all_outputs = []
             with JOB_SEMAPHORE:
@@ -2358,6 +2377,8 @@ def _dispatch(source: Path, original: str, mime: str, category: str, source_ext:
         if target in {"png","jpg"}:
             return pdf_to_images(source, target, options)
     if category == "image":
+        if target in {"pdf", "docx", "pptx", "html", "txt", "odt", "rtf"}:
+            return images_to_document([source], target, tools, options)
         return convert_image(source, target, tools, options)
     if category in {"audio", "video"}:
         def media_progress(raw_percent: float):

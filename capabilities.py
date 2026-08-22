@@ -11,12 +11,14 @@ from security_utils import Toolchain, normalize_ext, run_command
 # explícita, NO se ofrece al usuario.
 
 IMAGE_OUTPUTS = ["png", "jpg", "webp", "bmp", "gif", "tiff", "pdf"]
+IMAGE_DOCUMENT_OUTPUTS = ["docx", "pptx", "html"]
 AUDIO_OUTPUTS = ["mp3", "wav", "flac", "ogg", "opus", "m4a", "aac"]
 VIDEO_OUTPUTS = ["mp4", "mkv", "avi", "webm", "mov"]
 
 IMAGE_EXTS = {
     "jpg", "jpeg", "png", "webp", "bmp", "gif", "tif", "tiff", "ico",
-    "avif", "heic", "heif", "svg", "psd"
+    "avif", "heic", "heif", "svg", "psd", "jp2", "j2k", "jxl",
+    "dng", "cr2", "cr3", "nef", "arw", "raf", "rw2", "orf"
 }
 AUDIO_EXTS = {
     "mp3", "wav", "flac", "ogg", "oga", "opus", "aac", "m4a", "wma",
@@ -134,20 +136,30 @@ def targets_for(category: str, source_ext: str, tools: Toolchain) -> list[str]:
         _add_unique(result, allowed, source_ext)
         return result
 
-    # IMÁGENES: solo salidas comunes y razonables.
+    # IMÁGENES: conversión de imagen y documentos contenedores.
+    # PDF/DOCX/PPTX/HTML no dependen de que ImageMagick pueda *escribir* ese
+    # formato: Converti rasteriza/normaliza primero la imagen y luego construye
+    # el documento con sus motores Python. TXT/ODT/RTF se ofrecen solo cuando
+    # existe el motor requerido (OCR / LibreOffice).
     if category == "image":
         if tools.magick:
             writable = imagemagick_writable(tools.magick)
             allowed = []
-            for target in IMAGE_OUTPUTS:
-                # ImageMagick suele llamar JPEG al formato JPG.
+            for target in ["png", "jpg", "webp", "bmp", "gif", "tiff"]:
                 check = "jpeg" if target == "jpg" else target
                 if not writable or target in writable or check in writable:
                     allowed.append(target)
             _add_unique(result, allowed, source_ext)
         else:
-            # Fallback de Pillow: formatos comunes únicamente.
-            _add_unique(result, ["png", "jpg", "webp", "bmp", "gif", "tiff", "pdf"], source_ext)
+            # Pillow cubre los formatos raster más comunes. Los formatos que
+            # requieran un decodificador externo fallarán con un mensaje claro.
+            _add_unique(result, ["png", "jpg", "webp", "bmp", "gif", "tiff"], source_ext)
+
+        _add_unique(result, ["pdf"] + IMAGE_DOCUMENT_OUTPUTS, source_ext)
+        if tools.tesseract:
+            _add_unique(result, ["txt"], source_ext)
+        if tools.soffice:
+            _add_unique(result, ["odt", "rtf"], source_ext)
         return result
 
     # AUDIO: FFmpeg solamente, con formatos comunes.

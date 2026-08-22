@@ -147,6 +147,7 @@ def get_toolchain() -> Toolchain:
         pandoc=find_tool("pandoc", extra_paths=[r"%LOCALAPPDATA%\Pandoc\pandoc.exe"]),
         magick=find_tool(
             "magick",
+            "convert",
             extra_paths=[
                 r"%LOCALAPPDATA%\Programs\ImageMagick\magick.exe",
                 r"%PROGRAMFILES%\ImageMagick-7.1.2-Q16-HDRI\magick.exe",

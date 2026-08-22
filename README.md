@@ -235,3 +235,18 @@ La home posiciona conversión de archivos + creación de CV profesional con IA g
 - Ambas páginas heredan exactamente el sistema de navegación compartido de Converti (`static/css/site_ui.css`).
 - El ancho y separación superior de las páginas de sección se alinearon con el lenguaje visual de la herramienta principal.
 - Responsive de Formatos/Ayuda conserva el menú móvil compartido y no modifica el motor de conversión ni Converti CV.
+
+## Actualización 2026-08-22 — Imágenes → documentos
+
+El conversor de imágenes fue ampliado y endurecido:
+
+- Entradas de imagen habituales: JPG/JPEG, PNG, WEBP, BMP, GIF, TIFF, ICO, AVIF, HEIC/HEIF, SVG, PSD, JP2/J2K/JXL y formatos RAW comunes cuando el motor del servidor pueda decodificarlos.
+- Salidas de imagen: PNG, JPG, WEBP, BMP, GIF y TIFF.
+- Salidas de documento nativas: PDF, DOCX, PPTX y HTML.
+- TXT mediante OCR cuando Tesseract está disponible.
+- ODT/RTF cuando LibreOffice está disponible.
+- Varias imágenes pueden combinarse en un único PDF, DOCX, PPTX o HTML.
+- El servidor valida que una imagen pueda decodificarse antes de anunciar/ejecutar la conversión y rechaza SVG con scripts o referencias externas peligrosas.
+- ImageMagick se detecta tanto como `magick` como `convert`, importante para Linux/Termux.
+
+La conversión a DOCX/PPTX inserta la imagen como contenido visual y no inventa texto. TXT es extracción OCR, por lo que su fidelidad depende de la calidad del original y de los idiomas instalados en Tesseract.

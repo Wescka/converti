@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import base64
 import csv
 import io
+import html as html_lib
 import json
 import os
 import re
@@ -25,49 +27,322 @@ def _image_save_format(ext: str) -> str:
     return {"jpg":"JPEG","png":"PNG","webp":"WEBP","bmp":"BMP","gif":"GIF","tiff":"TIFF","pdf":"PDF"}.get(ext, ext.upper())
 
 
+def _rasterize_image(source: Path, tools: Toolchain, *, alpha: bool = True) -> Image.Image:
+    """Open an image safely and return a detached PIL image.
+
+    Pillow is attempted first because it avoids an external process for common
+    formats. If Pillow cannot decode the source (SVG/HEIC/PSD/AVIF on some
+    installations), ImageMagick is used as a decoder and the first frame/page
+    is rasterized to PNG. This keeps the rest of the document pipeline
+    independent of ImageMagick's PDF/Office policies.
+    """
+    try:
+        with Image.open(source) as im:
+            try:
+                im.seek(0)
+            except Exception:
+                pass
+            img = ImageOps.exif_transpose(im)
+            return img.convert("RGBA" if alpha else "RGB").copy()
+    except Exception as pillow_exc:
+        if not tools.magick:
+            raise RuntimeError(
+                "Este formato de imagen necesita ImageMagick en el servidor. "
+                f"Pillow no pudo abrirlo: {pillow_exc}"
+            ) from pillow_exc
+
+        tmp = random_file("png", "raster")
+        # [0] fuerza la primera página/frame para PSD/GIF/ICO multipágina.
+        src_arg = f"{source}[0]"
+        try:
+            run_command([tools.magick, src_arg, "-auto-orient", str(tmp)], timeout=90)
+            with Image.open(tmp) as im:
+                img = ImageOps.exif_transpose(im)
+                return img.convert("RGBA" if alpha else "RGB").copy()
+        finally:
+            tmp.unlink(missing_ok=True)
+
+
+def validate_image_source(source: Path, source_ext: str, tools: Toolchain) -> None:
+    """Fail early when an uploaded image cannot be decoded safely."""
+    source_ext = normalize_ext(source_ext)
+    if source_ext == "svg":
+        try:
+            raw = source.read_text(encoding="utf-8", errors="ignore")[:2_000_000].lower()
+            dangerous = ("<script", "javascript:", "file://", "http://", "https://")
+            if any(token in raw for token in dangerous):
+                raise ValueError("El SVG contiene referencias externas o scripts y fue rechazado por seguridad.")
+        except ValueError:
+            raise
+        except Exception:
+            pass
+    img = _rasterize_image(source, tools, alpha=True)
+    try:
+        if img.width < 1 or img.height < 1:
+            raise ValueError("La imagen no contiene dimensiones válidas.")
+    finally:
+        try:
+            img.close()
+        except Exception:
+            pass
+
+
+def _flatten_for_jpeg(img: Image.Image) -> Image.Image:
+    if img.mode in {"RGBA", "LA"}:
+        bg = Image.new("RGB", img.size, "white")
+        alpha = img.getchannel("A") if "A" in img.getbands() else None
+        bg.paste(img.convert("RGBA"), mask=alpha)
+        return bg
+    return img.convert("RGB")
+
+
+def _save_raster_output(img: Image.Image, output: Path, target_ext: str, quality: int) -> None:
+    target_ext = normalize_ext(target_ext)
+    if target_ext == "jpg":
+        img = _flatten_for_jpeg(img)
+    elif target_ext in {"bmp", "pdf"} and img.mode not in {"RGB", "L"}:
+        img = img.convert("RGB")
+    elif target_ext == "gif":
+        img = img.convert("P", palette=Image.Palette.ADAPTIVE)
+
+    kwargs = {}
+    if target_ext in {"jpg", "webp"}:
+        kwargs["quality"] = quality
+    img.save(output, _image_save_format(target_ext), **kwargs)
+
+
 def convert_image(source: Path, target_ext: str, tools: Toolchain, options: dict) -> list[Path]:
     target_ext = normalize_ext(target_ext)
+    if target_ext not in {"png", "jpg", "webp", "bmp", "gif", "tiff"}:
+        raise ValueError(f"La salida .{target_ext} no es un formato de imagen directo.")
+
     output = random_file(target_ext, "imagen")
     quality = max(1, min(100, int(options.get("quality", 92))))
+
+    # ImageMagick is preferred for broad input support (SVG, HEIC, PSD, AVIF),
+    # but if it rejects the conversion we still try Pillow before failing.
     if tools.magick:
-        cmd = [tools.magick, str(source), "-auto-orient"]
-        if target_ext in {"jpg","webp","avif","heic"}:
-            cmd += ["-quality", str(quality)]
-        if options.get("strip_metadata"):
-            cmd += ["-strip"]
-        cmd.append(str(output))
-        run_command(cmd)
-        return [output]
-    with Image.open(source) as img:
-        img = ImageOps.exif_transpose(img)
-        if target_ext == "jpg":
-            if img.mode in {"RGBA","LA"}:
-                bg = Image.new("RGB", img.size, "white")
-                bg.paste(img, mask=img.getchannel("A"))
-                img = bg
-            else:
-                img = img.convert("RGB")
-        elif target_ext == "pdf" and img.mode not in {"RGB","L"}:
-            img = img.convert("RGB")
-        kwargs = {}
-        if target_ext in {"jpg","webp"}:
-            kwargs["quality"] = quality
-        img.save(output, _image_save_format(target_ext), **kwargs)
+        try:
+            cmd = [tools.magick, f"{source}[0]", "-auto-orient"]
+            if target_ext in {"jpg", "webp"}:
+                cmd += ["-quality", str(quality)]
+            if options.get("strip_metadata"):
+                cmd += ["-strip"]
+            cmd.append(str(output))
+            run_command(cmd, timeout=90)
+            if output.exists() and output.stat().st_size > 0:
+                return [output]
+        except Exception:
+            output.unlink(missing_ok=True)
+
+    img = _rasterize_image(source, tools, alpha=True)
+    _save_raster_output(img, output, target_ext, quality)
     return [output]
 
 
-def images_to_pdf(sources: list[Path], options: dict) -> list[Path]:
+def images_to_pdf(sources: list[Path], options: dict, tools: Toolchain | None = None) -> list[Path]:
     output = random_file("pdf", "imagenes")
-    imgs = []
-    for p in sources:
-        with Image.open(p) as im:
-            img = ImageOps.exif_transpose(im).convert("RGB")
-            imgs.append(img.copy())
-    if not imgs:
-        raise ValueError("No se recibieron imágenes válidas.")
-    imgs[0].save(output, "PDF", save_all=True, append_images=imgs[1:], resolution=float(options.get("dpi", 150)))
-    return [output]
+    tools = tools or Toolchain(None, None, None, None, None, None)
+    imgs: list[Image.Image] = []
+    try:
+        for p in sources:
+            img = _rasterize_image(p, tools, alpha=False).convert("RGB")
+            imgs.append(img)
+        if not imgs:
+            raise ValueError("No se recibieron imágenes válidas.")
+        imgs[0].save(
+            output,
+            "PDF",
+            save_all=True,
+            append_images=imgs[1:],
+            resolution=float(options.get("dpi", 150)),
+        )
+        return [output]
+    finally:
+        for img in imgs:
+            try:
+                img.close()
+            except Exception:
+                pass
 
+
+def _image_docx(sources: list[Path], tools: Toolchain, options: dict) -> Path:
+    from docx import Document
+    from docx.enum.section import WD_ORIENT
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from docx.shared import Cm, Pt
+
+    doc = Document()
+    for idx, source in enumerate(sources):
+        img = _rasterize_image(source, tools, alpha=False).convert("RGB")
+        tmp = random_file("png", "docimg")
+        try:
+            img.save(tmp, "PNG")
+            section = doc.sections[-1]
+            wide = img.width > img.height * 1.22
+            if wide:
+                section.orientation = WD_ORIENT.LANDSCAPE
+                section.page_width, section.page_height = section.page_height, section.page_width
+            section.top_margin = Cm(1.25)
+            section.bottom_margin = Cm(1.25)
+            section.left_margin = Cm(1.25)
+            section.right_margin = Cm(1.25)
+            usable_w = section.page_width - section.left_margin - section.right_margin
+            usable_h = section.page_height - section.top_margin - section.bottom_margin
+
+            # python-docx can size by width only; cap by both dimensions using
+            # the pixel aspect ratio and EMU values from the section.
+            ratio = img.width / max(1, img.height)
+            width_emu = int(usable_w)
+            height_emu = int(width_emu / ratio)
+            if height_emu > int(usable_h):
+                height_emu = int(usable_h)
+                width_emu = int(height_emu * ratio)
+
+            para = doc.add_paragraph()
+            para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            para.paragraph_format.space_before = Pt(0)
+            para.paragraph_format.space_after = Pt(0)
+            para.add_run().add_picture(str(tmp), width=width_emu, height=height_emu)
+            if idx < len(sources) - 1:
+                doc.add_page_break()
+        finally:
+            tmp.unlink(missing_ok=True)
+            try:
+                img.close()
+            except Exception:
+                pass
+
+    output = random_file("docx", "imagenes")
+    doc.save(output)
+    return output
+
+
+def _image_pptx(sources: list[Path], tools: Toolchain, options: dict) -> Path:
+    from pptx import Presentation
+
+    prs = Presentation()
+    # Remove the default slide only by simply not using it; Presentation starts
+    # with no slides. Use the blank layout.
+    blank = prs.slide_layouts[6]
+    for source in sources:
+        img = _rasterize_image(source, tools, alpha=False).convert("RGB")
+        tmp = random_file("png", "slideimg")
+        try:
+            img.save(tmp, "PNG")
+            slide = prs.slides.add_slide(blank)
+            sw, sh = int(prs.slide_width), int(prs.slide_height)
+            ratio = img.width / max(1, img.height)
+            w = sw
+            h = int(w / ratio)
+            if h > sh:
+                h = sh
+                w = int(h * ratio)
+            left = int((sw - w) / 2)
+            top = int((sh - h) / 2)
+            slide.shapes.add_picture(str(tmp), left, top, width=w, height=h)
+        finally:
+            tmp.unlink(missing_ok=True)
+            try:
+                img.close()
+            except Exception:
+                pass
+    output = random_file("pptx", "imagenes")
+    prs.save(output)
+    return output
+
+
+def _image_html(sources: list[Path], tools: Toolchain, options: dict) -> Path:
+    blocks = []
+    for idx, source in enumerate(sources, start=1):
+        img = _rasterize_image(source, tools, alpha=True)
+        buf = io.BytesIO()
+        try:
+            img.save(buf, "PNG", optimize=True)
+        finally:
+            try:
+                img.close()
+            except Exception:
+                pass
+        encoded = base64.b64encode(buf.getvalue()).decode("ascii")
+        blocks.append(
+            f'<figure><img src="data:image/png;base64,{encoded}" alt="Imagen {idx}"></figure>'
+        )
+    output = random_file("html", "imagenes")
+    title = html_lib.escape(str(options.get("title") or "Documento creado con Converti"))
+    output.write_text(
+        "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\">"
+        f"<title>{title}</title><style>body{{margin:0;background:#fff}}"
+        "figure{margin:24px auto;max-width:1100px;text-align:center;page-break-after:always}"
+        "figure:last-child{page-break-after:auto}img{max-width:100%;height:auto}</style></head><body>"
+        + "".join(blocks) + "</body></html>",
+        encoding="utf-8",
+    )
+    return output
+
+
+def _tesseract_languages(tools: Toolchain) -> str | None:
+    if not tools.tesseract:
+        return None
+    try:
+        out = run_command([tools.tesseract, "--list-langs"], timeout=20).stdout.lower().splitlines()
+        langs = {x.strip() for x in out if x.strip() and not x.lower().startswith("list of available")}
+        wanted = [x for x in ("spa", "eng", "por", "fra") if x in langs]
+        return "+".join(wanted) if wanted else None
+    except Exception:
+        return None
+
+
+def _image_ocr_txt(sources: list[Path], tools: Toolchain, options: dict) -> Path:
+    if not tools.tesseract:
+        raise RuntimeError("Tesseract OCR no está disponible para convertir la imagen a texto.")
+    lang = _tesseract_languages(tools)
+    pages = []
+    for source in sources:
+        img = _rasterize_image(source, tools, alpha=False).convert("RGB")
+        tmp = random_file("png", "ocr")
+        try:
+            img.save(tmp, "PNG")
+            cmd = [tools.tesseract, str(tmp), "stdout", "--psm", "6"]
+            if lang:
+                cmd += ["-l", lang]
+            pages.append(run_command(cmd, timeout=120).stdout.strip())
+        finally:
+            tmp.unlink(missing_ok=True)
+            try:
+                img.close()
+            except Exception:
+                pass
+    output = random_file("txt", "ocr")
+    output.write_text("\n\n--- Página siguiente ---\n\n".join(pages), encoding="utf-8")
+    return output
+
+
+def images_to_document(sources: list[Path], target_ext: str, tools: Toolchain, options: dict) -> list[Path]:
+    """Combine one or more images into a real document container."""
+    target_ext = normalize_ext(target_ext)
+    if not sources:
+        raise ValueError("No se recibieron imágenes válidas.")
+
+    if target_ext == "pdf":
+        return images_to_pdf(sources, options, tools)
+    if target_ext == "docx":
+        return [_image_docx(sources, tools, options)]
+    if target_ext == "pptx":
+        return [_image_pptx(sources, tools, options)]
+    if target_ext == "html":
+        return [_image_html(sources, tools, options)]
+    if target_ext == "txt":
+        return [_image_ocr_txt(sources, tools, options)]
+    if target_ext in {"odt", "rtf"}:
+        if not tools.soffice:
+            raise RuntimeError("LibreOffice no está disponible para generar este documento.")
+        intermediate = _image_docx(sources, tools, options)
+        try:
+            return convert_with_soffice(intermediate, target_ext, tools)
+        finally:
+            intermediate.unlink(missing_ok=True)
+    raise ValueError(f"Imagen a .{target_ext} no está implementado.")
 
 def _probe_duration_seconds(source: Path, tools: Toolchain) -> float | None:
     if not tools.ffprobe:
