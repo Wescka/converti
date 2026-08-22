@@ -22,3 +22,17 @@ archivos/
 Thumbs.db
 .vscode/
 .idea/
+
+# Python bytecode / caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local secrets/config
+.env
+
+# Local runtime artifacts
+uploads/
+outputs/
+archivos/
+*.log

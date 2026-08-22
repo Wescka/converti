@@ -802,17 +802,17 @@ def convert_page_ptbr():
     return render_template("index_ptbr.html", max_mb=MAX_MB, canonical_override="https://converti.lat/pt-br/converter", alternate_es="https://converti.lat/convertir", alternate_en="https://converti.lat/en/convert", alternate_fr="https://converti.lat/fr/convertir", alternate_ptbr="https://converti.lat/pt-br/converter", alternate_default="https://converti.lat/convertir")
 
 SECTION_UI = {
-    "es": {"formats_title":"Formatos disponibles","formats_lead":"Consulta los formatos que Converti puede procesar según el tipo de archivo y los motores disponibles.","help_title":"Cómo funciona Converti","help_lead":"Una guía breve para convertir archivos de forma segura y sencilla.","convert":"Convertir","formats":"Formatos","help":"Ayuda","create":"Crear CV","home":"Inicio","format_cards":[("Audio","MP3, WAV, FLAC, OGG, OPUS, M4A y AAC cuando FFmpeg está disponible."),("Imágenes","PNG, JPG, WEBP, BMP, GIF, TIFF y PDF según el motor disponible."),("Documentos y datos","PDF, DOCX, TXT, HTML, Markdown, CSV, XLSX, JSON y XML según la ruta compatible.")],"steps":[("1","Selecciona","Elige uno o varios archivos. Converti valida el contenido y detecta el formato real."),("2","Elige","Se muestran únicamente los formatos de salida compatibles con el archivo y los motores activos."),("3","Convierte","El procesamiento se realiza en el servidor y el resultado temporal queda disponible para descargar.")]},
-    "en": {"formats_title":"Available formats","formats_lead":"See the formats Converti can process based on the uploaded file and the engines currently available.","help_title":"How Converti works","help_lead":"A short guide to converting files safely and easily.","convert":"Convert","formats":"Formats","help":"Help","create":"Create CV","home":"Home","format_cards":[("Audio","MP3, WAV, FLAC, OGG, OPUS, M4A and AAC when FFmpeg is available."),("Images","PNG, JPG, WEBP, BMP, GIF, TIFF and PDF depending on the available engine."),("Documents and data","PDF, DOCX, TXT, HTML, Markdown, CSV, XLSX, JSON and XML when a compatible route is available.")],"steps":[("1","Select","Choose one or more files. Converti validates the content and detects the actual format."),("2","Choose","Only output formats compatible with the file and active engines are offered."),("3","Convert","Processing runs on the server and the temporary result becomes available to download.")]},
-    "fr": {"formats_title":"Formats disponibles","formats_lead":"Consultez les formats que Converti peut traiter selon le fichier et les moteurs disponibles.","help_title":"Comment fonctionne Converti","help_lead":"Un guide rapide pour convertir des fichiers simplement et en toute sécurité.","convert":"Convertir","formats":"Formats","help":"Aide","create":"Créer un CV","home":"Accueil","format_cards":[("Audio","MP3, WAV, FLAC, OGG, OPUS, M4A et AAC lorsque FFmpeg est disponible."),("Images","PNG, JPG, WEBP, BMP, GIF, TIFF et PDF selon le moteur disponible."),("Documents et données","PDF, DOCX, TXT, HTML, Markdown, CSV, XLSX, JSON et XML lorsqu’une route compatible est disponible.")],"steps":[("1","Sélectionnez","Choisissez un ou plusieurs fichiers. Converti valide le contenu et détecte le format réel."),("2","Choisissez","Seuls les formats compatibles avec le fichier et les moteurs actifs sont proposés."),("3","Convertissez","Le traitement s’effectue sur le serveur et le résultat temporaire peut ensuite être téléchargé.")]},
-    "pt-br": {"formats_title":"Formatos disponíveis","formats_lead":"Veja os formatos que o Converti pode processar conforme o arquivo e os mecanismos disponíveis.","help_title":"Como o Converti funciona","help_lead":"Um guia rápido para converter arquivos de forma simples e segura.","convert":"Converter","formats":"Formatos","help":"Ajuda","create":"Criar CV","home":"Início","format_cards":[("Áudio","MP3, WAV, FLAC, OGG, OPUS, M4A e AAC quando o FFmpeg está disponível."),("Imagens","PNG, JPG, WEBP, BMP, GIF, TIFF e PDF conforme o mecanismo disponível."),("Documentos e dados","PDF, DOCX, TXT, HTML, Markdown, CSV, XLSX, JSON e XML quando existe uma rota compatível.")],"steps":[("1","Selecione","Escolha um ou mais arquivos. O Converti valida o conteúdo e detecta o formato real."),("2","Escolha","São exibidos apenas formatos de saída compatíveis com o arquivo e os mecanismos ativos."),("3","Converta","O processamento ocorre no servidor e o resultado temporário fica disponível para download.")]},
+    "es": {"formats_title":"Formatos disponibles","formats_lead":"Consulta los formatos que Converti puede procesar según el tipo de archivo y los motores disponibles.","help_title":"Cómo funciona Converti","help_lead":"Una guía breve para convertir archivos de forma segura y sencilla.","convert":"Convertir","formats":"Formatos","help":"Ayuda","create":"Crear CV","fixdocs":"Corregir documentos con IA","home":"Inicio","format_cards":[("Audio","MP3, WAV, FLAC, OGG, OPUS, M4A y AAC cuando FFmpeg está disponible."),("Imágenes","PNG, JPG, WEBP, BMP, GIF, TIFF y PDF según el motor disponible."),("Documentos y datos","PDF, DOCX, TXT, HTML, Markdown, CSV, XLSX, JSON y XML según la ruta compatible.")],"steps":[("1","Selecciona","Elige uno o varios archivos. Converti valida el contenido y detecta el formato real."),("2","Elige","Se muestran únicamente los formatos de salida compatibles con el archivo y los motores activos."),("3","Convierte","El procesamiento se realiza en el servidor y el resultado temporal queda disponible para descargar.")]},
+    "en": {"formats_title":"Available formats","formats_lead":"See the formats Converti can process based on the uploaded file and the engines currently available.","help_title":"How Converti works","help_lead":"A short guide to converting files safely and easily.","convert":"Convert","formats":"Formats","help":"Help","create":"Create CV","fixdocs":"Fix documents with AI","home":"Home","format_cards":[("Audio","MP3, WAV, FLAC, OGG, OPUS, M4A and AAC when FFmpeg is available."),("Images","PNG, JPG, WEBP, BMP, GIF, TIFF and PDF depending on the available engine."),("Documents and data","PDF, DOCX, TXT, HTML, Markdown, CSV, XLSX, JSON and XML when a compatible route is available.")],"steps":[("1","Select","Choose one or more files. Converti validates the content and detects the actual format."),("2","Choose","Only output formats compatible with the file and active engines are offered."),("3","Convert","Processing runs on the server and the temporary result becomes available to download.")]},
+    "fr": {"formats_title":"Formats disponibles","formats_lead":"Consultez les formats que Converti peut traiter selon le fichier et les moteurs disponibles.","help_title":"Comment fonctionne Converti","help_lead":"Un guide rapide pour convertir des fichiers simplement et en toute sécurité.","convert":"Convertir","formats":"Formats","help":"Aide","create":"Créer un CV","fixdocs":"Corriger des documents avec IA","home":"Accueil","format_cards":[("Audio","MP3, WAV, FLAC, OGG, OPUS, M4A et AAC lorsque FFmpeg est disponible."),("Images","PNG, JPG, WEBP, BMP, GIF, TIFF et PDF selon le moteur disponible."),("Documents et données","PDF, DOCX, TXT, HTML, Markdown, CSV, XLSX, JSON et XML lorsqu’une route compatible est disponible.")],"steps":[("1","Sélectionnez","Choisissez un ou plusieurs fichiers. Converti valide le contenu et détecte le format réel."),("2","Choisissez","Seuls les formats compatibles avec le fichier et les moteurs actifs sont proposés."),("3","Convertissez","Le traitement s’effectue sur le serveur et le résultat temporaire peut ensuite être téléchargé.")]},
+    "pt-br": {"formats_title":"Formatos disponíveis","formats_lead":"Veja os formatos que o Converti pode processar conforme o arquivo e os mecanismos disponíveis.","help_title":"Como o Converti funciona","help_lead":"Um guia rápido para converter arquivos de forma simples e segura.","convert":"Converter","formats":"Formatos","help":"Ajuda","create":"Criar CV","fixdocs":"Corrigir documentos com IA","home":"Início","format_cards":[("Áudio","MP3, WAV, FLAC, OGG, OPUS, M4A e AAC quando o FFmpeg está disponível."),("Imagens","PNG, JPG, WEBP, BMP, GIF, TIFF e PDF conforme o mecanismo disponível."),("Documentos e dados","PDF, DOCX, TXT, HTML, Markdown, CSV, XLSX, JSON e XML quando existe uma rota compatível.")],"steps":[("1","Selecione","Escolha um ou mais arquivos. O Converti valida o conteúdo e detecta o formato real."),("2","Escolha","São exibidos apenas formatos de saída compatíveis com o arquivo e os mecanismos ativos."),("3","Converta","O processamento ocorre no servidor e o resultado temporário fica disponível para download.")]},
 }
 
 SECTION_PATHS = {
-    "es":{"home":"/","convert":"/convertir","formats":"/formatos","help":"/ayuda","create":"/crear-cv"},
-    "en":{"home":"/en/","convert":"/en/convert","formats":"/en/formats","help":"/en/help","create":"/en/create-cv"},
-    "fr":{"home":"/fr/","convert":"/fr/convertir","formats":"/fr/formats","help":"/fr/aide","create":"/fr/creer-cv"},
-    "pt-br":{"home":"/pt-br/","convert":"/pt-br/converter","formats":"/pt-br/formatos","help":"/pt-br/ajuda","create":"/pt-br/criar-cv"},
+    "es":{"home":"/","convert":"/convertir","formats":"/formatos","help":"/ayuda","create":"/crear-cv","fixdocs":"/corregir-documentos-ia"},
+    "en":{"home":"/en/","convert":"/en/convert","formats":"/en/formats","help":"/en/help","create":"/en/create-cv","fixdocs":"/en/fix-documents-ai"},
+    "fr":{"home":"/fr/","convert":"/fr/convertir","formats":"/fr/formats","help":"/fr/aide","create":"/fr/creer-cv","fixdocs":"/fr/corriger-documents-ia"},
+    "pt-br":{"home":"/pt-br/","convert":"/pt-br/converter","formats":"/pt-br/formatos","help":"/pt-br/ajuda","create":"/pt-br/criar-cv","fixdocs":"/pt-br/corrigir-documentos-ia"},
 }
 
 
@@ -928,6 +928,74 @@ def help_fr(): return _render_section("fr", "help")
 def formats_ptbr(): return _render_section("pt-br", "formats")
 @app.get("/pt-br/ajuda")
 def help_ptbr(): return _render_section("pt-br", "help")
+
+
+DOCUMENT_AI_UI = {
+    "es": {
+        "html_lang":"es","title":"Corregir documentos con IA | Converti","description":"Próxima herramienta de Converti para mejorar legibilidad, ordenar páginas y corregir documentos sin alterar sus datos.",
+        "eyebrow":"Nueva herramienta de Converti","h1":"Corregir documentos con IA","lead":"Estamos preparando un espacio para mejorar documentos sin cambiar su información: limpiar PDF escaneados, reorganizar páginas y ajustar Word conservando su formato.",
+        "status":"Próximamente","note":"La función todavía no procesa archivos. La estamos integrando de forma separada para no afectar el convertidor ni Converti CV.",
+        "cards":[
+            ("Mejorar PDF ilegible","Ajustar contraste, orientación, limpieza visual y legibilidad sin inventar ni modificar datos."),
+            ("Organizar documentos en una hoja","Preparar, por ejemplo, anverso y reverso de un DNI en una sola hoja, centrados y respetando proporciones."),
+            ("Corregir Word conservando formato","Corregir texto, espacios, alineación y estructura intentando preservar estilos, tablas, imágenes, encabezados y pies."),
+        ],
+        "rule_title":"Regla principal","rule":"La IA podrá mejorar presentación y redacción cuando corresponda, pero no deberá alterar nombres, fechas, montos, números de documento ni otros datos factuales.",
+        "back":"Volver a Convertir"
+    },
+    "en": {
+        "html_lang":"en","title":"Fix documents with AI | Converti","description":"Upcoming Converti tool to improve readability, reorganize pages and adjust documents without changing their factual data.",
+        "eyebrow":"New Converti tool","h1":"Fix documents with AI","lead":"We are preparing a workspace to improve documents without changing their information: clean scanned PDFs, reorganize pages and adjust Word files while preserving formatting.",
+        "status":"Coming soon","note":"This feature does not process files yet. It is being integrated separately so the converter and Converti CV remain untouched.",
+        "cards":[
+            ("Improve unreadable PDFs","Adjust contrast, orientation, visual cleanup and readability without inventing or changing data."),
+            ("Arrange documents on one page","For example, place the front and back of an ID on a single centered page while preserving proportions."),
+            ("Correct Word while preserving format","Correct text, spacing, alignment and structure while preserving styles, tables, images, headers and footers as much as possible."),
+        ],
+        "rule_title":"Main rule","rule":"AI may improve presentation and wording when appropriate, but it must not alter names, dates, amounts, document numbers or other factual data.",
+        "back":"Back to Convert"
+    },
+    "fr": {
+        "html_lang":"fr","title":"Corriger des documents avec IA | Converti","description":"Prochain outil Converti pour améliorer la lisibilité, réorganiser les pages et ajuster les documents sans modifier les données factuelles.",
+        "eyebrow":"Nouvel outil Converti","h1":"Corriger des documents avec IA","lead":"Nous préparons un espace pour améliorer les documents sans changer leurs informations : nettoyer les PDF numérisés, réorganiser les pages et ajuster Word tout en préservant la mise en forme.",
+        "status":"Bientôt disponible","note":"Cette fonction ne traite pas encore de fichiers. Elle est intégrée séparément afin de ne pas affecter le convertisseur ni Converti CV.",
+        "cards":[
+            ("Améliorer un PDF illisible","Ajuster le contraste, l’orientation, le nettoyage visuel et la lisibilité sans inventer ni modifier les données."),
+            ("Organiser des documents sur une page","Par exemple, placer le recto et le verso d’une pièce d’identité sur une seule page centrée en conservant les proportions."),
+            ("Corriger Word en préservant le format","Corriger le texte, les espaces, l’alignement et la structure en préservant autant que possible styles, tableaux, images, en-têtes et pieds de page."),
+        ],
+        "rule_title":"Règle principale","rule":"L’IA peut améliorer la présentation et la rédaction lorsque cela est pertinent, mais ne doit pas modifier les noms, dates, montants, numéros de document ni d’autres données factuelles.",
+        "back":"Retour à Convertir"
+    },
+    "pt-br": {
+        "html_lang":"pt-BR","title":"Corrigir documentos com IA | Converti","description":"Próxima ferramenta do Converti para melhorar legibilidade, reorganizar páginas e ajustar documentos sem alterar dados factuais.",
+        "eyebrow":"Nova ferramenta do Converti","h1":"Corrigir documentos com IA","lead":"Estamos preparando um espaço para melhorar documentos sem mudar suas informações: limpar PDFs digitalizados, reorganizar páginas e ajustar Word preservando a formatação.",
+        "status":"Em breve","note":"Esta função ainda não processa arquivos. Ela está sendo integrada separadamente para não afetar o conversor nem o Converti CV.",
+        "cards":[
+            ("Melhorar PDF ilegível","Ajustar contraste, orientação, limpeza visual e legibilidade sem inventar nem modificar dados."),
+            ("Organizar documentos em uma página","Por exemplo, colocar frente e verso de um documento em uma única página centralizada, preservando proporções."),
+            ("Corrigir Word preservando o formato","Corrigir texto, espaços, alinhamento e estrutura preservando ao máximo estilos, tabelas, imagens, cabeçalhos e rodapés."),
+        ],
+        "rule_title":"Regra principal","rule":"A IA pode melhorar apresentação e redação quando apropriado, mas não deve alterar nomes, datas, valores, números de documentos nem outros dados factuais.",
+        "back":"Voltar a Converter"
+    },
+}
+
+def _render_document_ai(locale: str):
+    page = DOCUMENT_AI_UI[locale]
+    paths = SECTION_PATHS[locale]
+    canonical = "https://converti.lat" + paths["fixdocs"]
+    alternates = {code: "https://converti.lat" + SECTION_PATHS[code]["fixdocs"] for code in SECTION_PATHS}
+    return render_template("document_ai_page.html", locale=locale, page=page, ui=SECTION_UI[locale], paths=paths, canonical_url=canonical, alternates=alternates)
+
+@app.get("/corregir-documentos-ia")
+def document_ai_es(): return _render_document_ai("es")
+@app.get("/en/fix-documents-ai")
+def document_ai_en(): return _render_document_ai("en")
+@app.get("/fr/corriger-documents-ia")
+def document_ai_fr(): return _render_document_ai("fr")
+@app.get("/pt-br/corrigir-documentos-ia")
+def document_ai_ptbr(): return _render_document_ai("pt-br")
 
 
 @app.get("/privacidad")
@@ -1083,10 +1151,10 @@ for _loc,_extras in CV_MODE_UI.items(): CV_UI[_loc].update(_extras)
 
 
 CV_NAV_UI = {
-    "es":{"nav_formats":"Formatos","nav_help":"Ayuda"},
-    "en":{"nav_formats":"Formats","nav_help":"Help"},
-    "fr":{"nav_formats":"Formats","nav_help":"Aide"},
-    "pt-br":{"nav_formats":"Formatos","nav_help":"Ajuda"}
+    "es":{"nav_formats":"Formatos","nav_help":"Ayuda","nav_fixdocs":"Corregir documentos con IA"},
+    "en":{"nav_formats":"Formats","nav_help":"Help","nav_fixdocs":"Fix documents with AI"},
+    "fr":{"nav_formats":"Formats","nav_help":"Aide","nav_fixdocs":"Corriger des documents avec IA"},
+    "pt-br":{"nav_formats":"Formatos","nav_help":"Ajuda","nav_fixdocs":"Corrigir documentos com IA"}
 }
 for _loc,_extras in CV_NAV_UI.items():
     CV_UI[_loc].update(_extras)
@@ -1709,10 +1777,10 @@ def _cv_seo_page(locale, slug):
         return None
     title, description = meta
     common = {
-      "es": {"html_lang":"es","convert":"Convertir","formats":"Formatos","help":"Ayuda","create":"Crear CV","badge":"Converti CV · IA integrada","cta":"Abrir Converti CV","benefits_title":"Ventajas","how_title":"Cómo funciona","privacy_title":"Privacidad y datos","privacy_text":"Converti procesa el contenido necesario para la función elegida. La IA solo se usa cuando la activas; no inventa empresas, estudios ni fechas.","faq_title":"Preguntas frecuentes","related_title":"También te puede interesar"},
-      "en": {"html_lang":"en","convert":"Convert","formats":"Formats","help":"Help","create":"Create CV","badge":"Converti CV · Built-in AI","cta":"Open Converti CV","benefits_title":"Benefits","how_title":"How it works","privacy_title":"Privacy and data","privacy_text":"Converti processes only the content needed for the selected feature. AI runs only when you activate it and does not invent employers, education or dates.","faq_title":"Frequently asked questions","related_title":"Related tools"},
-      "fr": {"html_lang":"fr","convert":"Convertir","formats":"Formats","help":"Aide","create":"Créer un CV","badge":"Converti CV · IA intégrée","cta":"Ouvrir Converti CV","benefits_title":"Avantages","how_title":"Comment ça marche","privacy_title":"Confidentialité et données","privacy_text":"Converti ne traite que le contenu nécessaire à la fonction choisie. L’IA n’est utilisée que si vous l’activez et n’invente ni employeur, ni étude, ni date.","faq_title":"Questions fréquentes","related_title":"Outils associés"},
-      "pt-br": {"html_lang":"pt-BR","convert":"Converter","formats":"Formatos","help":"Ajuda","create":"Criar CV","badge":"Converti CV · IA integrada","cta":"Abrir Converti CV","benefits_title":"Vantagens","how_title":"Como funciona","privacy_title":"Privacidade e dados","privacy_text":"O Converti processa apenas o conteúdo necessário para a função escolhida. A IA só é usada quando você ativa e não inventa empresas, estudos ou datas.","faq_title":"Perguntas frequentes","related_title":"Ferramentas relacionadas"},
+      "es": {"html_lang":"es","convert":"Convertir","formats":"Formatos","help":"Ayuda","create":"Crear CV","fixdocs":"Corregir documentos con IA","badge":"Converti CV · IA integrada","cta":"Abrir Converti CV","benefits_title":"Ventajas","how_title":"Cómo funciona","privacy_title":"Privacidad y datos","privacy_text":"Converti procesa el contenido necesario para la función elegida. La IA solo se usa cuando la activas; no inventa empresas, estudios ni fechas.","faq_title":"Preguntas frecuentes","related_title":"También te puede interesar"},
+      "en": {"html_lang":"en","convert":"Convert","formats":"Formats","help":"Help","create":"Create CV","fixdocs":"Fix documents with AI","badge":"Converti CV · Built-in AI","cta":"Open Converti CV","benefits_title":"Benefits","how_title":"How it works","privacy_title":"Privacy and data","privacy_text":"Converti processes only the content needed for the selected feature. AI runs only when you activate it and does not invent employers, education or dates.","faq_title":"Frequently asked questions","related_title":"Related tools"},
+      "fr": {"html_lang":"fr","convert":"Convertir","formats":"Formats","help":"Aide","create":"Créer un CV","fixdocs":"Corriger des documents avec IA","badge":"Converti CV · IA intégrée","cta":"Ouvrir Converti CV","benefits_title":"Avantages","how_title":"Comment ça marche","privacy_title":"Confidentialité et données","privacy_text":"Converti ne traite que le contenu nécessaire à la fonction choisie. L’IA n’est utilisée que si vous l’activez et n’invente ni employeur, ni étude, ni date.","faq_title":"Questions fréquentes","related_title":"Outils associés"},
+      "pt-br": {"html_lang":"pt-BR","convert":"Converter","formats":"Formatos","help":"Ajuda","create":"Criar CV","fixdocs":"Corrigir documentos com IA","badge":"Converti CV · IA integrada","cta":"Abrir Converti CV","benefits_title":"Vantagens","how_title":"Como funciona","privacy_title":"Privacidade e dados","privacy_text":"O Converti processa apenas o conteúdo necessário para a função escolhida. A IA só é usada quando você ativa e não inventa empresas, estudos ou datas.","faq_title":"Perguntas frequentes","related_title":"Ferramentas relacionadas"},
     }[locale]
     # Content intentionally distinct per search intent to avoid thin/duplicate pages.
     intent = slug.lower()

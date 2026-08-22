@@ -223,3 +223,9 @@ python -m unittest tests/test_static_quality.py -v
 
 ## SEO reforzado 2026-08-22
 La home posiciona conversión de archivos + creación de CV profesional con IA gratis. `/convertir` mantiene intención propia de conversión, `/crear-cv` y `/cv/*` concentran las funciones de currículum, y el sitemap incluye hreflang para ES/EN/FR/PT-BR. Consulte `SEO_AUDIT_2026-08-22.md`.
+
+## 2026-08-22 — acceso "Corregir documentos con IA"
+- Añadida una quinta pestaña de navegación para la futura herramienta de corrección de documentos con IA.
+- La pestaña existe en escritorio y dentro del menú móvil, y también en ES/EN/FR/PT-BR.
+- Se añadió una landing informativa separada y marcada `noindex,follow` hasta que el procesamiento real de archivos esté implementado.
+- No se modificaron los endpoints del convertidor, las conversiones, Converti CV, Gemini ni las exportaciones PDF/DOCX; solo navegación, rutas informativas y estilos compartidos necesarios para acomodar el nuevo acceso.
