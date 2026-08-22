@@ -56,5 +56,14 @@ class StaticQualityTests(unittest.TestCase):
         pyc = [str(p.relative_to(ROOT)) for p in ROOT.rglob("*.pyc")]
         self.assertEqual(pyc, [])
 
+    def test_section_pages_have_rich_localized_context(self):
+        app_text = (ROOT / "app.py").read_text(encoding="utf-8")
+        template = (ROOT / "templates" / "section_page.html").read_text(encoding="utf-8")
+        self.assertIn("SECTION_DETAIL_UI", app_text)
+        self.assertIn("detail=SECTION_DETAIL_UI[locale]", app_text)
+        for token in ("detail.categories", "detail.faq", "detail.help_blocks", "detail.help_faq"):
+            self.assertIn(token, template)
+
+
 if __name__ == "__main__":
     unittest.main()

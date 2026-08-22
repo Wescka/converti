@@ -815,6 +815,93 @@ SECTION_PATHS = {
     "pt-br":{"home":"/pt-br/","convert":"/pt-br/converter","formats":"/pt-br/formatos","help":"/pt-br/ajuda","create":"/pt-br/criar-cv"},
 }
 
+
+SECTION_DETAIL_UI = {
+    "es": {
+        "formats_eyebrow": "Conversión de archivos",
+        "formats_intro": "Converti detecta el formato real del archivo y solo ofrece salidas compatibles con los motores activos. Esta lista resume los formatos que puede reconocer y las salidas principales disponibles.",
+        "categories": [
+            ("Audio", "Entrada habitual", "MP3 · WAV · FLAC · OGG · OPUS · AAC · M4A · WMA · AIFF · AMR · APE · ALAC · AC3", "Salidas principales: MP3, WAV, FLAC, OGG, OPUS, M4A y AAC."),
+            ("Vídeo", "Entrada habitual", "MP4 · MKV · AVI · WEBM · MOV · MPEG · MPG · M4V · FLV · WMV · 3GP · TS · MTS · M2TS · VOB · OGV", "Salidas principales: MP4, MKV, AVI, WEBM y MOV. También puede extraer audio cuando FFmpeg está activo."),
+            ("Imágenes", "Entrada habitual", "JPG · JPEG · PNG · WEBP · BMP · GIF · TIFF · ICO · AVIF · HEIC · HEIF · SVG · PSD", "Salidas principales: PNG, JPG, WEBP, BMP, GIF, TIFF y PDF."),
+            ("PDF y documentos", "Entrada habitual", "PDF · DOC · DOCX · ODT · RTF · PPT · PPTX · ODP · EPUB", "PDF puede convertirse a DOCX, TXT, Markdown, HTML, PNG o JPG. DOCX puede convertirse a PDF, TXT, HTML y Markdown, con formatos adicionales cuando los motores están disponibles."),
+            ("Datos", "Entrada habitual", "CSV · XLSX · XLS · ODS · JSON · XML", "Rutas principales entre CSV, XLSX, JSON, XML y TXT. Algunas entradas antiguas dependen de lectores adicionales."),
+            ("Texto", "Entrada habitual", "TXT · Markdown · RST · HTML · TEX · LaTeX", "Con Pandoc disponible, Converti puede generar HTML, Markdown, TXT, DOCX, ODT, RTF y EPUB según el formato de origen."),
+        ],
+        "popular_title": "Conversiones populares",
+        "popular": [
+            ("PDF a Word", "/convertir/pdf-a-word"), ("Word a PDF", "/convertir/word-a-pdf"),
+            ("PDF a JPG", "/convertir/pdf-a-jpg"), ("PDF a PNG", "/convertir/pdf-a-png"),
+            ("JPG a PDF", "/convertir/jpg-a-pdf"), ("PNG a JPG", "/convertir/png-a-jpg"),
+            ("CSV a XLSX", "/convertir/csv-a-xlsx"), ("XLSX a CSV", "/convertir/xlsx-a-csv"),
+            ("MP3 a WAV", "/convertir/mp3-a-wav"),
+        ],
+        "note": "La disponibilidad exacta puede variar según los motores instalados en el servidor. Converti valida cada archivo antes de mostrar una conversión para evitar ofrecer rutas que no puede completar.",
+        "faq_title": "Preguntas frecuentes sobre formatos",
+        "faq": [
+            ("¿Por qué no aparecen todos los formatos para mi archivo?", "Porque Converti analiza el tipo real del archivo y muestra únicamente salidas compatibles con ese contenido y con los motores activos del servidor."),
+            ("¿Puedo convertir un PDF escaneado a Word?", "Sí, cuando el reconocimiento OCR está disponible. Los PDF complejos o escaneados pueden requerir una revisión posterior del DOCX."),
+            ("¿Se conservan mis archivos?", "No de forma permanente. Los archivos se procesan temporalmente y se eliminan según la política de limpieza de Converti."),
+            ("¿Qué pasa si cambio la extensión de un archivo manualmente?", "Converti no depende solo de la extensión: también valida el tipo y contenido del archivo para evitar conversiones incorrectas o inseguras."),
+        ],
+        "help_eyebrow": "Ayuda de Converti",
+        "help_intro": "Todo el flujo está pensado para que puedas seleccionar, convertir, revisar y descargar sin instalar programas en el navegador.",
+        "help_blocks": [
+            ("1", "Selecciona tu archivo", "Pulsa Seleccionar archivo o arrastra un archivo desde tu equipo. En móvil siempre puedes usar el selector del teléfono."),
+            ("2", "Converti lo analiza", "Se valida el archivo, se detecta su formato real y se calculan las salidas compatibles."),
+            ("3", "Elige el resultado", "Escoge el formato de salida y las opciones disponibles para ese tipo de conversión."),
+            ("4", "Convierte y revisa", "El servidor procesa el archivo. Cuando existe vista previa, puedes revisarla antes de descargar."),
+            ("5", "Descarga", "Descarga el resultado. Si una operación genera varios archivos, Converti puede agruparlos en ZIP."),
+            ("6", "Privacidad", "Los originales y resultados son temporales y se limpian automáticamente según la política del servicio."),
+        ],
+        "help_faq_title": "Q&A · dudas frecuentes",
+        "help_faq": [
+            ("¿Necesito registrarme?", "No. Las funciones públicas de Converti están diseñadas para usarse sin crear una cuenta."),
+            ("¿Cuál es el tamaño máximo?", "El límite actual es de 200 MB por selección, salvo que una herramienta concreta indique un límite menor."),
+            ("¿Funciona desde el teléfono?", "Sí. La interfaz dispone de navegación y controles adaptados para móviles, además de escritorio y tablet."),
+            ("¿Por qué una conversión puede tardar?", "Depende del tamaño del archivo, del formato y del motor necesario. Vídeo, OCR y documentos complejos suelen requerir más procesamiento."),
+            ("¿Dónde está Converti CV?", "Puedes entrar desde Crear CV para diseñar, importar y mejorar currículos, incluyendo funciones con IA y compatibilidad con CV de CompuTrabajo."),
+        ],
+    },
+    "en": {
+        "formats_eyebrow":"File conversion","formats_intro":"Converti detects the real file format and only offers outputs supported by the active engines. This page summarizes recognized inputs and the main available outputs.",
+        "categories":[
+            ("Audio","Common inputs","MP3 · WAV · FLAC · OGG · OPUS · AAC · M4A · WMA · AIFF · AMR · APE · ALAC · AC3","Main outputs: MP3, WAV, FLAC, OGG, OPUS, M4A and AAC."),
+            ("Video","Common inputs","MP4 · MKV · AVI · WEBM · MOV · MPEG · MPG · M4V · FLV · WMV · 3GP · TS · MTS · M2TS · VOB · OGV","Main outputs: MP4, MKV, AVI, WEBM and MOV. Audio extraction is also available when FFmpeg is active."),
+            ("Images","Common inputs","JPG · JPEG · PNG · WEBP · BMP · GIF · TIFF · ICO · AVIF · HEIC · HEIF · SVG · PSD","Main outputs: PNG, JPG, WEBP, BMP, GIF, TIFF and PDF."),
+            ("PDF & documents","Common inputs","PDF · DOC · DOCX · ODT · RTF · PPT · PPTX · ODP · EPUB","PDF can output DOCX, TXT, Markdown, HTML, PNG or JPG. DOCX can output PDF, TXT, HTML and Markdown, plus extra formats when engines are available."),
+            ("Data","Common inputs","CSV · XLSX · XLS · ODS · JSON · XML","Main routes between CSV, XLSX, JSON, XML and TXT. Some legacy inputs require additional readers."),
+            ("Text","Common inputs","TXT · Markdown · RST · HTML · TEX · LaTeX","With Pandoc available, Converti can generate HTML, Markdown, TXT, DOCX, ODT, RTF and EPUB depending on the source."),
+        ],
+        "popular_title":"Popular conversions","popular":[("PDF to Word","/en/convert/pdf-a-word"),("Word to PDF","/en/convert/word-a-pdf"),("PDF to JPG","/en/convert/pdf-a-jpg"),("PDF to PNG","/en/convert/pdf-a-png"),("JPG to PDF","/en/convert/jpg-a-pdf"),("PNG to JPG","/en/convert/png-a-jpg"),("CSV to XLSX","/en/convert/csv-a-xlsx"),("XLSX to CSV","/en/convert/xlsx-a-csv"),("MP3 to WAV","/en/convert/mp3-a-wav")],
+        "note":"Exact availability may vary with the engines installed on the server. Converti validates each file before offering a conversion.",
+        "faq_title":"Format FAQ","faq":[("Why don't I see every format for my file?","Converti analyzes the actual file type and only shows outputs compatible with the content and active engines."),("Can I convert a scanned PDF to Word?","Yes when OCR is available. Complex or scanned PDFs may still need small edits in the resulting DOCX."),("Are my files kept?","Not permanently. Files are processed temporarily and removed according to Converti's cleanup policy."),("What if I manually rename a file extension?","Converti does not rely only on the extension; it also validates file type and content.")],
+        "help_eyebrow":"Converti help","help_intro":"The workflow is designed so you can select, convert, review and download without installing software in your browser.",
+        "help_blocks":[("1","Select your file","Use the file picker or drag a file from your computer. Mobile always provides a native file selector."),("2","Converti analyzes it","The file is validated, its real format is detected and compatible outputs are calculated."),("3","Choose the result","Pick the output format and the options available for that conversion."),("4","Convert and review","The server processes the file. When a preview is available, you can review it before download."),("5","Download","Download the result. Multiple outputs may be grouped into a ZIP."),("6","Privacy","Originals and results are temporary and are automatically cleaned up according to the service policy.")],
+        "help_faq_title":"Q&A · common questions","help_faq":[("Do I need an account?","No. Public Converti tools are designed to work without registration."),("What is the maximum size?","The current limit is 200 MB per selection unless a specific tool shows a lower limit."),("Does it work on phones?","Yes. Navigation and controls are adapted for mobile as well as desktop and tablet."),("Why can a conversion take time?","It depends on file size, format and engine. Video, OCR and complex documents require more processing."),("Where is Converti CV?","Open Create CV to design, import and improve resumes, including AI features and CompuTrabajo CV compatibility.")],
+    },
+    "fr": {
+        "formats_eyebrow":"Conversion de fichiers","formats_intro":"Converti détecte le format réel du fichier et ne propose que les sorties prises en charge par les moteurs actifs.",
+        "categories":[("Audio","Entrées courantes","MP3 · WAV · FLAC · OGG · OPUS · AAC · M4A · WMA · AIFF · AMR · APE · ALAC · AC3","Sorties principales : MP3, WAV, FLAC, OGG, OPUS, M4A et AAC."),("Vidéo","Entrées courantes","MP4 · MKV · AVI · WEBM · MOV · MPEG · MPG · M4V · FLV · WMV · 3GP · TS · MTS · M2TS · VOB · OGV","Sorties principales : MP4, MKV, AVI, WEBM et MOV. Extraction audio possible avec FFmpeg."),("Images","Entrées courantes","JPG · JPEG · PNG · WEBP · BMP · GIF · TIFF · ICO · AVIF · HEIC · HEIF · SVG · PSD","Sorties principales : PNG, JPG, WEBP, BMP, GIF, TIFF et PDF."),("PDF et documents","Entrées courantes","PDF · DOC · DOCX · ODT · RTF · PPT · PPTX · ODP · EPUB","PDF vers DOCX, TXT, Markdown, HTML, PNG ou JPG. DOCX vers PDF, TXT, HTML et Markdown, plus d'autres formats selon les moteurs."),("Données","Entrées courantes","CSV · XLSX · XLS · ODS · JSON · XML","Conversions principales entre CSV, XLSX, JSON, XML et TXT."),("Texte","Entrées courantes","TXT · Markdown · RST · HTML · TEX · LaTeX","Avec Pandoc, sorties HTML, Markdown, TXT, DOCX, ODT, RTF et EPUB selon la source.")],
+        "popular_title":"Conversions populaires","popular":[("PDF vers Word","/fr/convertir/pdf-a-word"),("Word vers PDF","/fr/convertir/word-a-pdf"),("PDF vers JPG","/fr/convertir/pdf-a-jpg"),("PDF vers PNG","/fr/convertir/pdf-a-png"),("JPG vers PDF","/fr/convertir/jpg-a-pdf"),("PNG vers JPG","/fr/convertir/png-a-jpg"),("CSV vers XLSX","/fr/convertir/csv-a-xlsx"),("XLSX vers CSV","/fr/convertir/xlsx-a-csv"),("MP3 vers WAV","/fr/convertir/mp3-a-wav")],
+        "note":"La disponibilité exacte dépend des moteurs installés sur le serveur. Converti valide chaque fichier avant de proposer une conversion.",
+        "faq_title":"Questions fréquentes sur les formats","faq":[("Pourquoi tous les formats ne sont-ils pas proposés ?","Converti analyse le type réel du fichier et affiche uniquement les sorties compatibles avec le contenu et les moteurs actifs."),("Puis-je convertir un PDF numérisé en Word ?","Oui lorsque l'OCR est disponible. Les PDF complexes peuvent nécessiter quelques ajustements dans le DOCX."),("Mes fichiers sont-ils conservés ?","Non de façon permanente. Ils sont traités temporairement puis supprimés selon la politique de nettoyage."),("Changer seulement l'extension suffit-il ?","Non. Converti valide aussi le type et le contenu réels du fichier.")],
+        "help_eyebrow":"Aide Converti","help_intro":"Le parcours est conçu pour sélectionner, convertir, vérifier et télécharger sans installer de logiciel dans le navigateur.",
+        "help_blocks":[("1","Sélectionnez le fichier","Utilisez le sélecteur ou glissez un fichier depuis votre ordinateur. Sur mobile, le sélecteur du téléphone reste disponible."),("2","Converti l'analyse","Le fichier est validé, son format réel est détecté et les sorties compatibles sont calculées."),("3","Choisissez le résultat","Sélectionnez le format de sortie et les options disponibles."),("4","Convertissez et vérifiez","Le serveur traite le fichier et affiche un aperçu lorsqu'il est disponible."),("5","Téléchargez","Téléchargez le résultat ; plusieurs fichiers peuvent être regroupés en ZIP."),("6","Confidentialité","Les originaux et résultats sont temporaires et nettoyés automatiquement.")],
+        "help_faq_title":"Q&A · questions courantes","help_faq":[("Faut-il créer un compte ?","Non. Les outils publics de Converti fonctionnent sans inscription."),("Quelle est la taille maximale ?","La limite actuelle est de 200 Mo par sélection, sauf indication contraire d'un outil."),("Cela fonctionne-t-il sur téléphone ?","Oui. La navigation et les contrôles sont adaptés au mobile, à la tablette et au bureau."),("Pourquoi une conversion peut-elle être longue ?","Cela dépend de la taille, du format et du moteur. La vidéo, l'OCR et les documents complexes demandent plus de traitement."),("Où se trouve Converti CV ?","Ouvrez Créer un CV pour concevoir, importer et améliorer des CV avec IA et compatibilité CompuTrabajo.")],
+    },
+    "pt-br": {
+        "formats_eyebrow":"Conversão de arquivos","formats_intro":"O Converti detecta o formato real do arquivo e oferece apenas saídas compatíveis com os mecanismos ativos.",
+        "categories":[("Áudio","Entradas comuns","MP3 · WAV · FLAC · OGG · OPUS · AAC · M4A · WMA · AIFF · AMR · APE · ALAC · AC3","Saídas principais: MP3, WAV, FLAC, OGG, OPUS, M4A e AAC."),("Vídeo","Entradas comuns","MP4 · MKV · AVI · WEBM · MOV · MPEG · MPG · M4V · FLV · WMV · 3GP · TS · MTS · M2TS · VOB · OGV","Saídas principais: MP4, MKV, AVI, WEBM e MOV. Também é possível extrair áudio com FFmpeg."),("Imagens","Entradas comuns","JPG · JPEG · PNG · WEBP · BMP · GIF · TIFF · ICO · AVIF · HEIC · HEIF · SVG · PSD","Saídas principais: PNG, JPG, WEBP, BMP, GIF, TIFF e PDF."),("PDF e documentos","Entradas comuns","PDF · DOC · DOCX · ODT · RTF · PPT · PPTX · ODP · EPUB","PDF para DOCX, TXT, Markdown, HTML, PNG ou JPG. DOCX para PDF, TXT, HTML e Markdown, com formatos extras quando os mecanismos estão disponíveis."),("Dados","Entradas comuns","CSV · XLSX · XLS · ODS · JSON · XML","Rotas principais entre CSV, XLSX, JSON, XML e TXT."),("Texto","Entradas comuns","TXT · Markdown · RST · HTML · TEX · LaTeX","Com Pandoc disponível, saídas HTML, Markdown, TXT, DOCX, ODT, RTF e EPUB conforme a origem.")],
+        "popular_title":"Conversões populares","popular":[("PDF para Word","/pt-br/converter/pdf-a-word"),("Word para PDF","/pt-br/converter/word-a-pdf"),("PDF para JPG","/pt-br/converter/pdf-a-jpg"),("PDF para PNG","/pt-br/converter/pdf-a-png"),("JPG para PDF","/pt-br/converter/jpg-a-pdf"),("PNG para JPG","/pt-br/converter/png-a-jpg"),("CSV para XLSX","/pt-br/converter/csv-a-xlsx"),("XLSX para CSV","/pt-br/converter/xlsx-a-csv"),("MP3 para WAV","/pt-br/converter/mp3-a-wav")],
+        "note":"A disponibilidade exata depende dos mecanismos instalados no servidor. O Converti valida cada arquivo antes de oferecer uma conversão.",
+        "faq_title":"Perguntas frequentes sobre formatos","faq":[("Por que nem todos os formatos aparecem para meu arquivo?","O Converti analisa o tipo real do arquivo e mostra apenas saídas compatíveis com o conteúdo e os mecanismos ativos."),("Posso converter um PDF digitalizado para Word?","Sim, quando OCR está disponível. PDFs complexos podem precisar de pequenos ajustes no DOCX."),("Meus arquivos ficam armazenados?","Não permanentemente. Eles são processados de forma temporária e removidos conforme a política de limpeza."),("Trocar apenas a extensão resolve?","Não. O Converti também valida o tipo e o conteúdo reais do arquivo.")],
+        "help_eyebrow":"Ajuda do Converti","help_intro":"O fluxo foi pensado para selecionar, converter, revisar e baixar sem instalar programas no navegador.",
+        "help_blocks":[("1","Selecione o arquivo","Use o seletor ou arraste um arquivo do computador. No celular, o seletor nativo continua disponível."),("2","O Converti analisa","O arquivo é validado, o formato real é detectado e as saídas compatíveis são calculadas."),("3","Escolha o resultado","Selecione o formato de saída e as opções disponíveis para a conversão."),("4","Converta e revise","O servidor processa o arquivo e mostra uma prévia quando ela está disponível."),("5","Baixe","Faça o download do resultado. Vários arquivos podem ser agrupados em ZIP."),("6","Privacidade","Originais e resultados são temporários e limpos automaticamente conforme a política do serviço.")],
+        "help_faq_title":"Q&A · dúvidas comuns","help_faq":[("Preciso criar uma conta?","Não. As ferramentas públicas do Converti foram feitas para funcionar sem cadastro."),("Qual é o tamanho máximo?","O limite atual é de 200 MB por seleção, salvo quando uma ferramenta indicar um limite menor."),("Funciona no celular?","Sim. A navegação e os controles são adaptados para celular, tablet e desktop."),("Por que uma conversão pode demorar?","Depende do tamanho, do formato e do mecanismo. Vídeo, OCR e documentos complexos exigem mais processamento."),("Onde fica o Converti CV?","Abra Criar CV para criar, importar e melhorar currículos, incluindo IA e compatibilidade com CV do CompuTrabajo.")],
+    },
+}
+
 def _render_section(locale: str, section: str):
     ui = SECTION_UI[locale]
     paths = SECTION_PATHS[locale]
@@ -823,7 +910,7 @@ def _render_section(locale: str, section: str):
     lead = ui["formats_lead"] if is_formats else ui["help_lead"]
     canonical = "https://converti.lat" + paths[section]
     alternates = {code: "https://converti.lat" + SECTION_PATHS[code][section] for code in SECTION_PATHS}
-    return render_template("section_page.html", locale=locale, ui=ui, paths=paths, section=section, title=title, lead=lead, canonical_url=canonical, alternates=alternates, max_mb=MAX_MB)
+    return render_template("section_page.html", locale=locale, ui=ui, detail=SECTION_DETAIL_UI[locale], paths=paths, section=section, title=title, lead=lead, canonical_url=canonical, alternates=alternates, max_mb=MAX_MB)
 
 @app.get("/formatos")
 def formats_es(): return _render_section("es", "formats")
