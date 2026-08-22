@@ -2,7 +2,7 @@
 <html lang="{{ cv_ui.html_lang }}">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>{{ cv_ui.meta_title }}</title>
   <meta name="description" content="{{ cv_ui.meta_description }}">
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
@@ -22,8 +22,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/create_cv.css') }}?v=20260822-stable">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/site_ui.css') }}?v=20260822-stable">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/create_cv.css') }}?v=stable-20260822-2">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/site_ui.css') }}?v=stable-20260822-2">
 </head>
 <body class="cvb-app">
 <header class="cvb-site-header">
@@ -274,7 +274,7 @@
 </section>
 <footer class="cvb-site-footer">Converti · <a href="{{ privacy_path }}">{{ cv_ui.privacy_label }}</a></footer>
 <script>window.CVB_I18N={{ cv_js|tojson }};</script>
-<script src="{{ url_for('static', filename='js/create_cv.js') }}?v=20260822-stable" defer></script>
+<script src="{{ url_for('static', filename='js/create_cv.js') }}?v=stable-20260822-2" defer></script>
 
 </body>
 </html>

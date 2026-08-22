@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Confidentialité · Converti</title><meta name="robots" content="noindex,follow"><link rel="icon" type="image/png" href="/static/images/icon1.png">
 
 <link rel="canonical" href="https://converti.lat/fr/confidentialite">
@@ -255,14 +255,14 @@ footer{font-size:13px;line-height:1.65;font-weight:500}
   gtag('js', new Date());
   gtag('config', 'G-XLZM56PZHM');
 </script>
-<link rel="stylesheet" href="/static/css/site_ui.css?v=20260822-stable">
+<link rel="stylesheet" href="/static/css/site_ui.css?v=stable-20260822-2">
 </head>
 <body>
 <header class="header">
   <a href="/fr/" class="brand" aria-label="Converti">
     <img class="brand-logo" src="/static/images/logo_converti.png" alt="Converti">
   </a>
-  <nav class="nav">
+  <nav class="nav" id="siteMainNav">
     <a href="/fr/convertir">Convertir</a>
     <a href="/fr/formats">Formats</a>
     <a href="/fr/aide">Aide</a>
@@ -271,7 +271,8 @@ footer{font-size:13px;line-height:1.65;font-weight:500}
 <div class="converti-header-tools">
     <select class="lang-select" id="langSelector" aria-label="Idioma / Language"><option value="es">ES</option><option value="en">EN</option><option value="fr">FR</option><option value="pt-br">PT-BR</option></select>
 </div>
-  <button type="button" class="converti-mobile-menu-toggle" aria-expanded="false" aria-label="Menu">
+
+  <button type="button" class="site-mobile-menu-toggle" aria-controls="siteMainNav" aria-expanded="false" aria-label="Menu">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
   </button>
 </header>
@@ -328,6 +329,7 @@ footer{font-size:13px;line-height:1.65;font-weight:500}
 <footer class="converti-site-footer">Converti · Conversión de archivos sencilla y privada · <a href="/fr/confidentialite">Confidentialité</a></footer>
 <script>(function(){const s=document.getElementById('langSelector');if(!s)return;s.value="fr";const p={es:'/privacidad',en:'/en/privacy',fr:'/fr/confidentialite','pt-br':'/pt-br/privacidade'};s.onchange=()=>{localStorage.setItem('converti_lang',s.value);location.href=p[s.value]};})();</script>
 
-<script src="/static/js/site_ui.js?v=20260822-stable" defer></script>
+
+<script src="/static/js/site_ui.js?v=stable-20260822-2" defer></script>
 </body>
 </html>
