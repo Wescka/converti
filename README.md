@@ -229,3 +229,9 @@ La home posiciona conversión de archivos + creación de CV profesional con IA g
 - La pestaña existe en escritorio y dentro del menú móvil, y también en ES/EN/FR/PT-BR.
 - Se añadió una landing informativa separada y marcada `noindex,follow` hasta que el procesamiento real de archivos esté implementado.
 - No se modificaron los endpoints del convertidor, las conversiones, Converti CV, Gemini ni las exportaciones PDF/DOCX; solo navegación, rutas informativas y estilos compartidos necesarios para acomodar el nuevo acceso.
+
+## Ajuste de armonía visual — 2026-08-22
+- Formatos y Ayuda ya no mantienen un header CSS local paralelo.
+- Ambas páginas heredan exactamente el sistema de navegación compartido de Converti (`static/css/site_ui.css`).
+- El ancho y separación superior de las páginas de sección se alinearon con el lenguaje visual de la herramienta principal.
+- Responsive de Formatos/Ayuda conserva el menú móvil compartido y no modifica el motor de conversión ni Converti CV.

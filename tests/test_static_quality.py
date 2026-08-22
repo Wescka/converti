@@ -88,5 +88,32 @@ class StaticQualityTests(unittest.TestCase):
         self.assertIn('{{ seo_page_title }}', template)
 
 
+    def test_document_ai_tab_is_integrated_without_replacing_existing_nav(self):
+        source = (ROOT / "app.py").read_text(encoding="utf-8")
+        self.assertIn('"fixdocs":"/corregir-documentos-ia"', source)
+        self.assertIn('@app.get("/corregir-documentos-ia")', source)
+        for name in ("index.html", "section_page.html", "tool_page.html", "create_cv.html", "cv_seo_page.html"):
+            html = (ROOT / "templates" / name).read_text(encoding="utf-8")
+            self.assertIn("nav-doc-ai", html, name)
+            self.assertRegex(html, r'(crear-cv|cv_path|nav_create|paths\.create)', name)
+
+    def test_document_ai_placeholder_is_not_indexed_before_functionality_exists(self):
+        html = (ROOT / "templates" / "document_ai_page.html").read_text(encoding="utf-8")
+        self.assertIn('name="robots" content="noindex,follow"', html)
+        source = (ROOT / "app.py").read_text(encoding="utf-8")
+        core = re.search(r'core_keys\s*=\s*\(([^)]*)\)', source)
+        self.assertIsNotNone(core)
+        self.assertNotIn("fixdocs", core.group(1))
+
+
+    def test_section_pages_use_shared_header_without_local_override(self):
+        html = (ROOT / "templates" / "section_page.html").read_text(encoding="utf-8")
+        self.assertNotIn("Header local:", html)
+        self.assertNotRegex(html, r"\.header\{[^}]*!important")
+        self.assertIn("site_ui.css", html)
+        self.assertIn("width:min(1240px,calc(100% - 32px))", html)
+
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -418,6 +418,10 @@ footer{font-size:13px;line-height:1.65;font-weight:500}
     {% else %}
       <a href="{{ nav_paths.convert }}">Convertir</a><a href="{{ nav_paths.formats }}">Formatos</a><a href="{{ nav_paths.help }}">Ayuda</a>
     {% endif %}
+    {% if locale == "en" %}<a class="nav-doc-ai" href="/en/fix-documents-ai">Fix documents with AI</a>
+    {% elif locale == "fr" %}<a class="nav-doc-ai" href="/fr/corriger-documents-ia">Corriger des documents avec IA</a>
+    {% elif locale == "pt-br" %}<a class="nav-doc-ai" href="/pt-br/corrigir-documentos-ia">Corrigir documentos com IA</a>
+    {% else %}<a class="nav-doc-ai" href="/corregir-documentos-ia">Corregir documentos con IA</a>{% endif %}
     {% if locale == "en" %}<a class="nav-cv" href="/en/create-cv">Create CV</a>
     {% elif locale == "fr" %}<a class="nav-cv" href="/fr/creer-cv">Créer un CV</a>
     {% elif locale == "pt-br" %}<a class="nav-cv" href="/pt-br/criar-cv">Criar CV</a>
