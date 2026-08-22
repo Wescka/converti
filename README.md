@@ -1,0 +1,172 @@
+# Converti — base limpia para continuar el proyecto
+
+Este repositorio contiene **solo los archivos de producción necesarios** de Converti. Se preparó como punto de partida limpio para borrar el repositorio anterior y continuar el desarrollo sin arrastrar ZIPs, versiones V1/V2/V3..., pruebas, capturas, `__pycache__`, temporales ni instaladores antiguos.
+
+## Estado actual
+
+Converti es una aplicación Flask con dos módulos principales:
+
+1. **Conversión de archivos**: imágenes, audio/video, PDF, documentos y datos estructurados según los motores realmente instalados.
+2. **Creador de CV**: editor en vivo, 5 plantillas, IA con Gemini, importación PDF/DOCX/CompuTrabajo, generación de correo de postulación y descarga PDF/Word editable.
+
+Idiomas actuales: ES, EN, FR y PT-BR.
+
+Rutas principales:
+
+- `/` — Converti ES
+- `/en/`, `/fr/`, `/pt-br/`
+- `/crear-cv`
+- `/en/create-cv`
+- `/fr/creer-cv`
+- `/pt-br/criar-cv`
+- `/privacidad` y versiones localizadas
+- páginas SEO dinámicas mediante `tool_page.html`
+- `/sitemap.xml`
+- `/robots.txt`
+
+## Arquitectura de producción actual
+
+```text
+converti.lat
+   ↓
+Cloudflare
+   ↓
+Cloudflare Tunnel
+   ↓
+Redmi / Termux
+   ↓
+Flask app.py en localhost:5000
+```
+
+Render **no forma parte del tráfico actual**.
+
+El archivo principal siempre debe seguir siendo `app.py`.
+
+## Estructura limpia
+
+```text
+app.py                     Backend Flask y rutas
+capabilities.py            Detección de formatos/motores disponibles
+config.py                  Límites y rutas de temporales
+converters.py              Motores de conversión
+cv_exports.py              Exportación profesional de CV a PDF/DOCX
+security_utils.py          Seguridad, MIME, herramientas y rate-limit general
+requirements.txt           Dependencias Python
+.env.example               Variables de entorno de ejemplo, sin secretos
+.gitignore                 Excluye temporales, secretos y basura local
+
+templates/
+  index.html
+  index_en.html
+  index_fr.html
+  index_ptbr.html
+  create_cv.html
+  privacy.html
+  privacy_en.html
+  privacy_fr.html
+  privacy_ptbr.html
+  tool_page.html
+
+static/
+  css/create_cv.css
+  css/site_ui.css
+  js/create_cv.js
+  images/logo_converti.png
+  images/icon1.png
+```
+
+## Variables de entorno
+
+Nunca colocar la API key dentro del código o GitHub.
+
+```bash
+export GEMINI_API_KEY="TU_KEY"
+export GEMINI_MODEL="gemini-3.5-flash-lite"
+```
+
+El modelo puede cambiar mediante `GEMINI_MODEL` sin editar el código.
+
+## Motores externos usados en el Redmi
+
+El servidor actual fue preparado para usar:
+
+- FFmpeg / FFprobe
+- Pandoc
+- ImageMagick
+- Tesseract
+- MuPDF CLI (`mutool`)
+- LibreOffice mediante bridge Termux → Debian/proot
+
+El código detecta los motores disponibles en tiempo real.
+
+## Privacidad y comportamiento del CV
+
+- El CV **no se persiste en localStorage**.
+- La IA se ejecuta únicamente cuando el usuario pulsa una acción de mejora/generación.
+- No existe un sistema visible de monedas, tokens ni créditos para la IA.
+- La clave de Gemini vive únicamente en el servidor.
+- Los temporales de conversiones se guardan en `archivos/`, carpeta que se crea automáticamente y está ignorada por Git.
+- El original y los resultados temporales siguen la política de limpieza configurada en `config.py`.
+
+## Exportación CV
+
+- PDF: generado con ReportLab.
+- Word: generado con `python-docx`, editable y con formato profesional.
+- La plantilla **Moderno** tiene una composición Word a dos columnas con barra lateral.
+- Las otras plantillas generan actualmente una versión Word limpia/editable de una columna; no son una réplica píxel a píxel del HTML. Si se desea equivalencia exacta entre las 5 plantillas en Word, esa es una mejora futura, no un archivo faltante.
+
+## Estado visual más reciente
+
+- Header unificado con logo oficial y favicon oficial.
+- Navegación: Convertir / Formatos / Ayuda / Crear CV.
+- Selector de plantillas y colores en el CV.
+- El control de exportación aparece solo cuando el CV tiene contenido y está integrado de forma compacta junto a los controles superiores.
+- Tipografía principal: Plus Jakarta Sans.
+- El módulo CV usa `create_cv.css` y `create_cv.js`; no deben volver a añadirse archivos `create_cv_v2`, `v3`, `v4`, etc.
+- `site_ui.css` es el único CSS compartido de navegación/marca.
+
+## Reglas para el próximo ChatGPT/desarrollador
+
+1. **Leer todos los archivos de este repositorio antes de modificarlo.**
+2. No reconstruir el proyecto desde ZIPs anteriores.
+3. No volver a crear archivos versionados duplicados (`*_v8.css`, `*_v9.js`, etc.). Editar los archivos estables existentes.
+4. Mantener `app.py` como archivo principal.
+5. Aplicar los cambios globales a ES/EN/FR/PT-BR y a páginas principales, privacidad, herramientas y CV.
+6. No cambiar logo, favicon, tipografía o paleta base salvo petición explícita.
+7. No guardar contenido del CV en almacenamiento persistente del navegador.
+8. No incorporar claves privadas al repositorio.
+9. Antes de entregar cambios: compilar Python, validar JS/Jinja y revisar visualmente `/`, `/crear-cv` y `/privacidad`.
+10. Entregar archivos/ZIP listos; evitar hacer que el usuario copie archivos grandes manualmente.
+
+## Instalación limpia en Redmi/Termux
+
+Después de reemplazar el repositorio por esta base:
+
+```bash
+cd ~/converti
+python -m pip install -r requirements.txt
+source ~/.bashrc
+python app.py
+```
+
+La web debe responder localmente en:
+
+```text
+http://127.0.0.1:5000
+```
+
+El Cloudflare Tunnel es un servicio externo al repositorio y seguirá apuntando a `localhost:5000`.
+
+## Importante al limpiar GitHub
+
+Subir únicamente el contenido de esta carpeta. No subir:
+
+- ZIPs históricos
+- capturas PNG/JPG de pruebas
+- archivos DOCX/PDF de QA
+- `__pycache__`
+- `.pytest_cache`
+- carpeta `archivos/`
+- `.env`
+- scripts `FIX_*`, `ACTUALIZAR_*` o instaladores de versiones anteriores
+- demos y HTML de QA
