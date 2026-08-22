@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="{{ page.html_lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>{{ page.title }}</title>
+  <meta name="description" content="{{ page.description }}">
+  <meta name="robots" content="noindex,follow">
+  <link rel="canonical" href="{{ canonical_url }}">
+  {% for code, href in alternates.items() %}<link rel="alternate" hreflang="{{ 'pt-BR' if code == 'pt-br' else code }}" href="{{ href }}">{% endfor %}
+  <link rel="alternate" hreflang="x-default" href="https://converti.lat/corregir-documentos-ia">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/icon1.png') }}?v=6">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/site_ui.css') }}?v=20260822-docai-nav">
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#fff,#f8fbff 58%,#fff);color:#172846;font-family:"Plus Jakarta Sans",system-ui,sans-serif}.docai-wrap{width:min(1120px,calc(100% - 36px));margin:48px auto 72px}.docai-hero{padding:40px;border:1px solid #e0e9f6;border-radius:26px;background:#fff;box-shadow:0 18px 55px rgba(18,41,100,.065)}.docai-eyebrow{display:inline-flex;padding:7px 11px;border:1px solid #d7e5fa;border-radius:999px;color:#2879ed;background:#f9fcff;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}.docai-hero h1{margin:18px 0 12px;font-size:clamp(38px,5vw,62px);line-height:1.03;letter-spacing:-.05em}.docai-lead{max-width:850px;margin:0;color:#667594;font-size:17px;line-height:1.7}.docai-status{display:inline-flex;margin-top:22px;padding:10px 14px;border-radius:12px;background:#eef5ff;color:#176de8;font-size:13px;font-weight:800}.docai-note{margin:16px 0 0;color:#71809b;font-size:13px;line-height:1.6}.docai-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:20px}.docai-card{padding:24px;border:1px solid #e0e9f6;border-radius:20px;background:#fff;box-shadow:0 8px 28px rgba(18,41,100,.04)}.docai-card h2{margin:0 0 10px;font-size:20px;letter-spacing:-.025em}.docai-card p{margin:0;color:#667594;font-size:13.5px;line-height:1.65}.docai-rule{margin-top:20px;padding:24px;border:1px solid #dbe8f8;border-radius:20px;background:linear-gradient(135deg,#f7fbff,#fff)}.docai-rule h2{margin:0 0 8px;font-size:20px}.docai-rule p{margin:0;color:#5f708e;line-height:1.65}.docai-back{display:inline-flex;align-items:center;justify-content:center;min-height:46px;margin-top:20px;padding:0 16px;border:1px solid #c8daf4;border-radius:13px;background:#fff;color:#2474e8;text-decoration:none;font-size:13px;font-weight:800}.docai-footer{text-align:center;padding:0 18px 30px;color:#7b89a1;font-size:12px}
+    @media(max-width:900px){.docai-grid{grid-template-columns:1fr}.docai-wrap{margin-top:32px}.docai-hero{padding:30px}}
+    @media(max-width:720px){.docai-wrap{width:calc(100% - 20px);margin:24px auto 48px}.docai-hero{padding:22px 18px;border-radius:20px}.docai-hero h1{font-size:clamp(34px,10vw,46px)}.docai-lead{font-size:14px}.docai-grid{gap:12px}.docai-card,.docai-rule{padding:19px 17px;border-radius:17px}.docai-back{width:100%}}
+  </style>
+</head>
+<body>
+<header class="header" id="siteHeader">
+  <a class="brand" href="{{ paths.home }}" aria-label="Converti"><img class="brand-logo" src="{{ url_for('static', filename='images/logo_converti.png') }}" alt="Converti"></a>
+  <nav class="nav" id="siteMainNav" aria-label="Navigation">
+    <a href="{{ paths.convert }}">{{ ui.convert }}</a>
+    <a href="{{ paths.formats }}">{{ ui.formats }}</a>
+    <a href="{{ paths.help }}">{{ ui.help }}</a>
+    <a class="nav-doc-ai is-current" href="{{ paths.fixdocs }}">{{ ui.fixdocs }}</a>
+    <a class="nav-cv" href="{{ paths.create }}">{{ ui.create }}</a>
+  </nav>
+  <div class="converti-header-tools"><select class="lang-select" aria-label="Language" onchange="if(this.value)location.href=this.value">{% for code,href in alternates.items() %}<option value="{{ href }}" {% if code == locale %}selected{% endif %}>{{ 'PT-BR' if code == 'pt-br' else code|upper }}</option>{% endfor %}</select></div>
+  <button type="button" class="site-mobile-menu-toggle" aria-controls="siteMainNav" aria-expanded="false" aria-label="Menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+</header>
+<main class="docai-wrap">
+  <section class="docai-hero"><span class="docai-eyebrow">{{ page.eyebrow }}</span><h1>{{ page.h1 }}</h1><p class="docai-lead">{{ page.lead }}</p><span class="docai-status">{{ page.status }}</span><p class="docai-note">{{ page.note }}</p></section>
+  <section class="docai-grid">{% for title,text in page.cards %}<article class="docai-card"><h2>{{ title }}</h2><p>{{ text }}</p></article>{% endfor %}</section>
+  <section class="docai-rule"><h2>{{ page.rule_title }}</h2><p>{{ page.rule }}</p></section>
+  <a class="docai-back" href="{{ paths.convert }}">{{ page.back }}</a>
+</main>
+<footer class="docai-footer">Converti · AI document tools</footer>
+<script src="{{ url_for('static', filename='js/site_ui.js') }}?v=20260822-docai-nav" defer></script>
+</body></html>
