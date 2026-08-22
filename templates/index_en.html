@@ -3,9 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Converti converts audio, images, PDFs and documents online with a simple, private workflow and no software installation.">
-<title>Converti · Simple and private file conversion</title>
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+{% if canonical_override is defined %}
+<meta name="description" content="Convert PDF, Word, JPG, PNG, audio, video and more online for free. No installation, with temporary file processing.">
+<title>Free Online File Converter | PDF, Word, JPG & More | Converti</title>
+{% else %}
+<meta name="description" content="Convert PDF, Word, images, audio and video online. Create, improve or import a professional resume with AI for free and download PDF or Word.">
+<title>Free File Converter & AI Resume Builder | Converti</title>
+{% endif %}
 <link rel="canonical" href="{{ canonical_override|default('https://converti.lat/en/') }}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Converti">
+{% if canonical_override is defined %}
+<meta property="og:title" content="Free Online File Converter | PDF, Word, JPG & More | Converti">
+<meta property="og:description" content="Convert PDF, Word, JPG, PNG, audio, video and more online for free. No installation, with temporary file processing.">
+{% else %}
+<meta property="og:title" content="Free File Converter & AI Resume Builder | Converti">
+<meta property="og:description" content="Convert PDF, Word, images, audio and video online. Create, improve or import a professional resume with AI for free and download PDF or Word.">
+{% endif %}
+<meta property="og:image" content="https://converti.lat/static/images/logo_converti.png">
+<meta property="og:url" content="{{ canonical_override|default('https://converti.lat/') }}">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="alternate" hreflang="es" href="{{ alternate_es|default('https://converti.lat/') }}">
 <link rel="alternate" hreflang="en" href="{{ alternate_en|default('https://converti.lat/en/') }}">
 <link rel="alternate" hreflang="fr" href="{{ alternate_fr|default('https://converti.lat/fr/') }}">
@@ -16,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Converti","applicationCategory":"UtilitiesApplication","operatingSystem":"Web"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"Converti","url":"https://converti.lat/"},{"@type":"WebApplication","name":"Converti","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","url":"https://converti.lat/en/convert","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"WebApplication","name":"Converti CV","applicationCategory":"BusinessApplication","operatingSystem":"Web","url":"https://converti.lat/en/create-cv","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}]}</script>
 <style>
 :root{
     --navy:#0b1234;
@@ -242,6 +260,10 @@ select:focus,input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(42,1
 .engine{border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:11px;color:var(--muted);background:#fff}
 .engine.ok{color:#2f6f3e;background:#f4fff7;border-color:#caead6}
 .engine.missing{color:#a05145;background:#fff8f7;border-color:#f3d8d3}
+
+.cv-seo-promo{width:min(1180px,calc(100% - 40px));margin:34px auto 10px;padding:34px;border:1px solid #dfe8f5;border-radius:26px;background:linear-gradient(135deg,#ffffff 0%,#f4f8ff 62%,#f6f2ff 100%);box-shadow:0 18px 48px rgba(18,41,100,.07)}
+.cv-seo-promo-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:28px;align-items:center}.cv-seo-promo-kicker{margin:0 0 10px;color:#2a7bff;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}.cv-seo-promo h2{margin:0;color:#0b1234;font-size:clamp(28px,3.6vw,44px);line-height:1.08;letter-spacing:-.04em}.cv-seo-promo p{margin:14px 0 0;color:#5d6b93;font-size:15px;line-height:1.7}.cv-seo-cta{display:inline-flex;align-items:center;justify-content:center;min-height:50px;margin-top:20px;padding:0 20px;border-radius:14px;background:#2a7bff;color:white;text-decoration:none;font-weight:800;box-shadow:0 10px 24px rgba(42,123,255,.2)}.cv-seo-promo-links{display:grid;gap:9px}.cv-seo-promo-links a{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:46px;padding:0 14px;border:1px solid #dbe6f5;border-radius:13px;background:#fff;color:#17345e;text-decoration:none;font-size:13px;font-weight:700}.cv-seo-promo-links a::after{content:"→";color:#2a7bff}.cv-seo-note{margin-top:13px!important;font-size:12px!important;color:#7180a1!important}
+@media(max-width:760px){.cv-seo-promo{width:calc(100% - 20px);margin-top:22px;padding:22px 18px;border-radius:20px}.cv-seo-promo-grid{grid-template-columns:1fr;gap:18px}.cv-seo-promo h2{font-size:clamp(27px,8.8vw,38px)}.cv-seo-cta{width:100%}.cv-seo-promo-links{gap:8px}.cv-seo-promo-links a{min-height:48px}}
 footer{margin-top:28px;padding:24px 20px;color:var(--muted);text-align:center;font-size:12px}
 footer a{color:var(--blue);text-decoration:none;font-weight:700}
 .hero-shell{position:relative}
@@ -853,8 +875,13 @@ footer a{
 <main class="page hero-shell" id="convertir"><div class="workspace">
 <section>
     <div class="hero">
+        {% if canonical_override is defined %}
         <h1>Convert your files <span>with confidence</span></h1>
-        <p>Audio, images and documents in one place.</p>
+        <p>Fast, private and simple. Upload one or more files and choose only output formats compatible with the real file content.</p>
+        {% else %}
+        <h1>Convert files and create a professional resume <span>with AI for free</span></h1>
+        <p>One place for both: convert documents, images, audio and video, or create and improve a professional resume with artificial intelligence for free.</p>
+        {% endif %}
         <div class="limit-info"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 19 6v5c0 4.6-2.8 8-7 10-4.2-2-7-5.4-7-10V6l7-3Z"/><path d="m9 12 2 2 4-4"/></svg> Automatic MIME detection · <strong>Maximum {{ max_mb }} MB per request</strong></div>
     </div>
     <label class="upload-box" id="dropZone" for="archivo">
@@ -939,6 +966,21 @@ footer a{
   </div>
 </section>
 
+
+{% if canonical_override is not defined %}
+<section class="cv-seo-promo" aria-labelledby="cv-seo-promo-title">
+  <div class="cv-seo-promo-grid">
+    <div><p class="cv-seo-promo-kicker">Converti CV · IA</p><h2 id="cv-seo-promo-title">Create a professional resume with AI for free</h2><p>Start from scratch or import a PDF or Word resume. Converti helps improve wording, organize experience, optimize for ATS and rebuild CompuTrabajo resumes into a clean editable format.</p><a class="cv-seo-cta" href="/en/create-cv">Create my free AI resume</a><p class="cv-seo-note">No registration · No watermark · Optional AI · PDF and editable Word</p></div>
+    <div class="cv-seo-promo-links" aria-label="Converti CV">
+      <a href="/en/resume/ai-resume-builder">Create my free AI resume</a>
+      <a href="/en/resume/improve-resume-with-ai">Improve resume with AI</a>
+      <a href="/en/resume/optimize-computrabajo-resume">Optimize CompuTrabajo resume</a>
+      <a href="/en/resume/ats-resume">Optimize resume for ATS</a>
+      <a href="/en/create-cv">Download PDF or Word</a>
+    </div>
+  </div>
+</section>
+{% endif %}
 <section class="info-section" id="formatos"><h2>Available formats</h2><p>Options are generated from the real MIME type and the engines available on this server.</p><div class="format-grid"><div class="format-card"><h3>Audio</h3><p>FFmpeg: MP3, WAV, FLAC, OGG, OPUS, M4A, AAC, WMA y más según compilación.</p></div><div class="format-card"><h3>Images</h3><p>PNG, JPG, WEBP, TIFF, GIF, AVIF, HEIC, PSD, SVG y RAW cuando el motor los soporte.</p></div><div class="format-card"><h3>Documents</h3><p>PDF, DOCX, ODT, RTF, XLSX, ODS, CSV, PPTX, EPUB, Markdown, HTML y LaTeX.</p></div></div><div class="coming">PDF to Word, scanned PDF OCR, multi-page PDF to ZIP images, multiple images to PDF and batch conversion are integrated.</div><div class="engine-grid" id="engineGrid"></div></section>
 <section class="info-section" id="ayuda"><h2>How does Converti work?</h2><div class="help-grid"><div class="help-card"><div class="help-number">1</div><h3>Select</h3><p>Converti validates the content, detects MIME and classifies the file.</p></div><div class="help-card"><div class="help-number">2</div><h3>Choose</h3><p>Only formats supported by the engines actually available are shown.</p></div><div class="help-card"><div class="help-number">3</div><h3>Convert</h3><p>Conversion runs without reloading the page; multiple results are delivered in a ZIP file.</p></div></div></section>
 <footer class="converti-site-footer">Converti · Simple and private file conversion · <a href="/en/privacy">Privacy</a></footer>

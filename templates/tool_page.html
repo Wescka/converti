@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ title }} · Converti</title><link rel="icon" type="image/png" href="/static/images/icon1.png">
+<title>{{ seo_page_title }}</title><link rel="icon" type="image/png" href="/static/images/icon1.png">
 <meta name="description" content="{{ description }}">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Converti">
-<meta property="og:title" content="{{ title }} · Converti">
+<meta property="og:title" content="{{ seo_page_title }}">
 <meta property="og:description" content="{{ description }}">
 <meta property="og:url" content="{{ canonical_url }}">
 <meta property="og:image" content="https://converti.lat/static/images/logo_converti.png">
@@ -433,7 +433,7 @@ footer{font-size:13px;line-height:1.65;font-weight:500}
 
 <main class="wrap">
   <div class="badge">{{ ui.badge }}</div>
-  <h1>{{ title }}</h1>
+  <h1>{{ title }}{% if locale == 'es' %} online gratis{% elif locale == 'en' %} online free{% elif locale == 'fr' %} en ligne gratuit{% else %} online grátis{% endif %}</h1>
   <p class="lead">{{ description }}</p>
 
   <section class="box">

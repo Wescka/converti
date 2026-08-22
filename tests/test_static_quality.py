@@ -64,6 +64,29 @@ class StaticQualityTests(unittest.TestCase):
         for token in ("detail.categories", "detail.faq", "detail.help_blocks", "detail.help_faq"):
             self.assertIn(token, template)
 
+    def test_home_seo_prioritizes_converter_and_ai_cv(self):
+        html = (ROOT / "templates" / "index.html").read_text(encoding="utf-8")
+        self.assertIn("Convertidor de archivos y CV con IA gratis", html)
+        self.assertIn("Crea un CV profesional con IA totalmente gratis", html)
+        self.assertIn('/cv/crear-cv-con-ia', html)
+        self.assertIn('/convertir/pdf-a-word', html)
+
+    def test_converter_route_has_distinct_search_intent(self):
+        html = (ROOT / "templates" / "index.html").read_text(encoding="utf-8")
+        self.assertIn("canonical_override is defined", html)
+        self.assertIn("Convertidor de archivos online gratis", html)
+
+    def test_sitemap_contains_hreflang_markup(self):
+        source = (ROOT / "app.py").read_text(encoding="utf-8")
+        self.assertIn('xmlns:xhtml=', source)
+        self.assertIn('hreflang=\"x-default\"', source)
+
+    def test_tool_pages_use_search_focused_titles(self):
+        source = (ROOT / "app.py").read_text(encoding="utf-8")
+        template = (ROOT / "templates" / "tool_page.html").read_text(encoding="utf-8")
+        self.assertIn('seo_page_title', source)
+        self.assertIn('{{ seo_page_title }}', template)
+
 
 if __name__ == "__main__":
     unittest.main()
