@@ -396,21 +396,3 @@ html{scroll-behavior:auto}.cvb-app{overflow-x:hidden}.cvb-main{padding-top:0}
   .cvb-session-pill{display:none!important}
   .cvb-workspace.is-mobile-preview .cvb-page-shell{height:64dvh!important;min-height:390px!important}
 }
-
-/* Export selector: never truncate PDF/Word labels in any locale/layout. */
-.cvb-export-control{flex:0 0 auto!important;min-width:max-content!important}
-.cvb-export-control select{
-  flex:0 0 auto!important;
-  width:auto!important;
-  min-width:86px!important;
-  max-width:none!important;
-  padding-inline:12px 32px!important;
-  text-overflow:clip!important;
-}
-@media(max-width:720px){
-  .cvb-export-control{width:100%!important;display:grid!important;grid-template-columns:auto minmax(92px,auto) minmax(0,1fr) auto!important;gap:8px!important}
-  .cvb-export-control select{min-width:92px!important;width:92px!important;font-size:13px!important}
-}
-
-/* SEO content block: visible, indexable and isolated from the editor layout. */
-.cvb-seo-links{max-width:1180px;margin:28px auto 0;padding:28px 24px;border-top:1px solid #e7edf5;font-family:"Plus Jakarta Sans",sans-serif}.cvb-seo-links h2{margin:0 0 10px;font-size:22px;color:#15233a}.cvb-seo-links p{max-width:900px;color:#68758a;line-height:1.65}.cvb-seo-links div{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.cvb-seo-links a{display:inline-flex;padding:10px 12px;border:1px solid #dfe7f1;border-radius:10px;text-decoration:none;color:#285f9d;background:#fff;font-weight:700;font-size:14px}@media(max-width:720px){.cvb-seo-links{margin-top:18px;padding:22px 16px}.cvb-seo-links div{display:grid;grid-template-columns:1fr}.cvb-seo-links a{min-height:44px;align-items:center}}

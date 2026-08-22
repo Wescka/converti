@@ -1059,9 +1059,7 @@ def _render_cv(locale: str):
     ui = CV_UI[locale]
     alternates = {"es":"https://converti.lat/crear-cv","en":"https://converti.lat/en/create-cv","fr":"https://converti.lat/fr/creer-cv","pt-BR":"https://converti.lat/pt-br/criar-cv"}
     home_path = LOCALE_PATHS.get(locale, LOCALE_PATHS["es"])["home"] if "LOCALE_PATHS" in globals() else ("/" if locale=="es" else f"/{locale}/")
-    canonical_url = "https://converti.lat" + CV_PATHS[locale]
-    cv_schema = {"@context":"https://schema.org","@type":"WebApplication","name":"Converti CV","applicationCategory":"BusinessApplication","operatingSystem":"Web","url":canonical_url,"description":ui["meta_description"],"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
-    return render_template("create_cv.html", cv_ui=ui, cv_js=ui, locale=locale, home_path=home_path, cv_path=CV_PATHS[locale], privacy_path=CV_PRIVACY_PATHS[locale], canonical_url=canonical_url, alternates=alternates, cv_schema_json=json.dumps(cv_schema, ensure_ascii=False))
+    return render_template("create_cv.html", cv_ui=ui, cv_js=ui, locale=locale, home_path=home_path, cv_path=CV_PATHS[locale], privacy_path=CV_PRIVACY_PATHS[locale], canonical_url="https://converti.lat"+CV_PATHS[locale], alternates=alternates)
 
 @app.get("/crear-cv")
 def create_cv_es(): return _render_cv("es")
@@ -1574,120 +1572,9 @@ def cv_ai():
     return jsonify({"ok":True,"cv":result})
 
 
-
-
-# -----------------------------------------------------------------------------
-# SEO landing pages — Converti CV, IA, CompuTrabajo y ATS
-# Páginas informativas indexables separadas del editor interactivo.
-# -----------------------------------------------------------------------------
-CV_SEO_SLUGS = {
-    "es": {
-        "crear-cv-con-ia": ("Crear CV con IA Gratis | Converti", "Crea y mejora tu currículum con IA, impórtalo desde PDF o Word y descárgalo en PDF o DOCX sin registro."),
-        "mejorar-cv-con-ia": ("Mejorar CV con IA Gratis | Converti", "Mejora la redacción, estructura y claridad de tu currículum con IA sin inventar experiencia ni datos personales."),
-        "optimizar-cv-computrabajo": ("Optimizar CV de CompuTrabajo con IA | Converti", "Importa tu CV de CompuTrabajo en PDF o Word, reorganiza su contenido y genera una versión profesional en PDF o DOCX."),
-        "cv-ats": ("Optimizar CV para ATS Gratis | Converti", "Optimiza tu currículum para filtros ATS con estructura clara, secciones reconocibles y texto legible para sistemas de selección."),
-        "convertir-cv-computrabajo": ("Convertir CV de CompuTrabajo a Word o PDF | Converti", "Convierte y reorganiza un CV de CompuTrabajo en una plantilla limpia de Converti y descárgalo como Word editable o PDF."),
-    },
-    "en": {
-        "ai-resume-builder": ("Free AI Resume Builder | Converti", "Create and improve your resume with AI, import PDF or Word files, and download a professional PDF or editable DOCX."),
-        "improve-resume-with-ai": ("Improve Your Resume with AI | Converti", "Improve resume wording, structure and clarity with AI while preserving your real experience and personal information."),
-        "optimize-computrabajo-resume": ("Optimize a CompuTrabajo Resume with AI | Converti", "Import a CompuTrabajo resume from PDF or Word, reorganize its content and export a professional PDF or DOCX."),
-        "ats-resume": ("Free ATS Resume Optimizer | Converti", "Optimize your resume for ATS screening with clear sections, readable text and recruiter-friendly structure."),
-        "convert-computrabajo-resume": ("Convert CompuTrabajo Resume to Word or PDF | Converti", "Turn a CompuTrabajo resume into a clean Converti template and download it as editable Word or PDF."),
-    },
-    "fr": {
-        "creer-cv-avec-ia": ("Créer un CV avec IA Gratuitement | Converti", "Créez et améliorez votre CV avec l’IA, importez un PDF ou Word et téléchargez-le en PDF ou DOCX."),
-        "ameliorer-cv-avec-ia": ("Améliorer un CV avec IA | Converti", "Améliorez la rédaction, la structure et la clarté de votre CV avec l’IA sans inventer d’expérience."),
-        "optimiser-cv-computrabajo": ("Optimiser un CV CompuTrabajo avec IA | Converti", "Importez un CV CompuTrabajo en PDF ou Word, réorganisez son contenu et exportez un CV professionnel."),
-        "cv-ats": ("Optimiser un CV pour ATS Gratuitement | Converti", "Optimisez votre CV pour les systèmes ATS avec des sections claires et un texte facilement lisible."),
-        "convertir-cv-computrabajo": ("Convertir un CV CompuTrabajo en Word ou PDF | Converti", "Transformez un CV CompuTrabajo en modèle Converti propre et téléchargez-le en Word ou PDF."),
-    },
-    "pt-br": {
-        "criar-curriculo-com-ia": ("Criar Currículo com IA Grátis | Converti", "Crie e melhore seu currículo com IA, importe PDF ou Word e baixe em PDF ou DOCX sem cadastro."),
-        "melhorar-curriculo-com-ia": ("Melhorar Currículo com IA Grátis | Converti", "Melhore a redação, estrutura e clareza do currículo com IA sem inventar experiências ou dados."),
-        "otimizar-curriculo-computrabajo": ("Otimizar Currículo do CompuTrabajo com IA | Converti", "Importe seu currículo do CompuTrabajo em PDF ou Word, reorganize o conteúdo e exporte em PDF ou DOCX."),
-        "curriculo-ats": ("Otimizar Currículo para ATS Grátis | Converti", "Otimize seu currículo para filtros ATS com seções claras, texto legível e estrutura amigável a recrutadores."),
-        "converter-curriculo-computrabajo": ("Converter Currículo do CompuTrabajo para Word ou PDF | Converti", "Transforme um currículo do CompuTrabajo em um modelo limpo do Converti e baixe em Word ou PDF."),
-    },
-}
-
-CV_SEO_PREFIX = {"es":"/cv/", "en":"/en/resume/", "fr":"/fr/cv/", "pt-br":"/pt-br/curriculo/"}
-
-def _cv_seo_url(locale, slug):
-    return "https://converti.lat" + CV_SEO_PREFIX[locale] + slug
-
-def _cv_seo_page(locale, slug):
-    meta = CV_SEO_SLUGS.get(locale, {}).get(slug)
-    if not meta:
-        return None
-    title, description = meta
-    common = {
-      "es": {"html_lang":"es","convert":"Convertir","formats":"Formatos","help":"Ayuda","create":"Crear CV","badge":"Converti CV · IA integrada","cta":"Abrir Converti CV","benefits_title":"Ventajas","how_title":"Cómo funciona","privacy_title":"Privacidad y datos","privacy_text":"Converti procesa el contenido necesario para la función elegida. La IA solo se usa cuando la activas; no inventa empresas, estudios ni fechas.","faq_title":"Preguntas frecuentes","related_title":"También te puede interesar"},
-      "en": {"html_lang":"en","convert":"Convert","formats":"Formats","help":"Help","create":"Create CV","badge":"Converti CV · Built-in AI","cta":"Open Converti CV","benefits_title":"Benefits","how_title":"How it works","privacy_title":"Privacy and data","privacy_text":"Converti processes only the content needed for the selected feature. AI runs only when you activate it and does not invent employers, education or dates.","faq_title":"Frequently asked questions","related_title":"Related tools"},
-      "fr": {"html_lang":"fr","convert":"Convertir","formats":"Formats","help":"Aide","create":"Créer un CV","badge":"Converti CV · IA intégrée","cta":"Ouvrir Converti CV","benefits_title":"Avantages","how_title":"Comment ça marche","privacy_title":"Confidentialité et données","privacy_text":"Converti ne traite que le contenu nécessaire à la fonction choisie. L’IA n’est utilisée que si vous l’activez et n’invente ni employeur, ni étude, ni date.","faq_title":"Questions fréquentes","related_title":"Outils associés"},
-      "pt-br": {"html_lang":"pt-BR","convert":"Converter","formats":"Formatos","help":"Ajuda","create":"Criar CV","badge":"Converti CV · IA integrada","cta":"Abrir Converti CV","benefits_title":"Vantagens","how_title":"Como funciona","privacy_title":"Privacidade e dados","privacy_text":"O Converti processa apenas o conteúdo necessário para a função escolhida. A IA só é usada quando você ativa e não inventa empresas, estudos ou datas.","faq_title":"Perguntas frequentes","related_title":"Ferramentas relacionadas"},
-    }[locale]
-    # Content intentionally distinct per search intent to avoid thin/duplicate pages.
-    intent = slug.lower()
-    is_compu = "computa" in intent
-    is_ats = "ats" in intent
-    is_improve = any(x in intent for x in ("mejorar", "improve", "ameliorer", "melhorar"))
-    if locale == "es":
-        if is_compu:
-            h1 = "Optimiza y convierte tu CV de CompuTrabajo" if "optimizar" in intent else "Convierte tu CV de CompuTrabajo a Word o PDF"
-            lead = "Sube el currículo exportado desde CompuTrabajo. Converti extrae el contenido, normaliza secciones como experiencia y educación y lo adapta a una plantilla limpia que puedes editar antes de descargar."
-            what_title="De CompuTrabajo a un CV limpio"; what_text="En lugar de copiar el formato original, Converti separa el contenido del diseño, identifica secciones y reconstruye el currículo dentro del editor. Así puedes corregir datos, mejorar la redacción y elegir una plantilla profesional."
-            benefits=["Importa PDF o DOCX de CompuTrabajo.","Conserva experiencias, estudios, habilidades e idiomas detectados.","Edita el resultado antes de exportarlo.","Descarga Word editable o PDF A4."]
-            steps=["Sube tu CV de CompuTrabajo en Converti CV.","Revisa la información extraída y corrige cualquier dato dudoso.","Usa IA de forma opcional para mejorar redacción y estructura.","Elige plantilla y descarga en PDF o Word."]
-            faq=[("¿Converti copia el diseño de CompuTrabajo?","No. Extrae y normaliza el contenido para reconstruirlo en las plantillas de Converti."),("¿Puede perder información?","El sistema intenta conservar las secciones detectadas y te permite revisar el resultado antes de descargar."),("¿Sirve PDF y Word?","Sí, la importación admite PDF y DOCX compatibles.")]
-        elif is_ats:
-            h1="Optimiza tu CV para sistemas ATS"; lead="Reorganiza tu currículum para facilitar su lectura por sistemas de seguimiento de candidatos y por reclutadores, manteniendo texto seleccionable y encabezados claros."; what_title="Qué hace un CV compatible con ATS"; what_text="Los ATS suelen interpretar mejor documentos con estructura lógica, títulos reconocibles, texto real y orden consistente. Converti ayuda a limpiar la organización del CV sin inventar experiencia."; benefits=["Secciones claras y reconocibles.","Texto seleccionable y editable.","Menos elementos que dificultan el parsing automático.","Exportación a Word o PDF."]; steps=["Importa o crea tu CV.","Pulsa Optimizar para filtros de selección.","Revisa cada cambio y tus datos reales.","Descarga la versión final."]; faq=[("¿Converti garantiza pasar cualquier ATS?","No. Ninguna herramienta puede garantizar el resultado de todos los sistemas, pero una estructura clara facilita la lectura automática."),("¿La IA inventa palabras clave?","Debe basarse en tu información y, cuando aportas una vacante, en el contexto que proporcionas."),("¿Word o PDF para ATS?","Depende del portal. Converti permite generar ambos formatos para que uses el solicitado.")]
-        elif is_improve:
-            h1="Mejora tu CV con inteligencia artificial"; lead="Haz que tu experiencia sea más clara y profesional. La IA de Converti puede reorganizar y mejorar la redacción sin cambiar tus datos reales ni inventar empleos, estudios o fechas."; what_title="Qué puede mejorar la IA"; what_text="La herramienta trabaja sobre la información que ya has escrito o importado. Puede reforzar el perfil profesional, ordenar experiencia, transformar tareas en descripciones más claras y sugerir habilidades coherentes."; benefits=["Mejora de redacción y ortografía.","Perfil profesional más claro.","Experiencia mejor estructurada.","Edición manual antes de descargar."]; steps=["Crea, pega o importa tu CV.","Elige la acción de IA que necesitas.","Revisa y corrige el resultado.","Descarga en PDF o Word."]; faq=[("¿La IA inventa experiencia?","No debe hacerlo. Converti le indica que conserve los datos reales aportados por el usuario."),("¿Puedo usarlo sin IA?","Sí. El editor y la exportación funcionan también de forma manual."),("¿Puedo descargar Word?","Sí, puedes generar un DOCX editable además del PDF.")]
-        else:
-            h1="Crea un CV profesional con IA gratis"; lead="Diseña tu currículum desde cero o importa uno existente. Converti integra IA para ayudarte con la redacción, plantillas profesionales y exportación a PDF o Word."; what_title="Un creador de CV con IA y edición real"; what_text="Puedes introducir tus datos manualmente, importar un currículo, mejorar secciones con IA y seguir editando cada campo antes de descargar. El resultado no es una captura: Word se genera como DOCX editable y PDF como documento A4."; benefits=["Crear CV sin registro.","Importar PDF o Word.","Mejoras opcionales con IA.","Plantillas profesionales y ATS.","Descarga en PDF y DOCX."]; steps=["Abre Converti CV y elige cómo empezar.","Completa o importa tu información.","Usa IA solo en las secciones que quieras mejorar.","Elige plantilla, revisa la vista previa y descarga."]; faq=[("¿Es gratis?","Converti CV está diseñado para permitir crear y descargar el currículo sin registro ni marca de agua."),("¿Puedo importar un CV que ya tengo?","Sí, puedes cargar PDF o DOCX compatibles y revisar la información extraída."),("¿Puedo editar el Word?","Sí. La descarga DOCX genera un documento editable.")]
-    else:
-        # Localized concise copy; title/description remain unique for each intent.
-        h1=title.split(" | ")[0]; lead=description; what_title={"en":"What this tool does","fr":"Ce que fait cet outil","pt-br":"O que esta ferramenta faz"}[locale]; what_text=description; benefits=[description, {"en":"Review every field before downloading.","fr":"Vérifiez chaque champ avant le téléchargement.","pt-br":"Revise cada campo antes de baixar."}[locale], {"en":"Export to PDF or editable Word.","fr":"Exportez en PDF ou Word modifiable.","pt-br":"Exporte para PDF ou Word editável."}[locale]]; steps=[{"en":"Open Converti CV.","fr":"Ouvrez Converti CV.","pt-br":"Abra o Converti CV."}[locale], {"en":"Create or import your resume.","fr":"Créez ou importez votre CV.","pt-br":"Crie ou importe seu currículo."}[locale], {"en":"Review AI suggestions and edit your data.","fr":"Vérifiez les suggestions de l’IA et modifiez vos données.","pt-br":"Revise as sugestões da IA e edite seus dados."}[locale], {"en":"Download PDF or Word.","fr":"Téléchargez en PDF ou Word.","pt-br":"Baixe em PDF ou Word."}[locale]]; faq=[({"en":"Can I edit the result?","fr":"Puis-je modifier le résultat ?","pt-br":"Posso editar o resultado?"}[locale], {"en":"Yes. You can edit the resume in Converti and export an editable DOCX.","fr":"Oui. Vous pouvez modifier le CV dans Converti et exporter un DOCX modifiable.","pt-br":"Sim. Você pode editar no Converti e exportar um DOCX editável."}[locale]), ({"en":"Does AI invent experience?","fr":"L’IA invente-t-elle de l’expérience ?","pt-br":"A IA inventa experiências?"}[locale], {"en":"It is instructed to preserve real user-provided information and not invent employers, education or dates.","fr":"Elle doit conserver les informations réelles fournies et ne pas inventer d’employeur, d’études ou de dates.","pt-br":"Ela deve preservar as informações reais fornecidas e não inventar empresas, estudos ou datas."}[locale])]
-    page=dict(common, title=title, description=description, h1=h1, lead=lead, what_title=what_title, what_text=what_text, benefits=benefits, steps=steps, faq=faq)
-    return page
-
-def _render_cv_seo(locale, slug):
-    page = _cv_seo_page(locale, slug)
-    if not page:
-        return "Not found", 404
-    canonical = _cv_seo_url(locale, slug)
-    # alternates by position so equivalent intents are paired across languages.
-    keys = list(CV_SEO_SLUGS[locale])
-    idx = keys.index(slug)
-    alternates = {}
-    for code in ("es","en","fr","pt-br"):
-        equiv = list(CV_SEO_SLUGS[code])[idx]
-        alternates["pt-BR" if code=="pt-br" else code] = _cv_seo_url(code, equiv)
-    related=[]
-    for other_slug,(other_title,_) in CV_SEO_SLUGS[locale].items():
-        if other_slug != slug:
-            related.append((CV_SEO_PREFIX[locale]+other_slug, other_title.split(" | ")[0]))
-    schema = {"@context":"https://schema.org","@graph":[
-        {"@type":"WebPage","name":page["h1"],"description":page["description"],"url":canonical,"isPartOf":{"@type":"WebSite","name":"Converti","url":"https://converti.lat/"}},
-        {"@type":"WebApplication","name":"Converti CV","applicationCategory":"BusinessApplication","operatingSystem":"Web","url":"https://converti.lat"+CV_PATHS[locale],"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
-        {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Converti","item":"https://converti.lat"+SECTION_PATHS[locale]["home"]},{"@type":"ListItem","position":2,"name":SECTION_UI[locale]["create"],"item":"https://converti.lat"+CV_PATHS[locale]},{"@type":"ListItem","position":3,"name":page["h1"],"item":canonical}]}
-    ]}
-    return render_template("cv_seo_page.html", page=page, ui=page, paths=SECTION_PATHS[locale], canonical_url=canonical, alternates=alternates, related=related, schema_json=json.dumps(schema, ensure_ascii=False))
-
-@app.get("/cv/<slug>")
-def cv_seo_es(slug): return _render_cv_seo("es", slug)
-@app.get("/en/resume/<slug>")
-def cv_seo_en(slug): return _render_cv_seo("en", slug)
-@app.get("/fr/cv/<slug>")
-def cv_seo_fr(slug): return _render_cv_seo("fr", slug)
-@app.get("/pt-br/curriculo/<slug>")
-def cv_seo_ptbr(slug): return _render_cv_seo("pt-br", slug)
-
-
 @app.get("/robots.txt")
 def robots():
-    return "User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /download/\nSitemap: https://converti.lat/sitemap.xml\n", 200, {"Content-Type":"text/plain; charset=utf-8"}
+    return "User-agent: *\nAllow: /\nSitemap: https://converti.lat/sitemap.xml\n", 200, {"Content-Type":"text/plain; charset=utf-8"}
 
 
 SEO_ROUTES_I18N = {
@@ -1916,15 +1803,14 @@ def sitemap():
     for locale in ("es", "en", "fr", "pt-br"):
         p = LOCALE_PATHS[locale]
         urls.append("https://converti.lat" + p["home"])
+        urls.append("https://converti.lat" + p["privacy"])
         urls.append("https://converti.lat" + CV_PATHS[locale])
         urls.append("https://converti.lat" + SECTION_PATHS[locale]["convert"])
         urls.append("https://converti.lat" + SECTION_PATHS[locale]["formats"])
         urls.append("https://converti.lat" + SECTION_PATHS[locale]["help"])
         for slug, _, _ in SEO_ROUTES_I18N[locale]:
             urls.append(_tool_url(locale, slug))
-        for slug in CV_SEO_SLUGS[locale]:
-            urls.append(_cv_seo_url(locale, slug))
-    body = "".join(f"<url><loc>{u}</loc><lastmod>2026-08-22</lastmod></url>" for u in urls)
+    body = "".join(f"<url><loc>{u}</loc></url>" for u in urls)
     return f"<?xml version='1.0' encoding='UTF-8'?><urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>{body}</urlset>", 200, {"Content-Type":"application/xml"}
 
 

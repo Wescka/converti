@@ -5,18 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>{{ cv_ui.meta_title }}</title>
   <meta name="description" content="{{ cv_ui.meta_description }}">
-  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
   <link rel="canonical" href="{{ canonical_url }}">
   {% for code, href in alternates.items() %}<link rel="alternate" hreflang="{{ code }}" href="{{ href }}">{% endfor %}
   <link rel="alternate" hreflang="x-default" href="https://converti.lat/crear-cv">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Converti">
-  <meta property="og:title" content="{{ cv_ui.meta_title }}">
-  <meta property="og:description" content="{{ cv_ui.meta_description }}">
-  <meta property="og:url" content="{{ canonical_url }}">
-  <meta property="og:image" content="https://converti.lat/static/images/logo_converti.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <script type="application/ld+json">{{ cv_schema_json|safe }}</script>
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/icon1.png') }}?v=6">
   <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/icon1.png') }}?v=6">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -260,18 +251,6 @@
     </div>
   </section>
 </main>
-<section class="cvb-seo-links" aria-label="Converti CV">
-  {% if locale == 'es' %}
-  <h2>Herramientas para crear y mejorar tu CV</h2><p>Además del editor, Converti ofrece flujos específicos para crear un CV con IA, mejorar la redacción, optimizar currículos de CompuTrabajo y preparar una estructura más compatible con ATS.</p>
-  <div><a href="/cv/crear-cv-con-ia">Crear CV con IA</a><a href="/cv/mejorar-cv-con-ia">Mejorar CV con IA</a><a href="/cv/optimizar-cv-computrabajo">Optimizar CV de CompuTrabajo</a><a href="/cv/cv-ats">Optimizar CV para ATS</a><a href="/cv/convertir-cv-computrabajo">Convertir CV de CompuTrabajo</a></div>
-  {% elif locale == 'en' %}
-  <h2>Tools to create and improve your resume</h2><div><a href="/en/resume/ai-resume-builder">AI resume builder</a><a href="/en/resume/improve-resume-with-ai">Improve resume with AI</a><a href="/en/resume/optimize-computrabajo-resume">Optimize CompuTrabajo resume</a><a href="/en/resume/ats-resume">ATS resume optimizer</a><a href="/en/resume/convert-computrabajo-resume">Convert CompuTrabajo resume</a></div>
-  {% elif locale == 'fr' %}
-  <h2>Outils pour créer et améliorer votre CV</h2><div><a href="/fr/cv/creer-cv-avec-ia">Créer un CV avec IA</a><a href="/fr/cv/ameliorer-cv-avec-ia">Améliorer un CV avec IA</a><a href="/fr/cv/optimiser-cv-computrabajo">Optimiser un CV CompuTrabajo</a><a href="/fr/cv/cv-ats">CV compatible ATS</a><a href="/fr/cv/convertir-cv-computrabajo">Convertir un CV CompuTrabajo</a></div>
-  {% else %}
-  <h2>Ferramentas para criar e melhorar seu currículo</h2><div><a href="/pt-br/curriculo/criar-curriculo-com-ia">Criar currículo com IA</a><a href="/pt-br/curriculo/melhorar-curriculo-com-ia">Melhorar currículo com IA</a><a href="/pt-br/curriculo/otimizar-curriculo-computrabajo">Otimizar currículo do CompuTrabajo</a><a href="/pt-br/curriculo/curriculo-ats">Currículo para ATS</a><a href="/pt-br/curriculo/converter-curriculo-computrabajo">Converter currículo do CompuTrabajo</a></div>
-  {% endif %}
-</section>
 <footer class="cvb-site-footer">Converti · <a href="{{ privacy_path }}">{{ cv_ui.privacy_label }}</a></footer>
 <script>window.CVB_I18N={{ cv_js|tojson }};</script>
 <script src="{{ url_for('static', filename='js/create_cv.js') }}?v=mobile-20260822" defer></script>

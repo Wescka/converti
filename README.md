@@ -197,19 +197,3 @@ Ejecutar pruebas estáticas:
 ```bash
 python -m unittest tests/test_static_quality.py -v
 ```
-
-## Ajuste 2026-08-22 — Exportación Word/PDF y selector de formato
-- El DOCX moderno usa anchos de tabla A4 fijos compatibles con Word/LibreOffice para evitar compresión horizontal.
-- Se mejoró la legibilidad del DOCX y la paginación: encabezados permanecen con el contenido asociado y descripciones largas pueden continuar en la página siguiente sin perder datos.
-- La exportación PDF conserva su flujo multipágina; los bloques excepcionalmente largos pueden dividirse de forma segura para evitar recortes.
-- El selector de formato reserva espacio suficiente para mostrar completos `PDF` y `Word` en escritorio y móvil. La regla es común a ES/EN/FR/PT-BR.
-
-## SEO update 2026-08-22
-
-- Se mantienen las 15 landing pages SEO de conversión por idioma.
-- Se añadieron 5 nuevas intenciones SEO de Converti CV por idioma (20 páginas nuevas): creador de CV con IA, mejora de CV con IA, optimización de CV de CompuTrabajo, CV para ATS y conversión de CV de CompuTrabajo a Word/PDF.
-- `sitemap.xml` incluye ahora las páginas indexables y `lastmod` de esta versión.
-- Las páginas de privacidad se mantienen accesibles pero usan `noindex,follow` y se retiraron del sitemap para evitar indexación de páginas sin intención de búsqueda.
-- Se reforzaron canonical, hreflang, robots, Open Graph y datos estructurados WebApplication/BreadcrumbList en Converti CV.
-- El editor `/crear-cv` enlaza internamente las nuevas landing pages para facilitar descubrimiento y rastreo.
-- `robots.txt` permite el sitio público y excluye `/api/` y `/download/` del rastreo.
