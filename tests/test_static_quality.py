@@ -158,9 +158,11 @@ class StaticQualityTests(unittest.TestCase):
     def test_mid_width_header_keeps_buttons_visible_without_logo_collision(self):
         css = (ROOT / "static" / "css" / "site_ui.css").read_text(encoding="utf-8")
         js = (ROOT / "static" / "js" / "site_ui.js").read_text(encoding="utf-8")
-        self.assertIn("@media (min-width:761px) and (max-width:1280px)", css)
+        self.assertIn("@media (min-width:761px) and (max-width:1100px)", css)
+        self.assertIn("@media (min-width:1101px) and (max-width:1280px)", css)
         self.assertIn("grid-template-rows:1fr", css)
-        self.assertIn("grid-template-columns:minmax(150px,210px) minmax(0,1fr) auto!important", css)
+        self.assertIn("grid-template-columns:minmax(185px,235px) minmax(0,1fr) auto!important", css)
+        self.assertIn("grid-template-columns:minmax(190px,1fr) auto!important", css)
         self.assertIn("window.innerWidth > 760", js)
 
     def test_convert_root_has_people_first_seo_content_without_blocking_converter(self):
@@ -173,16 +175,18 @@ class StaticQualityTests(unittest.TestCase):
     def test_site_ui_cache_version_is_bumped_for_layout_release(self):
         for name in ("index.html", "index_en.html", "index_fr.html", "index_ptbr.html", "section_page.html", "tool_page.html"):
             html = (ROOT / "templates" / name).read_text(encoding="utf-8")
-            self.assertIn("20260822-header-stable-9", html, name)
+            self.assertIn("20260822-header-stable-10", html, name)
 
 
 
 class HeaderResponsiveRegressionTests(unittest.TestCase):
     def test_mid_width_keeps_navigation_visible(self):
         css = (ROOT / 'static/css/site_ui.css').read_text(encoding='utf-8')
-        self.assertIn('@media (min-width:761px) and (max-width:1280px)', css)
+        self.assertIn('@media (min-width:761px) and (max-width:1100px)', css)
+        self.assertIn('@media (min-width:1101px) and (max-width:1280px)', css)
         self.assertIn('grid-template-rows:1fr', css)
-        self.assertIn('grid-template-columns:minmax(150px,210px) minmax(0,1fr) auto!important', css)
+        self.assertIn('grid-template-columns:minmax(185px,235px) minmax(0,1fr) auto!important', css)
+        self.assertIn('grid-template-columns:minmax(190px,1fr) auto!important', css)
         self.assertIn('.site-mobile-menu-toggle,.cvb-mobile-menu-toggle{display:none!important}', css)
 
     def test_only_mobile_collapses_navigation(self):
@@ -192,7 +196,8 @@ class HeaderResponsiveRegressionTests(unittest.TestCase):
 
     def test_header_css_has_single_mid_width_strategy(self):
         css = (ROOT / 'static/css/site_ui.css').read_text(encoding='utf-8')
-        self.assertEqual(css.count('@media (min-width:761px) and (max-width:1280px)'), 1)
+        self.assertEqual(css.count('@media (min-width:761px) and (max-width:1100px)'), 1)
+        self.assertEqual(css.count('@media (min-width:1101px) and (max-width:1280px)'), 1)
 
     def test_cv_seo_uses_shared_header_css_only(self):
         html = (ROOT / 'templates/cv_seo_page.html').read_text(encoding='utf-8')
@@ -205,11 +210,13 @@ class HeaderResponsiveRegressionTests(unittest.TestCase):
 
     def test_compact_desktop_header_stays_single_row(self):
         css = (ROOT / 'static/css/site_ui.css').read_text(encoding='utf-8')
-        block = css.split('@media (min-width:761px) and (max-width:1280px)',1)[1].split('/* ===== Móvil real',1)[0]
-        self.assertIn('grid-template-rows:1fr!important', block)
-        self.assertIn('grid-column:2!important;grid-row:1!important', block)
-        self.assertIn('display:none!important', block)
-        self.assertNotIn('grid-row:2!important', block)
+        wide = css.split('@media (min-width:1101px) and (max-width:1280px)',1)[1].split('@media (min-width:761px) and (max-width:1100px)',1)[0]
+        narrow = css.split('@media (min-width:761px) and (max-width:1100px)',1)[1].split('/* ===== Móvil real',1)[0]
+        self.assertIn('grid-template-rows:1fr!important', wide)
+        self.assertIn('grid-template-rows:58px 48px!important', narrow)
+        self.assertIn('grid-column:1 / -1!important;grid-row:2!important', narrow)
+        self.assertIn('.site-mobile-menu-toggle,.cvb-mobile-menu-toggle{display:none!important}', wide)
+        self.assertIn('.site-mobile-menu-toggle,.cvb-mobile-menu-toggle{display:none!important}', narrow)
 
 if __name__ == "__main__":
     unittest.main()
