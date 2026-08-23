@@ -58,30 +58,57 @@ body,button,input,textarea,select{font-family:"Plus Jakarta Sans",system-ui,-app
 }
 .site-mobile-menu-toggle,.cvb-mobile-menu-toggle{display:none!important}
 
-/* ===== Escritorio/laptop estrecho: dos filas, botones SIEMPRE visibles =====
-   721–1280 px: logo + idioma arriba; navegación completa centrada debajo.
-   Esto evita que el logo y los botones compitan por el mismo ancho. */
-@media (min-width:721px) and (max-width:1280px){
+/* ===== Responsive único del header =====
+   - >1280px: navegación cómoda.
+   - 761–1280px: misma fila, logo y botones reducen su huella sin solaparse.
+   - <=760px: navegación móvil con menú.
+   No se apilan filas de navegación en escritorio/laptop. */
+@media (min-width:761px) and (max-width:1280px){
   .header,.cvb-site-header{
-    min-height:120px!important;padding:10px 22px 12px!important;
-    grid-template-columns:minmax(0,1fr) auto!important;grid-template-rows:58px auto!important;
-    column-gap:14px!important;row-gap:8px!important;
+    min-height:74px!important;
+    padding:7px clamp(12px,1.7vw,22px)!important;
+    grid-template-columns:minmax(150px,210px) minmax(0,1fr) auto!important;
+    grid-template-rows:1fr!important;
+    column-gap:clamp(6px,1vw,12px)!important;
+    row-gap:0!important;
   }
-  .brand,.cvb-brand{grid-column:1!important;grid-row:1!important;overflow:visible!important;max-width:none!important}
-  .brand-logo,.cvb-brand img{height:56px!important;max-width:270px!important;width:auto!important}
-  .converti-header-tools{grid-column:2!important;grid-row:1!important;justify-self:end!important}
+  .brand,.cvb-brand{
+    grid-column:1!important;grid-row:1!important;
+    min-width:0!important;max-width:100%!important;overflow:hidden!important;
+  }
+  .brand-logo,.cvb-brand img{
+    width:100%!important;height:auto!important;max-height:55px!important;max-width:210px!important;
+    object-fit:contain!important;object-position:left center!important;
+  }
   .nav,.cvb-site-nav{
-    grid-column:1/-1!important;grid-row:2!important;justify-self:center!important;width:auto!important;max-width:100%!important;
-    display:flex!important;justify-content:center!important;gap:7px!important;overflow:visible!important;
-    max-height:none!important;opacity:1!important;pointer-events:auto!important;transform:none!important;padding:0!important;
+    grid-column:2!important;grid-row:1!important;
+    justify-self:center!important;width:100%!important;max-width:none!important;
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    gap:clamp(4px,.55vw,8px)!important;overflow:visible!important;
+    max-height:none!important;opacity:1!important;pointer-events:auto!important;
+    transform:none!important;padding:0!important;margin:0!important;
   }
-  .nav a,.cvb-site-nav a{min-height:42px!important;padding:0 12px!important;font-size:12.5px!important}
-  .nav a.nav-doc-ai,.cvb-site-nav a.nav-doc-ai{white-space:nowrap!important}
+  .nav a,.cvb-site-nav a{
+    min-width:0!important;min-height:40px!important;
+    padding:0 clamp(8px,.8vw,12px)!important;
+    font-size:clamp(10.5px,1.02vw,12.5px)!important;
+    border-radius:12px!important;
+  }
+  .nav a.nav-doc-ai,.cvb-site-nav a.nav-doc-ai{
+    max-width:178px!important;white-space:nowrap!important;
+  }
+  .converti-header-tools{
+    grid-column:3!important;grid-row:1!important;justify-self:end!important;
+    min-width:0!important;
+  }
+  .lang-select,.cvb-lang{
+    min-width:62px!important;width:auto!important;height:40px!important;padding:0 8px!important;
+  }
   .site-mobile-menu-toggle,.cvb-mobile-menu-toggle{display:none!important}
 }
 
-/* ===== Móvil real: logo + idioma + menú; navegación desplegable ===== */
-@media (max-width:720px){
+/* ===== Móvil real ===== */
+@media (max-width:760px){
   .header,.cvb-site-header{
     min-height:66px!important;padding:8px 12px!important;
     grid-template-columns:minmax(0,1fr) auto auto!important;grid-template-rows:auto auto!important;
@@ -117,7 +144,7 @@ body,button,input,textarea,select{font-family:"Plus Jakarta Sans",system-ui,-app
     width:100%!important;min-width:0!important;min-height:44px!important;padding:0 8px!important;border-radius:11px!important;
     font-size:12px!important;line-height:1.15!important;white-space:normal!important;text-align:center!important;
   }
-  .nav a.nav-doc-ai,.cvb-site-nav a.nav-doc-ai{grid-column:1/-1!important}
+  .nav a.nav-doc-ai,.cvb-site-nav a.nav-doc-ai{grid-column:1/-1!important;max-width:none!important}
 }
 @media(max-width:360px){
   .header,.cvb-site-header{padding-inline:9px!important;column-gap:6px!important}

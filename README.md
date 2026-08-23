@@ -257,3 +257,12 @@ La conversión a DOCX/PPTX inserta la imagen como contenido visual y no inventa 
 - El convertidor sigue apareciendo antes que el contenido editorial: no se ha cambiado el flujo principal de conversión ni el diseño base móvil.
 - Las páginas de herramientas usan `WebApplication` + `BreadcrumbList` en JSON-LD. Se retiró `FAQPage` porque Google dejó de mostrar FAQ rich results en 2026; las preguntas frecuentes se conservan para ayudar al usuario.
 - La IA de Converti CV usa temperatura baja, un reintento acotado para errores temporales y una capa local que preserva datos personales y hechos estructurados (empresa, cargo, fechas, estudios, idiomas y certificaciones). Las importaciones rechazan cifras nuevas que no existan en el documento original.
+
+## Ajuste de cabecera responsive 2026-08-22 (release estable)
+
+- Se eliminó la estrategia de dos filas en ventanas de escritorio/laptop estrechas.
+- Entre 761 y 1280 px el logo, navegación e idioma permanecen en una sola fila con tamaños fluidos.
+- A 760 px o menos se usa exclusivamente el menú móvil.
+- `cv_seo_page.html` dejó de mantener un header paralelo y ahora consume `static/css/site_ui.css`, igual que el resto del sitio.
+- Cache CSS/JS actualizada a `20260822-header-stable-9`.
+- Se validó que todos los templates con header cargan el mismo `site_ui.css`.
