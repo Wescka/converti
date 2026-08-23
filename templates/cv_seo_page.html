@@ -70,6 +70,6 @@
   <section class="seo-cv-card seo-cv-faq"><h2>{{ page.faq_title }}</h2>{% for q,a in page.faq %}<h3>{{ q }}</h3><p>{{ a }}</p>{% endfor %}<h3>{{ page.related_title }}</h3><div class="seo-cv-related">{% for href,label in related %}<a href="{{ href }}">{{ label }}</a>{% endfor %}</div></section>
 </main>
 <footer class="footer">Converti · <a href="{{ paths.home }}">{{ 'Inicio' if locale == 'es' else ('Home' if locale == 'en' else ('Accueil' if locale == 'fr' else 'Início')) }}</a></footer>
-<script src="{{ url_for('static', filename='js/site_ui.js') }}?v=20260822-layout-seo-6" defer></script>
+<script src="{{ url_for('static', filename='js/site_ui.js') }}?v=20260822-header-stable-7" defer></script>
 </body>
 </html>
