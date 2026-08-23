@@ -250,3 +250,10 @@ El conversor de imágenes fue ampliado y endurecido:
 - ImageMagick se detecta tanto como `magick` como `convert`, importante para Linux/Termux.
 
 La conversión a DOCX/PPTX inserta la imagen como contenido visual y no inventa texto. TXT es extracción OCR, por lo que su fidelidad depende de la calidad del original y de los idiomas instalados en Tesseract.
+
+## SEO útil + IA defensiva — 2026-08-22
+
+- Las 15 landing pages de conversión en ES/EN/FR/PT-BR incluyen contenido específico sobre casos de uso, compatibilidad, límites, problemas frecuentes, privacidad y herramientas relacionadas.
+- El convertidor sigue apareciendo antes que el contenido editorial: no se ha cambiado el flujo principal de conversión ni el diseño base móvil.
+- Las páginas de herramientas usan `WebApplication` + `BreadcrumbList` en JSON-LD. Se retiró `FAQPage` porque Google dejó de mostrar FAQ rich results en 2026; las preguntas frecuentes se conservan para ayudar al usuario.
+- La IA de Converti CV usa temperatura baja, un reintento acotado para errores temporales y una capa local que preserva datos personales y hechos estructurados (empresa, cargo, fechas, estudios, idiomas y certificaciones). Las importaciones rechazan cifras nuevas que no existan en el documento original.

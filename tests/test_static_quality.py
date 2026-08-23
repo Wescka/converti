@@ -129,5 +129,32 @@ class StaticQualityTests(unittest.TestCase):
         self.assertRegex(source, r'magick=find_tool\(\s*"magick",\s*"convert",')
 
 
+    def test_priority_conversion_pages_have_people_first_content(self):
+        seo = (ROOT / "seo_content.py").read_text(encoding="utf-8")
+        template = (ROOT / "templates" / "tool_page.html").read_text(encoding="utf-8")
+        for slug in ("pdf-a-word","word-a-pdf","jpg-a-pdf","pdf-a-jpg","pdf-a-png","png-a-jpg","jpg-a-png","png-a-webp","csv-a-xlsx","xlsx-a-csv"):
+            self.assertIn(f'"{slug}"', seo)
+        for token in ("seo.use_cases", "seo.compatibility", "seo.issues", "seo.privacy", "seo.expectation"):
+            self.assertIn(token, template)
+
+    def test_tool_pages_use_current_structured_data_without_faq_rich_result(self):
+        template = (ROOT / "templates" / "tool_page.html").read_text(encoding="utf-8")
+        self.assertIn('"@type": "WebApplication"', template)
+        self.assertIn('"@type": "BreadcrumbList"', template)
+        self.assertNotIn('"@type": "FAQPage"', template)
+
+    def test_ai_guard_preserves_factual_fields_and_retries(self):
+        source = (ROOT / "app.py").read_text(encoding="utf-8")
+        self.assertIn("def _cv_guard_ai_facts", source)
+        self.assertIn('retryable_http = {429, 500, 502, 503, 504}', source)
+        self.assertIn('"temperature":0.2', source)
+        self.assertIn("result = _cv_guard_ai_facts(original_current, result, action, source_text)", source)
+
+    def test_seo_module_is_python_valid_and_imported(self):
+        ast.parse((ROOT / "seo_content.py").read_text(encoding="utf-8"), filename="seo_content.py")
+        source = (ROOT / "app.py").read_text(encoding="utf-8")
+        self.assertIn("from seo_content import enrich_tool_seo", source)
+
+
 if __name__ == "__main__":
     unittest.main()

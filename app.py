@@ -88,6 +88,7 @@ from converters import (
     pdf_to_images,
     pdf_to_textual,
 )
+from seo_content import enrich_tool_seo
 from security_utils import (
     JOB_SEMAPHORE,
     detect_mime,
@@ -1461,6 +1462,90 @@ def _cv_mask_unneeded_personal(text: str) -> str:
     text = re.sub(r'(?i)\b(?:DNI|NIE|passport|pasaporte|cedula|cédula)\s*[:#-]?\s*[A-Z0-9.-]{5,}\b', '[IDENTIFICACION]', text)
     return text
 
+def _cv_numeric_tokens(text: str) -> set[str]:
+    """Extrae anclas numéricas relevantes para detectar cifras inventadas."""
+    return set(re.findall(r"(?<!\w)\d{2,}(?:[.,]\d+)?%?(?!\w)", str(text or "")))
+
+
+def _cv_guard_ai_facts(original: dict, result: dict, action: str, source_text: str = "") -> dict:
+    """Mantiene hechos estructurados fuera del alcance de la IA.
+
+    La IA puede mejorar redacción, pero no recibe autoridad para cambiar empresas,
+    cargos, periodos, estudios, idiomas, certificaciones ni datos personales.
+    En importaciones, donde no existe un CV estructurado previo, se comprueba que
+    correos, teléfonos y cifras relevantes provengan del texto extraído.
+    """
+    original = _cv_clean_payload(original)
+    result = _cv_clean_payload(result)
+    importing = action in {"import_and_improve", "computrabajo_import"}
+
+    if importing:
+        source = str(source_text or "")
+        source_lower = source.lower()
+        source_digits = _cv_numeric_tokens(source)
+        result_dump = json.dumps(result, ensure_ascii=False)
+        invented_numbers = _cv_numeric_tokens(result_dump) - source_digits
+        # Un número nuevo en un CV importado puede convertirse en una fecha,
+        # porcentaje o métrica falsa. Rechazamos la respuesta completa.
+        if invented_numbers:
+            raise ValueError("La IA intentó introducir cifras que no aparecen en el CV original.")
+        email = result.get("email", "").strip()
+        if email and email.lower() not in source_lower:
+            result["email"] = ""
+        phone = re.sub(r"\D+", "", result.get("phone", ""))
+        source_phone = re.sub(r"\D+", "", source)
+        if phone and phone not in source_phone:
+            result["phone"] = ""
+        return result
+
+    # Datos personales: siempre exactamente los originales.
+    for key in ("name", "email", "phone", "city", "website"):
+        result[key] = original.get(key, "")
+
+    # Experiencia: la descripción puede mejorar; los hechos del puesto no.
+    guarded_exp = []
+    proposed_exp = result.get("experience") or []
+    for idx, item in enumerate(original.get("experience") or []):
+        proposed = proposed_exp[idx] if idx < len(proposed_exp) else {}
+        guarded_exp.append({
+            "role": item.get("role", ""),
+            "company": item.get("company", ""),
+            "period": item.get("period", ""),
+            "description": str(proposed.get("description") or item.get("description") or "").strip()[:3500],
+        })
+    result["experience"] = guarded_exp
+
+    guarded_edu = []
+    proposed_edu = result.get("education") or []
+    for idx, item in enumerate(original.get("education") or []):
+        proposed = proposed_edu[idx] if idx < len(proposed_edu) else {}
+        guarded_edu.append({
+            "degree": item.get("degree", ""),
+            "school": item.get("school", ""),
+            "period": item.get("period", ""),
+            "description": str(proposed.get("description") or item.get("description") or "").strip()[:3500],
+        })
+    result["education"] = guarded_edu
+
+    # Idiomas y certificaciones son datos verificables: no se crean ni cambian.
+    result["languages"] = original.get("languages", [])
+    result["certifications"] = original.get("certifications", [])
+
+    # Solo la acción específica de habilidades puede proponer una lista distinta.
+    if action != "skills":
+        result["skills"] = original.get("skills", [])
+
+    # Si la IA añade cifras en textos reescritos que no estaban presentes en el
+    # CV actual, descartamos esas reescrituras y conservamos el texto original.
+    original_numbers = _cv_numeric_tokens(json.dumps(original, ensure_ascii=False))
+    proposed_numbers = _cv_numeric_tokens(json.dumps(result, ensure_ascii=False))
+    if proposed_numbers - original_numbers:
+        result["profile"] = original.get("profile", "")
+        result["experience"] = original.get("experience", [])
+        result["education"] = original.get("education", [])
+
+    return _cv_clean_payload(result)
+
 def _cv_prompt(source_text: str, current: dict, action: str, locale: str) -> str:
     language = {"es":"español","en":"English","fr":"français","pt-br":"português do Brasil"}.get(locale, "español")
     rules = f"""
@@ -1512,6 +1597,7 @@ def _parse_ai_json(text: str) -> dict:
     return obj
 
 def _cv_call_gemini(prompt: str) -> dict:
+    """Llama a Gemini con JSON estructurado, reintento acotado y validación defensiva."""
     key = os.environ.get("GEMINI_API_KEY", "").strip()
     if not key:
         raise RuntimeError("GEMINI_API_KEY no está configurada.")
@@ -1521,31 +1607,49 @@ def _cv_call_gemini(prompt: str) -> dict:
         "contents":[{"parts":[{"text":prompt}]}],
         "generationConfig":{
             "responseMimeType":"application/json",
-            "responseSchema":_CV_SCHEMA
+            "responseSchema":_CV_SCHEMA,
+            "temperature":0.2,
+            "candidateCount":1,
         }
     }
-    req = urllib.request.Request(
-        url,
-        data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
-        headers={"Content-Type":"application/json", "x-goog-api-key":key},
-        method="POST"
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=50) as resp:
-            raw = json.loads(resp.read().decode("utf-8"))
-    except urllib.error.HTTPError as exc:
-        details = exc.read().decode("utf-8", "ignore")[:1200]
-        log.warning("Gemini HTTP %s: %s", exc.code, details)
-        raise RuntimeError(f"Gemini respondió HTTP {exc.code}.")
-    except Exception as exc:
-        raise RuntimeError(f"No se pudo conectar con Gemini: {exc}")
-    try:
-        parts = raw["candidates"][0]["content"]["parts"]
-        text = "".join(p.get("text","") for p in parts if isinstance(p, dict))
-        return _cv_clean_payload(_parse_ai_json(text))
-    except Exception as exc:
-        log.warning("Respuesta Gemini inesperada: %s", raw)
-        raise RuntimeError(f"Gemini devolvió una respuesta inválida: {exc}")
+    payload = json.dumps(body, ensure_ascii=False).encode("utf-8")
+    retryable_http = {429, 500, 502, 503, 504}
+    last_error = None
+
+    for attempt in range(2):
+        req = urllib.request.Request(
+            url,
+            data=payload,
+            headers={"Content-Type":"application/json", "x-goog-api-key":key},
+            method="POST"
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=45) as resp:
+                raw = json.loads(resp.read().decode("utf-8"))
+            candidates = raw.get("candidates") or []
+            if not candidates:
+                raise ValueError("Gemini no devolvió candidatos.")
+            parts = ((candidates[0].get("content") or {}).get("parts") or [])
+            text = "".join(p.get("text", "") for p in parts if isinstance(p, dict))
+            if not text.strip():
+                raise ValueError("Gemini devolvió una respuesta vacía.")
+            return _cv_clean_payload(_parse_ai_json(text))
+        except urllib.error.HTTPError as exc:
+            details = exc.read().decode("utf-8", "ignore")[:1000]
+            log.warning("Gemini HTTP %s intento %s: %s", exc.code, attempt + 1, details)
+            last_error = RuntimeError(f"Gemini respondió HTTP {exc.code}.")
+            if exc.code not in retryable_http or attempt == 1:
+                raise last_error
+        except (TimeoutError, urllib.error.URLError, json.JSONDecodeError, ValueError) as exc:
+            log.warning("Gemini respuesta/conexión inválida intento %s: %s", attempt + 1, exc)
+            last_error = exc
+            if attempt == 1:
+                raise RuntimeError(f"Gemini no pudo completar una respuesta válida: {exc}")
+        except Exception as exc:
+            raise RuntimeError(f"No se pudo conectar con Gemini: {exc}")
+        time.sleep(0.7 * (attempt + 1))
+
+    raise RuntimeError(f"Gemini no respondió correctamente: {last_error}")
 
 
 
@@ -1612,14 +1716,38 @@ def _cv_call_gemini_email(prompt: str) -> dict:
     if not key:
         raise RuntimeError("GEMINI_API_KEY no está configurada.")
     url=f"https://generativelanguage.googleapis.com/v1beta/models/{_CV_AI_MODEL}:generateContent"
-    body={"contents":[{"parts":[{"text":prompt}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":_CV_EMAIL_SCHEMA}}
-    req=urllib.request.Request(url,data=json.dumps(body,ensure_ascii=False).encode("utf-8"),headers={"Content-Type":"application/json","x-goog-api-key":key},method="POST")
-    with urllib.request.urlopen(req,timeout=50) as resp:
-        raw=json.loads(resp.read().decode("utf-8"))
-    parts=raw["candidates"][0]["content"]["parts"]
-    text="".join(x.get("text","") for x in parts if isinstance(x,dict))
-    result=_parse_ai_json(text)
-    return {"subject":str(result.get("subject") or "").strip()[:300],"body":str(result.get("body") or "").strip()[:8000]}
+    body={"contents":[{"parts":[{"text":prompt}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":_CV_EMAIL_SCHEMA,"temperature":0.2,"candidateCount":1}}
+    payload=json.dumps(body,ensure_ascii=False).encode("utf-8")
+    last_error=None
+    for attempt in range(2):
+        req=urllib.request.Request(url,data=payload,headers={"Content-Type":"application/json","x-goog-api-key":key},method="POST")
+        try:
+            with urllib.request.urlopen(req,timeout=45) as resp:
+                raw=json.loads(resp.read().decode("utf-8"))
+            candidates=raw.get("candidates") or []
+            parts=((candidates[0].get("content") or {}).get("parts") or []) if candidates else []
+            text="".join(x.get("text","") for x in parts if isinstance(x,dict))
+            if not text.strip():
+                raise ValueError("Gemini devolvió una respuesta vacía.")
+            result=_parse_ai_json(text)
+            subject=str(result.get("subject") or "").strip()[:300]
+            body_text=str(result.get("body") or "").strip()[:8000]
+            if not subject or not body_text:
+                raise ValueError("Gemini devolvió un correo incompleto.")
+            return {"subject":subject,"body":body_text}
+        except urllib.error.HTTPError as exc:
+            last_error=RuntimeError(f"Gemini respondió HTTP {exc.code}.")
+            log.warning("Gemini email HTTP %s intento %s",exc.code,attempt+1)
+            if exc.code not in {429,500,502,503,504} or attempt==1:
+                raise last_error
+        except (TimeoutError,urllib.error.URLError,json.JSONDecodeError,ValueError) as exc:
+            last_error=exc
+            log.warning("Gemini email intento %s inválido: %s",attempt+1,exc)
+            if attempt==1:
+                raise RuntimeError(f"Gemini no pudo generar un correo válido: {exc}")
+        time.sleep(0.7*(attempt+1))
+    raise RuntimeError(f"Gemini no respondió correctamente: {last_error}")
+
 
 @app.post("/api/cv/application-email")
 def cv_application_email():
@@ -1719,6 +1847,7 @@ def cv_ai():
 
     try:
         result = _cv_call_gemini(_cv_prompt(source_text, prompt_current, action, locale))
+        result = _cv_guard_ai_facts(original_current, result, action, source_text)
     except Exception as exc:
         log.warning("CV IA falló: %s", exc)
         return jsonify({"ok":False,"error":"ai_unavailable","message":str(exc)}), 503
@@ -2142,7 +2271,7 @@ def _render_tool(locale: str, slug: str):
     return render_template(
         "tool_page.html",
         title=match[1], seo_page_title=seo_page_title, description=seo_description, slug=slug, max_mb=MAX_MB,
-        seo=SEO_CONTENT_I18N.get(locale, {}).get(slug, {}), locale=locale, ui=ui,
+        seo=enrich_tool_seo(locale, slug, match[1], seo_description, SEO_CONTENT_I18N.get(locale, {}).get(slug, {})), locale=locale, ui=ui,
         home_path=paths["home"], tool_base=paths["tool"], canonical_url=_tool_url(locale, slug), alternates=alternates, nav_paths=SECTION_PATHS[locale],
     )
 
