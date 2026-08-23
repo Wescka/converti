@@ -841,7 +841,7 @@ footer a{
   gtag('config', 'G-XLZM56PZHM');
 </script>
 
-<link rel="stylesheet" href="/static/css/site_ui.css?v=20260822-stable-5">
+<link rel="stylesheet" href="/static/css/site_ui.css?v=20260822-layout-seo-6">
   <link rel="prefetch" href="/fr/creer-cv">
   <link rel="prefetch" href="/static/css/create_cv.css" as="style">
   <link rel="prefetch" href="/static/js/create_cv.js" as="script">
@@ -984,6 +984,16 @@ footer a{
 {% endif %}
 <section class="info-section" id="formatos"><h2>Formats disponibles</h2><p>Les options sont générées selon le type MIME réel et les moteurs disponibles sur ce serveur.</p><div class="format-grid"><div class="format-card"><h3>Audio</h3><p>FFmpeg: MP3, WAV, FLAC, OGG, OPUS, M4A, AAC, WMA y más según compilación.</p></div><div class="format-card"><h3>Images</h3><p>PNG, JPG, WEBP, TIFF, GIF, AVIF, HEIC, PSD, SVG y formatos RAW cuando el motor los soporte. También salida a PDF, DOCX, PPTX y HTML; TXT por OCR cuando esté disponible.</p></div><div class="format-card"><h3>Documents</h3><p>PDF, DOCX, ODT, RTF, XLSX, ODS, CSV, PPTX, EPUB, Markdown, HTML y LaTeX.</p></div></div><div class="coming">PDF vers Word, OCR de PDF numérisé, PDF multipage vers images ZIP, plusieurs images vers PDF et conversion par lot sont intégrés.</div><div class="engine-grid" id="engineGrid"></div></section>
 <section class="info-section" id="ayuda"><h2>Comment fonctionne Converti ?</h2><div class="help-grid"><div class="help-card"><div class="help-number">1</div><h3>Sélectionnez</h3><p>Converti valide le contenu, détecte le MIME et classe le fichier.</p></div><div class="help-card"><div class="help-number">2</div><h3>Choisissez</h3><p>Seuls les formats compatibles avec les moteurs réellement disponibles sont proposés.</p></div><div class="help-card"><div class="help-number">3</div><h3>Convertissez</h3><p>La conversion s’effectue sans recharger la page ; plusieurs résultats sont fournis dans un fichier ZIP.</p></div></div></section>
+
+{% if canonical_override is defined %}
+<section class="convert-seo-guide" aria-labelledby="convert-seo-title">
+  <p class="convert-seo-guide__kicker">Convertisseur de fichiers en ligne</p><h2 id="convert-seo-title">Convertissez vos fichiers gratuitement et facilement</h2><p class="convert-seo-guide__lead">Converti détecte le type réel du fichier et propose uniquement des sorties compatibles. Documents, PDF, images, audio, vidéo et données, sans logiciel à installer et avec une interface adaptée au mobile.</p>
+  <div class="convert-seo-grid"><article class="convert-seo-card"><h3>Formats compatibles</h3><p>PDF, Word, images, feuilles de calcul, audio et vidéo selon le fichier et les moteurs actifs.</p></article><article class="convert-seo-card"><h3>Résultat transparent</h3><p>La structure et la qualité sont conservées autant que possible; les scans et mises en page complexes peuvent nécessiter OCR ou vérification.</p></article><article class="convert-seo-card"><h3>Privé et sans compte</h3><p>Aucune inscription. Les fichiers sont traités temporairement puis supprimés selon la politique de nettoyage.</p></article></div>
+  <nav class="convert-seo-links" aria-label="Conversions associées"><a href="/fr/convertir/pdf-a-word">PDF vers Word</a><a href="/fr/convertir/word-a-pdf">Word vers PDF</a><a href="/fr/convertir/jpg-a-pdf">JPG vers PDF</a><a href="/fr/convertir/pdf-a-jpg">PDF vers JPG</a></nav>
+  <div class="convert-seo-faq"><h3>Questions fréquentes</h3><details><summary>Converti est-il gratuit ?</summary><p>Oui. Le convertisseur fonctionne sans inscription; certaines options dépendent des moteurs disponibles.</p></details><details><summary>Puis-je convertir depuis Android ou iPhone ?</summary><p>Oui. La sélection de fichiers et les boutons principaux sont adaptés aux écrans tactiles.</p></details><details><summary>Pourquoi certaines sorties ne sont-elles pas proposées ?</summary><p>Converti analyse le contenu réel et évite de proposer une conversion qu'il ne peut pas exécuter correctement.</p></details></div>
+</section>
+{% endif %}
+
 <footer class="converti-site-footer">Converti · Conversion de fichiers simple et privée · <a href="/fr/confidentialite">Confidentialité</a></footer>
 
 <script>
@@ -1140,5 +1150,5 @@ convertButton.onclick=()=>{
 (async()=>{try{const r=await fetch('/api/status'),j=await r.json();const labels={ffmpeg:'FFmpeg',ffprobe:'FFprobe',libreoffice:'LibreOffice',pandoc:'Pandoc',imagemagick:'ImageMagick',tesseract_ocr:'Tesseract OCR',python_magic:'python-magic'};engineGrid.innerHTML='';Object.entries(labels).forEach(([k,v])=>{const d=document.createElement('div');d.className='engine '+(j.tools[k]?'ok':'missing');d.innerHTML=svgIcon(j.tools[k]?'check':'x')+' <span>'+v+'</span>';engineGrid.appendChild(d)})}catch{}})();
 </script>
 
-<script src="/static/js/site_ui.js?v=20260822-stable-5" defer></script>
+<script src="/static/js/site_ui.js?v=20260822-layout-seo-6" defer></script>
 </body></html>

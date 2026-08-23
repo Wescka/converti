@@ -206,3 +206,87 @@ body,button,input,textarea,select{font-family:"Plus Jakarta Sans",system-ui,-app
   .header:not(.cvb-site-header) .lang-select{min-width:56px!important;width:56px!important}
   .site-mobile-menu-toggle{width:40px!important;height:40px!important}
 }
+
+
+/* ===== Converti 2026-08-22 · cabecera compacta para ventanas/laptops estrechos =====
+   A partir de 1280 px o menos, la navegación deja de competir con el logotipo.
+   Se reutiliza el mismo patrón móvil, sin alterar el header de escritorio ancho. */
+@media (max-width:1280px) and (min-width:721px){
+  .header:not(.cvb-site-header){
+    min-height:72px!important;
+    padding:9px 18px!important;
+    grid-template-columns:minmax(0,1fr) auto auto!important;
+    grid-template-rows:auto auto!important;
+    column-gap:10px!important;
+    row-gap:0!important;
+    align-items:center!important;
+  }
+  .header:not(.cvb-site-header) .brand{
+    grid-column:1!important;grid-row:1!important;
+    min-width:0!important;max-width:100%!important;overflow:hidden!important;
+  }
+  .header:not(.cvb-site-header) .brand-logo{
+    width:clamp(190px,22vw,245px)!important;
+    height:auto!important;max-height:54px!important;max-width:100%!important;
+  }
+  .header:not(.cvb-site-header) .converti-header-tools{
+    grid-column:2!important;grid-row:1!important;justify-self:end!important;min-width:0!important;
+  }
+  .header:not(.cvb-site-header) .lang-select{
+    height:42px!important;min-width:66px!important;max-width:78px!important;padding:0 8px!important;
+  }
+  .header:not(.cvb-site-header) .site-mobile-menu-toggle{
+    grid-column:3!important;grid-row:1!important;
+    display:grid!important;place-items:center!important;
+    width:44px!important;height:44px!important;padding:0!important;
+    border:1px solid #dbe6f5!important;border-radius:12px!important;
+    background:#fff!important;color:#172846!important;box-shadow:0 2px 8px rgba(20,49,96,.045)!important;
+    touch-action:manipulation!important;
+  }
+  .header:not(.cvb-site-header) .site-mobile-menu-toggle svg{
+    width:22px!important;height:22px!important;fill:none!important;stroke:currentColor!important;stroke-width:2!important;stroke-linecap:round!important;
+  }
+  .header:not(.cvb-site-header) .nav{
+    grid-column:1/-1!important;grid-row:2!important;width:100%!important;
+    justify-self:stretch!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;
+    max-height:0!important;opacity:0!important;overflow:hidden!important;pointer-events:none!important;
+    padding:0!important;margin:0!important;transform:translateY(-4px)!important;
+    transition:max-height .2s ease,opacity .16s ease,transform .16s ease,padding .2s ease!important;
+  }
+  .header:not(.cvb-site-header).is-menu-open .nav{
+    max-height:270px!important;opacity:1!important;pointer-events:auto!important;padding:10px 0 3px!important;transform:none!important;
+  }
+  .header:not(.cvb-site-header) .nav a{
+    width:100%!important;min-width:0!important;min-height:44px!important;padding:0 12px!important;
+    border-radius:11px!important;font-size:12.5px!important;line-height:1.2!important;white-space:normal!important;text-align:center!important;
+  }
+  .header:not(.cvb-site-header) .nav a.nav-doc-ai{grid-column:1/-1!important}
+}
+
+/* ===== Contenido SEO útil de /convertir: abajo de la herramienta, no interfiere con el flujo ===== */
+.convert-seo-guide{
+  width:min(1180px,calc(100% - 40px));margin:34px auto 20px;padding:30px;
+  border:1px solid #dfe8f5;border-radius:24px;background:#fff;
+  box-shadow:0 14px 36px rgba(18,41,100,.055);color:#172846;
+}
+.convert-seo-guide__kicker{margin:0 0 8px;color:#2a7bff;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.convert-seo-guide h2{margin:0;font-size:clamp(28px,3.2vw,40px);line-height:1.08;letter-spacing:-.035em;color:#0b1234}
+.convert-seo-guide__lead{max-width:850px;margin:14px 0 0;color:#65728f;font-size:15px;line-height:1.7}
+.convert-seo-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:24px}
+.convert-seo-card{padding:20px;border:1px solid #dfe8f5;border-radius:17px;background:linear-gradient(180deg,#fff,#f8fbff)}
+.convert-seo-card h3{margin:0 0 8px;color:#122545;font-size:17px;letter-spacing:-.02em}
+.convert-seo-card p,.convert-seo-card li{color:#66738f;font-size:13px;line-height:1.6}
+.convert-seo-card ul{margin:8px 0 0;padding-left:18px}
+.convert-seo-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.convert-seo-links a{display:inline-flex;align-items:center;min-height:40px;padding:0 13px;border:1px solid #d9e6f7;border-radius:12px;background:#fff;color:#176de8;text-decoration:none;font-size:12px;font-weight:750}
+.convert-seo-faq{margin-top:24px}
+.convert-seo-faq h3{margin:0 0 10px;font-size:20px;color:#122545}
+.convert-seo-faq details{border-top:1px solid #e3eaf4;padding:0}
+.convert-seo-faq details:last-child{border-bottom:1px solid #e3eaf4}
+.convert-seo-faq summary{cursor:pointer;list-style:none;padding:15px 2px;font-size:14px;font-weight:750;color:#172846}
+.convert-seo-faq summary::-webkit-details-marker{display:none}
+.convert-seo-faq summary::after{content:'+';float:right;color:#2a7bff;font-size:18px;line-height:1}
+.convert-seo-faq details[open] summary::after{content:'−'}
+.convert-seo-faq details p{margin:0 0 15px;color:#66738f;font-size:13px;line-height:1.65}
+@media(max-width:820px){.convert-seo-grid{grid-template-columns:1fr}.convert-seo-guide{width:calc(100% - 20px);margin-top:24px;padding:22px 18px;border-radius:20px}.convert-seo-guide__lead{font-size:14px}.convert-seo-links{display:grid;grid-template-columns:1fr 1fr}.convert-seo-links a{justify-content:center;text-align:center}}
+@media(max-width:430px){.convert-seo-links{grid-template-columns:1fr}.convert-seo-guide h2{font-size:29px}}

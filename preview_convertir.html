@@ -1,40 +1,34 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-{% if canonical_override is defined %}
-<meta name="description" content="Converta PDF, Word, JPG, PNG, áudio, vídeo e outros formatos online grátis, sem instalar programas.">
-<title>Conversor de arquivos online grátis | PDF, Word, JPG e mais | Converti</title>
-{% else %}
-<meta name="description" content="Converta PDF, Word, imagens, áudio e vídeo online. Crie, melhore ou importe um currículo profissional com IA totalmente grátis.">
-<title>Conversor de arquivos e currículo com IA grátis | Converti</title>
-{% endif %}
-<link rel="canonical" href="{{ canonical_override|default('https://converti.lat/pt-br/') }}">
+
+<meta name="description" content="Convierte PDF, Word, JPG, PNG, audio, video y otros formatos online gratis. Sin instalar programas y con archivos temporales.">
+<title>Convertidor de archivos online gratis | PDF, Word, JPG y más | Converti</title>
+
+<link rel="canonical" href="https://converti.lat/convertir">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Converti">
-{% if canonical_override is defined %}
-<meta property="og:title" content="Conversor de arquivos online grátis | PDF, Word, JPG e mais | Converti">
-<meta property="og:description" content="Converta PDF, Word, JPG, PNG, áudio, vídeo e outros formatos online grátis, sem instalar programas.">
-{% else %}
-<meta property="og:title" content="Conversor de arquivos e currículo com IA grátis | Converti">
-<meta property="og:description" content="Converta PDF, Word, imagens, áudio e vídeo online. Crie, melhore ou importe um currículo profissional com IA totalmente grátis.">
-{% endif %}
+
+<meta property="og:title" content="Convertidor de archivos online gratis | PDF, Word, JPG y más | Converti">
+<meta property="og:description" content="Convierte PDF, Word, JPG, PNG, audio, video y otros formatos online gratis. Sin instalar programas y con archivos temporales.">
+
 <meta property="og:image" content="https://converti.lat/static/images/logo_converti.png">
-<meta property="og:url" content="{{ canonical_override|default('https://converti.lat/') }}">
+<meta property="og:url" content="https://converti.lat/convertir">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="alternate" hreflang="es" href="{{ alternate_es|default('https://converti.lat/') }}">
-<link rel="alternate" hreflang="en" href="{{ alternate_en|default('https://converti.lat/en/') }}">
-<link rel="alternate" hreflang="fr" href="{{ alternate_fr|default('https://converti.lat/fr/') }}">
-<link rel="alternate" hreflang="pt-BR" href="{{ alternate_ptbr|default('https://converti.lat/pt-br/') }}">
-<link rel="alternate" hreflang="x-default" href="{{ alternate_default|default('https://converti.lat/') }}">
-<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/icon1.png') }}?v=1">
-<link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/icon1.png') }}?v=1">
+<link rel="alternate" hreflang="es" href="https://converti.lat/convertir">
+<link rel="alternate" hreflang="en" href="https://converti.lat/en/convertir">
+<link rel="alternate" hreflang="fr" href="https://converti.lat/fr/convertir">
+<link rel="alternate" hreflang="pt-BR" href="https://converti.lat/pt-br/convertir">
+<link rel="alternate" hreflang="x-default" href="https://converti.lat/convertir">
+<link rel="icon" type="image/png" href="#?v=1">
+<link rel="shortcut icon" type="image/png" href="#?v=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"Converti","url":"https://converti.lat/"},{"@type":"WebApplication","name":"Converti","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","url":"https://converti.lat/pt-br/converter","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"WebApplication","name":"Converti CV","applicationCategory":"BusinessApplication","operatingSystem":"Web","url":"https://converti.lat/pt-br/criar-cv","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"Converti","url":"https://converti.lat/"},{"@type":"WebApplication","name":"Converti","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","url":"https://converti.lat/convertir","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"WebApplication","name":"Converti CV","applicationCategory":"BusinessApplication","operatingSystem":"Web","url":"https://converti.lat/crear-cv","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}]}</script>
 <style>
 :root{
     --navy:#0b1234;
@@ -841,23 +835,23 @@ footer a{
   gtag('config', 'G-XLZM56PZHM');
 </script>
 
-<link rel="stylesheet" href="/static/css/site_ui.css?v=20260822-layout-seo-6">
-  <link rel="prefetch" href="/pt-br/criar-cv">
-  <link rel="prefetch" href="/static/css/create_cv.css" as="style">
-  <link rel="prefetch" href="/static/js/create_cv.js" as="script">
+<link rel="stylesheet" href="file:///mnt/data/fix_current/static/css/site_ui.css?v=20260822-stable-5">
+  <link rel="prefetch" href="/crear-cv">
+  <link rel="prefetch" href="file:///mnt/data/fix_current/static/css/create_cv.css" as="style">
+  <link rel="prefetch" href="file:///mnt/data/fix_current/static/js/create_cv.js" as="script">
 </head>
 <body>
 <header class="header">
-    <a class="brand" href="/pt-br/converter" aria-label="Converti">
-        <img class="brand-logo" src="/static/images/logo_converti.png" alt="Converti">
+    <a class="brand" href="/convertir" aria-label="Converti">
+        <img class="brand-logo" src="file:///mnt/data/fix_current/static/images/logo_converti.png" alt="Converti">
     </a>
     <nav class="nav" id="siteMainNav">
-        <a href="/pt-br/converter">Converter</a>
-        <a href="/pt-br/formatos">Formatos</a>
-        <a href="/pt-br/ajuda">Ajuda</a>
-        <a class="nav-doc-ai" href="/pt-br/corrigir-documentos-ia">Corrigir documentos com IA</a>
+        <a href="/convertir">Convertir</a>
+        <a href="/formatos">Formatos</a>
+        <a href="/ayuda">Ayuda</a>
+        <a class="nav-doc-ai" href="/corregir-documentos-ia">Corregir documentos con IA</a>
     
-        <a class="nav-cv" href="/pt-br/criar-cv">Criar CV</a></nav>
+        <a class="nav-cv" href="/crear-cv">Crear CV</a></nav>
     <div class="converti-header-tools">
     <select class="lang-select" id="langSelector" aria-label="Idioma / Language">
         <option value="es">ES</option><option value="en">EN</option><option value="fr">FR</option><option value="pt-br">PT-BR</option>
@@ -868,56 +862,53 @@ footer a{
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
   </button>
 </header>
-<aside class="converti-crosspromo" aria-label="Também está se candidatando a uma vaga?">
-  <div><strong>Também está se candidatando a uma vaga?</strong><span>Crie seu currículo e redija e-mails profissionais de candidatura com ajuda da IA.</span></div>
-  <a href="/pt-br/criar-cv">Abrir ferramentas de currículo</a>
+<aside class="converti-crosspromo" aria-label="¿También estás postulando a un empleo?">
+  <div><strong>¿También estás postulando a un empleo?</strong><span>Crea tu CV y redacta correos profesionales de postulación con ayuda de IA.</span></div>
+  <a href="/crear-cv">Abrir herramientas de CV</a>
 </aside>
 
 <main class="page hero-shell" id="convertir"><div class="workspace">
 <section>
     <div class="hero">
-        {% if canonical_override is defined %}
-        <h1>Converta seus arquivos <span>com confiança</span></h1>
-        <p>Rápido, privado e simples. Envie um ou mais arquivos e escolha apenas formatos compatíveis com o conteúdo real.</p>
-        {% else %}
-        <h1>Converta arquivos e crie um currículo profissional <span>com IA grátis</span></h1>
-        <p>Tudo em um só lugar: converta documentos, imagens, áudio e vídeo ou crie e melhore um currículo profissional com inteligência artificial totalmente grátis.</p>
-        {% endif %}
-        <div class="limit-info"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 19 6v5c0 4.6-2.8 8-7 10-4.2-2-7-5.4-7-10V6l7-3Z"/><path d="m9 12 2 2 4-4"/></svg> Detecção automática por MIME · <strong>Máximo de {{ max_mb }} MB por solicitação</strong></div>
+        
+        <h1>Convierte tus archivos <span>con confianza</span></h1>
+        <p>Rápido, privado y simple. Sube uno o varios archivos y elige únicamente formatos compatibles con su contenido real.</p>
+        
+        <div class="limit-info"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 19 6v5c0 4.6-2.8 8-7 10-4.2-2-7-5.4-7-10V6l7-3Z"/><path d="m9 12 2 2 4-4"/></svg> Detección automática por MIME · <strong>Máximo 200 MB por solicitud</strong></div>
     </div>
     <label class="upload-box" id="dropZone" for="archivo">
         <div class="upload-icon"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .7-7.94A6 6 0 0 0 6.3 8.6 4.5 4.5 0 0 0 7 18Z"/><path d="M12 15V8"/><path d="m9.5 10.5 2.5-2.5 2.5 2.5"/></svg></div>
-        <div class="upload-title">Arraste seus arquivos aqui</div>
-        <div class="upload-subtitle">ou selecione-os no seu dispositivo</div>
-        <div class="file-button"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M12 11v6M9 14h6"/></svg><span>Selecionar arquivo(s)</span></div>
-        <div class="upload-small">Conversão individual ou em lote</div>
+        <div class="upload-title">Arrastra tus archivos aquí</div>
+        <div class="upload-subtitle">o selecciónalos desde tu dispositivo</div>
+        <div class="file-button"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M12 11v6M9 14h6"/></svg><span>Seleccionar archivo(s)</span></div>
+        <div class="upload-small">Conversión individual o por lotes</div>
     </label>
     <input type="file" id="archivo" multiple>
     <div class="file-list" id="fileList"></div>
     <label class="auto" style="margin-top:12px">
         <input type="checkbox" id="previewOriginalToggle" autocomplete="off">
-        Selecione para visualizar o arquivo original
+        Selecciona para previsualizar el archivo original
     </label>
     <div class="controls">
-        <label class="title">Converter para</label>
-        <select id="formato" disabled><option value="">Selecione primeiro um arquivo</option></select>
-        <label class="auto"><input type="checkbox" id="autoDownload"> Baixar automaticamente ao terminar</label>
-        <button type="button" class="advanced-toggle" id="advancedToggle"><span>Opções avançadas</span><svg class="svg-icon advanced-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 9 5 5 5-5"/></svg></button>
+        <label class="title">Convertir a</label>
+        <select id="formato" disabled><option value="">Selecciona primero un archivo</option></select>
+        <label class="auto"><input type="checkbox" id="autoDownload"> Descargar automáticamente al terminar</label>
+        <button type="button" class="advanced-toggle" id="advancedToggle"><span>Opciones avanzadas</span><svg class="svg-icon advanced-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 9 5 5 5-5"/></svg></button>
         <div class="advanced" id="advanced">
             <div class="advanced-grid">
-                <label><span>Qualidade da imagem (1–100)</span><input type="number" id="quality" min="1" max="100" value="92"></label>
-                <label><span>DPI PDF/imagem</span><input type="number" id="dpi" min="72" max="600" value="150"></label>
-                <label><span>Bitrate de áudio</span><select id="audioBitrate"><option>128k</option><option selected>192k</option><option>256k</option><option>320k</option></select></label>
+                <label><span>Calidad imagen (1–100)</span><input type="number" id="quality" min="1" max="100" value="92"></label>
+                <label><span>DPI PDF/imagen</span><input type="number" id="dpi" min="72" max="600" value="150"></label>
+                <label><span>Bitrate audio</span><select id="audioBitrate"><option>128k</option><option selected>192k</option><option>256k</option><option>320k</option></select></label>
                 
                 
-                <label><span>Idioma do OCR</span><input type="text" id="ocrLang" value="spa+eng"></label>
-                <label><span>Página inicial do PDF</span><input type="number" id="pageStart" min="1" value="1"></label>
-                <label><span>Página final do PDF (0 = última)</span><input type="number" id="pageEnd" min="0" value="0"></label>
+                <label><span>Idioma OCR</span><input type="text" id="ocrLang" value="spa+eng"></label>
+                <label><span>Página inicial PDF</span><input type="number" id="pageStart" min="1" value="1"></label>
+                <label><span>Página final PDF (0 = última)</span><input type="number" id="pageEnd" min="0" value="0"></label>
             </div>
-            <label class="auto"><input type="checkbox" id="ocr"> Usar OCR se o PDF estiver digitalizado</label>
-            <label class="auto"><input type="checkbox" id="stripMetadata"> Remover metadados quando possível</label>
+            <label class="auto"><input type="checkbox" id="ocr"> Usar OCR si el PDF está escaneado</label>
+            <label class="auto"><input type="checkbox" id="stripMetadata"> Eliminar metadatos cuando el motor lo permita</label>
         </div>
-        <button type="button" class="convert" id="convertButton" disabled>CONVERTER</button>
+        <button type="button" class="convert" id="convertButton" disabled>CONVERTIR</button>
         <div class="progress-wrap" id="progressWrap"><div class="progress-bar" id="progressBar"></div></div>
         <div class="status-line" id="statusLine"></div>
     </div>
@@ -925,80 +916,81 @@ footer a{
 <section>
     <div class="right">
         <div id="originalPreviewPanel" style="display:none">
-            <div class="section-title">Visualização do arquivo original</div>
+            <div class="section-title">Vista previa del archivo original</div>
             <div class="preview-box">
                 <div class="preview-content" id="previewOriginal" style="display:none"></div>
             </div>
             <div class="divider"></div>
         </div>
-        <div class="section-title">Resultado da conversão</div>
+        <div class="section-title">Resultado de la conversión</div>
         <div class="result">
-            <div id="resultPlaceholder"><div class="result-placeholder-icon"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.6 2.6L16.5 9"/></svg></div><strong>Seu arquivo convertido aparecerá aqui</strong><p style="color:#7b88aa;font-size:12px;margin:5px 0 0">Você poderá visualizá-lo antes de baixar.</p></div>
+            <div id="resultPlaceholder"><div class="result-placeholder-icon"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.6 2.6L16.5 9"/></svg></div><strong>Tu archivo convertido aparecerá aquí</strong><p style="color:#7b88aa;font-size:12px;margin:5px 0 0">Podrás visualizarlo antes de descargarlo.</p></div>
             <div class="result-content" id="resultContent" style="display:none"></div>
         </div>
         <div id="sessionHistory"></div>
     </div>
-    <div class="security"><div class="security-icon"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 19 6v5c0 4.6-2.8 8-7 10-4.2-2-7-5.4-7-10V6l7-3Z"/><path d="m9 12 2 2 4-4"/></svg></div><div><strong>Sua privacidade é nossa prioridade</strong><p>O original é removido ao terminar o processo. O resultado fica disponível temporariamente por 30 minutos e a limpeza também é executada ao iniciar o Converti.</p></div></div>
+    <div class="security"><div class="security-icon"><svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 19 6v5c0 4.6-2.8 8-7 10-4.2-2-7-5.4-7-10V6l7-3Z"/><path d="m9 12 2 2 4-4"/></svg></div><div><strong>Tu privacidad es nuestra prioridad</strong><p>El original se elimina al terminar el proceso. El resultado queda disponible temporalmente durante 30 minutos y la limpieza también se ejecuta al iniciar Converti.</p></div></div>
 </section>
 </div></main>
 <section class="popular-tools" aria-labelledby="popular-tools-title">
   <div class="popular-tools-head">
     <div>
-      <h2 id="popular-tools-title">Ferramentas populares</h2>
-      <p>Acesse diretamente as conversões mais usadas do Converti.</p>
+      <h2 id="popular-tools-title">Herramientas populares</h2>
+      <p>Accede directamente a las conversiones más utilizadas de Converti.</p>
     </div>
   </div>
   <div class="popular-tools-grid">
-    <a class="popular-tool" href="/pt-br/converter/pdf-a-word"><span>PDF para Word</span><span class="tool-open">Abrir</span></a>
-    <a class="popular-tool" href="/pt-br/converter/word-a-pdf"><span>Word para PDF</span><span class="tool-open">Abrir</span></a>
-    <a class="popular-tool" href="/pt-br/converter/jpg-a-pdf"><span>JPG para PDF</span><span class="tool-open">Abrir</span></a>
-    <a class="popular-tool" href="/pt-br/converter/pdf-a-jpg"><span>PDF para JPG</span><span class="tool-open">Abrir</span></a>
-    <a class="popular-tool" href="/pt-br/converter/png-a-jpg"><span>PNG para JPG</span><span class="tool-open">Abrir</span></a>
-    <a class="popular-tool" href="/pt-br/converter/jpg-a-png"><span>JPG para PNG</span><span class="tool-open">Abrir</span></a>
-    <a class="popular-tool" href="/pt-br/converter/pdf-a-png"><span>PDF para PNG</span><span class="tool-open">Abrir</span></a>
-    <a class="popular-tool" href="/pt-br/converter/docx-a-txt"><span>DOCX para TXT</span><span class="tool-open">Abrir</span></a>
-    <a class="popular-tool" href="/pt-br/converter/docx-a-html"><span>DOCX para HTML</span><span class="tool-open">Abrir</span></a>
-    <a class="popular-tool" href="/pt-br/converter/mp3-a-wav"><span>MP3 para WAV</span><span class="tool-open">Abrir</span></a>
-    <a class="popular-tool" href="/pt-br/converter/wav-a-mp3"><span>WAV para MP3</span><span class="tool-open">Abrir</span></a>
-    <a class="popular-tool" href="/pt-br/converter/png-a-webp"><span>PNG para WEBP</span><span class="tool-open">Abrir</span></a>
-    <a class="popular-tool" href="/pt-br/converter/webp-a-jpg"><span>WEBP para JPG</span><span class="tool-open">Abrir</span></a>
-    <a class="popular-tool" href="/pt-br/converter/csv-a-xlsx"><span>CSV para XLSX</span><span class="tool-open">Abrir</span></a>
-    <a class="popular-tool" href="/pt-br/converter/xlsx-a-csv"><span>XLSX para CSV</span><span class="tool-open">Abrir</span></a>
+    <a class="popular-tool" href="/convertir/pdf-a-word"><span>PDF a Word</span><span class="tool-open">Abrir</span></a>
+    <a class="popular-tool" href="/convertir/word-a-pdf"><span>Word a PDF</span><span class="tool-open">Abrir</span></a>
+    <a class="popular-tool" href="/convertir/jpg-a-pdf"><span>JPG a PDF</span><span class="tool-open">Abrir</span></a>
+    <a class="popular-tool" href="/convertir/pdf-a-jpg"><span>PDF a JPG</span><span class="tool-open">Abrir</span></a>
+    <a class="popular-tool" href="/convertir/png-a-jpg"><span>PNG a JPG</span><span class="tool-open">Abrir</span></a>
+    <a class="popular-tool" href="/convertir/jpg-a-png"><span>JPG a PNG</span><span class="tool-open">Abrir</span></a>
+    <a class="popular-tool" href="/convertir/pdf-a-png"><span>PDF a PNG</span><span class="tool-open">Abrir</span></a>
+    <a class="popular-tool" href="/convertir/docx-a-txt"><span>DOCX a TXT</span><span class="tool-open">Abrir</span></a>
+    <a class="popular-tool" href="/convertir/docx-a-html"><span>DOCX a HTML</span><span class="tool-open">Abrir</span></a>
+    <a class="popular-tool" href="/convertir/mp3-a-wav"><span>MP3 a WAV</span><span class="tool-open">Abrir</span></a>
+    <a class="popular-tool" href="/convertir/wav-a-mp3"><span>WAV a MP3</span><span class="tool-open">Abrir</span></a>
+    <a class="popular-tool" href="/convertir/png-a-webp"><span>PNG a WEBP</span><span class="tool-open">Abrir</span></a>
+    <a class="popular-tool" href="/convertir/webp-a-jpg"><span>WEBP a JPG</span><span class="tool-open">Abrir</span></a>
+    <a class="popular-tool" href="/convertir/csv-a-xlsx"><span>CSV a XLSX</span><span class="tool-open">Abrir</span></a>
+    <a class="popular-tool" href="/convertir/xlsx-a-csv"><span>XLSX a CSV</span><span class="tool-open">Abrir</span></a>
   </div>
 </section>
 
 
-{% if canonical_override is not defined %}
-<section class="cv-seo-promo" aria-labelledby="cv-seo-promo-title">
-  <div class="cv-seo-promo-grid">
-    <div><p class="cv-seo-promo-kicker">Converti CV · IA</p><h2 id="cv-seo-promo-title">Crie um currículo profissional com IA totalmente grátis</h2><p>Comece do zero ou importe um currículo em PDF ou Word. O Converti ajuda a melhorar a redação, organizar experiências, otimizar para ATS e reconstruir currículos do CompuTrabajo em um formato limpo e editável.</p><a class="cv-seo-cta" href="/pt-br/criar-cv">Criar meu currículo com IA</a><p class="cv-seo-note">Sem cadastro · Sem marca d’água · IA opcional · PDF e Word editável</p></div>
-    <div class="cv-seo-promo-links" aria-label="Converti CV">
-      <a href="/pt-br/curriculo/criar-curriculo-com-ia">Criar meu currículo com IA</a>
-      <a href="/pt-br/curriculo/melhorar-curriculo-com-ia">Melhorar currículo com IA</a>
-      <a href="/pt-br/curriculo/otimizar-curriculo-computrabajo">Otimizar currículo do CompuTrabajo</a>
-      <a href="/pt-br/curriculo/curriculo-ats">Otimizar currículo para ATS</a>
-      <a href="/pt-br/criar-cv">Baixar PDF ou Word</a>
-    </div>
-  </div>
-</section>
-{% endif %}
-<section class="info-section" id="formatos"><h2>Formatos disponíveis</h2><p>As opções são geradas conforme o tipo MIME real e os mecanismos disponíveis neste servidor.</p><div class="format-grid"><div class="format-card"><h3>Audio</h3><p>FFmpeg: MP3, WAV, FLAC, OGG, OPUS, M4A, AAC, WMA y más según compilación.</p></div><div class="format-card"><h3>Imagens</h3><p>PNG, JPG, WEBP, TIFF, GIF, AVIF, HEIC, PSD, SVG y formatos RAW cuando el motor los soporte. También salida a PDF, DOCX, PPTX y HTML; TXT por OCR cuando esté disponible.</p></div><div class="format-card"><h3>Documentos</h3><p>PDF, DOCX, ODT, RTF, XLSX, ODS, CSV, PPTX, EPUB, Markdown, HTML y LaTeX.</p></div></div><div class="coming">PDF para Word, OCR de PDF digitalizado, PDF de várias páginas para imagens ZIP, várias imagens para PDF e conversão em lote estão integrados.</div><div class="engine-grid" id="engineGrid"></div></section>
-<section class="info-section" id="ayuda"><h2>Como o Converti funciona?</h2><div class="help-grid"><div class="help-card"><div class="help-number">1</div><h3>Selecione</h3><p>O Converti valida o conteúdo, detecta o MIME e classifica o arquivo.</p></div><div class="help-card"><div class="help-number">2</div><h3>Escolha</h3><p>Mostra apenas formatos compatíveis com os mecanismos realmente disponíveis.</p></div><div class="help-card"><div class="help-number">3</div><h3>Converta</h3><p>O processo ocorre sem recarregar a página; vários resultados são entregues em um arquivo ZIP.</p></div></div></section>
 
-{% if canonical_override is defined %}
+<section class="info-section" id="formatos"><h2>Formatos disponibles</h2><p>Las opciones se generan según el tipo MIME real y los motores disponibles en este equipo.</p><div class="format-grid"><div class="format-card"><h3>Audio</h3><p>FFmpeg: MP3, WAV, FLAC, OGG, OPUS, M4A, AAC, WMA y más según compilación.</p></div><div class="format-card"><h3>Imágenes</h3><p>PNG, JPG, WEBP, TIFF, GIF, AVIF, HEIC, PSD, SVG y formatos RAW cuando el motor los soporte. También salida a PDF, DOCX, PPTX y HTML; TXT por OCR cuando esté disponible.</p></div><div class="format-card"><h3>Documentos</h3><p>PDF, DOCX, ODT, RTF, XLSX, ODS, CSV, PPTX, EPUB, Markdown, HTML y LaTeX.</p></div></div><div class="coming">PDF a Word, PDF escaneado con OCR, PDF multipágina a imágenes ZIP, imágenes múltiples a PDF y conversión por lotes están integrados.</div><div class="engine-grid" id="engineGrid"></div></section>
+<section class="info-section" id="ayuda"><h2>¿Cómo funciona Converti?</h2><div class="help-grid"><div class="help-card"><div class="help-number">1</div><h3>Selecciona</h3><p>Converti valida el contenido, detecta MIME y clasifica el archivo.</p></div><div class="help-card"><div class="help-number">2</div><h3>Elige</h3><p>Solo muestra formatos compatibles con los motores realmente disponibles.</p></div><div class="help-card"><div class="help-number">3</div><h3>Convierte</h3><p>El proceso ocurre sin recargar la página; si hay varios resultados se entregan en ZIP.</p></div></div></section>
+
+
 <section class="convert-seo-guide" aria-labelledby="convert-seo-title">
-  <p class="convert-seo-guide__kicker">Conversor de arquivos online</p><h2 id="convert-seo-title">Converta arquivos grátis, fácil e em qualquer dispositivo</h2><p class="convert-seo-guide__lead">Converti detecta o tipo real do arquivo e mostra somente saídas compatíveis. Converta documentos, PDF, imagens, áudio, vídeo e dados sem instalar programas e com uma experiência adaptada ao celular.</p>
-  <div class="convert-seo-grid"><article class="convert-seo-card"><h3>Formatos e compatibilidade</h3><p>PDF, Word, imagens, planilhas, áudio e vídeo, conforme o arquivo enviado e os motores ativos.</p></article><article class="convert-seo-card"><h3>Resultado transparente</h3><p>Converti preserva estrutura e qualidade quando possível; documentos digitalizados e layouts complexos podem precisar de OCR ou revisão.</p></article><article class="convert-seo-card"><h3>Privado e sem cadastro</h3><p>Você não precisa criar conta. Os arquivos são processados temporariamente e removidos conforme a política de limpeza.</p></article></div>
-  <nav class="convert-seo-links" aria-label="Conversões relacionadas"><a href="/pt-br/convertir/pdf-a-word">PDF para Word</a><a href="/pt-br/convertir/word-a-pdf">Word para PDF</a><a href="/pt-br/convertir/jpg-a-pdf">JPG para PDF</a><a href="/pt-br/convertir/pdf-a-jpg">PDF para JPG</a></nav>
-  <div class="convert-seo-faq"><h3>Perguntas frequentes</h3><details><summary>O Converti é grátis?</summary><p>Sim. O conversor pode ser usado sem cadastro; algumas opções dependem dos motores disponíveis no servidor.</p></details><details><summary>Posso converter pelo Android ou iPhone?</summary><p>Sim. A seleção de arquivos e os botões principais foram projetados para telas touch.</p></details><details><summary>Por que alguns formatos de saída não aparecem?</summary><p>Converti analisa o conteúdo real do arquivo e evita oferecer combinações que não pode processar corretamente.</p></details></div>
+  <p class="convert-seo-guide__kicker">Convertir archivos online</p>
+  <h2 id="convert-seo-title">Convierte archivos gratis, fácil y desde cualquier dispositivo</h2>
+  <p class="convert-seo-guide__lead">Converti detecta el tipo real del archivo y muestra únicamente salidas compatibles. Puedes convertir documentos, PDF, imágenes, audio, vídeo y datos sin instalar programas y con un flujo pensado también para celular.</p>
+  <div class="convert-seo-grid">
+    <article class="convert-seo-card"><h3>Formatos y compatibilidad</h3><p>Trabajamos con PDF, Word, imágenes, hojas de cálculo, audio y vídeo. La lista de salida cambia según el archivo que subas y los motores disponibles.</p><ul><li>PDF ↔ Word e imágenes</li><li>JPG, PNG, WEBP y PDF</li><li>CSV ↔ XLSX</li></ul></article>
+    <article class="convert-seo-card"><h3>Resultado transparente</h3><p>Converti intenta conservar estructura y calidad, pero no promete resultados imposibles: un PDF escaneado, una fuente poco común o una tabla compleja puede requerir revisión u OCR.</p></article>
+    <article class="convert-seo-card"><h3>Privado y sin registro</h3><p>No necesitas crear una cuenta. Los archivos se procesan de forma temporal y el resultado se mantiene disponible solo durante el tiempo necesario para descargarlo.</p></article>
+  </div>
+  <nav class="convert-seo-links" aria-label="Conversiones populares relacionadas">
+    <a href="/convertir/pdf-a-word">PDF a Word</a><a href="/convertir/word-a-pdf">Word a PDF</a><a href="/convertir/jpg-a-pdf">JPG a PDF</a><a href="/convertir/pdf-a-jpg">PDF a JPG</a><a href="/convertir/png-a-jpg">PNG a JPG</a><a href="/convertir/csv-a-xlsx">CSV a Excel</a>
+  </nav>
+  <div class="convert-seo-faq"><h3>Preguntas frecuentes</h3>
+    <details><summary>¿Convertir archivos en Converti es gratis?</summary><p>Sí. Puedes usar el convertidor sin registro. Algunas funciones dependen de que el motor necesario esté disponible en el servidor.</p></details>
+    <details><summary>¿Puedo convertir desde Android o iPhone?</summary><p>Sí. El selector de archivos y los botones están adaptados a pantallas táctiles; no necesitas arrastrar archivos para usar la herramienta.</p></details>
+    <details><summary>¿Por qué no aparecen todos los formatos de salida?</summary><p>Porque Converti analiza el contenido real del archivo y evita ofrecer combinaciones que no puede procesar correctamente.</p></details>
+    <details><summary>¿Qué pasa con PDFs escaneados o difíciles de editar?</summary><p>Cuando OCR está disponible puedes intentar reconocer el texto. Los diseños complejos pueden requerir pequeños ajustes después de convertirlos a Word.</p></details>
+    <details><summary>¿Mis archivos quedan guardados?</summary><p>No de forma permanente. Se usan temporalmente para realizar la conversión y luego se eliminan según la política de limpieza del servicio.</p></details>
+  </div>
 </section>
-{% endif %}
 
-<footer class="converti-site-footer">Converti · Conversão de arquivos simples e privada · <a href="/pt-br/privacidade">Privacidade</a></footer>
+
+<footer class="converti-site-footer">Converti · Conversión de archivos sencilla y privada · <a href="/privacidad">Privacidad</a></footer>
 
 <script>
 (function(){
- const current="pt-br";
+ const current="es";
  const sel=document.getElementById('langSelector'); if(sel) sel.value=current;
  const homes={es:'/',en:'/en/',fr:'/fr/','pt-br':'/pt-br/'};
  if(sel) sel.addEventListener('change',()=>{localStorage.setItem('converti_lang',sel.value);location.href=homes[sel.value]});
@@ -1010,7 +1002,7 @@ footer a{
 })();
 </script>
 <script>
-const MAX_MB={{ max_mb|int }},input=document.getElementById('archivo'),formato=document.getElementById('formato'),dropZone=document.getElementById('dropZone'),fileList=document.getElementById('fileList'),preview=document.getElementById('previewOriginal'),originalPreviewPanel=document.getElementById('originalPreviewPanel'),resultPlaceholder=document.getElementById('resultPlaceholder'),resultContent=document.getElementById('resultContent'),convertButton=document.getElementById('convertButton'),progressWrap=document.getElementById('progressWrap'),progressBar=document.getElementById('progressBar'),statusLine=document.getElementById('statusLine'),autoDownload=document.getElementById('autoDownload'),previewOriginalToggle=document.getElementById('previewOriginalToggle'),engineGrid=document.getElementById('engineGrid'),advanced=document.getElementById('advanced');let selectedFiles=[],objectURL=null,sessionHistory=[],serverOriginalPreview=null;
+const MAX_MB=200,input=document.getElementById('archivo'),formato=document.getElementById('formato'),dropZone=document.getElementById('dropZone'),fileList=document.getElementById('fileList'),preview=document.getElementById('previewOriginal'),originalPreviewPanel=document.getElementById('originalPreviewPanel'),resultPlaceholder=document.getElementById('resultPlaceholder'),resultContent=document.getElementById('resultContent'),convertButton=document.getElementById('convertButton'),progressWrap=document.getElementById('progressWrap'),progressBar=document.getElementById('progressBar'),statusLine=document.getElementById('statusLine'),autoDownload=document.getElementById('autoDownload'),previewOriginalToggle=document.getElementById('previewOriginalToggle'),engineGrid=document.getElementById('engineGrid'),advanced=document.getElementById('advanced');let selectedFiles=[],objectURL=null,sessionHistory=[],serverOriginalPreview=null;
 previewOriginalToggle.checked=false;
 const extOf=n=>{const i=n.lastIndexOf('.');return i>=0?n.slice(i+1).toLowerCase():''};const sizeText=b=>b<1024?b+' B':b<1048576?(b/1024).toFixed(1)+' KB':(b/1048576).toFixed(1)+' MB';
 const svgIcon=name=>{const paths={
@@ -1024,8 +1016,8 @@ close:'<path d="m6 6 12 12M18 6 6 18"/>',
 download:'<path d="M12 3v12"/><path d="m7.5 11 4.5 4.5 4.5-4.5"/><path d="M5 21h14"/>',
 clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',check:'<path d="m5 12 4 4L19 6"/>',x:'<path d="m6 6 12 12M18 6 6 18"/>'};return '<svg class="svg-icon" viewBox="0 0 24 24" aria-hidden="true">'+(paths[name]||paths.file)+'</svg>'};
 const iconFor=e=>['mp3','wav','flac','ogg','opus','m4a','aac'].includes(e)?svgIcon('audio'):['mp4','mkv','avi','webm','mov'].includes(e)?svgIcon('video'):['jpg','jpeg','png','webp','bmp','gif','tiff','heic','avif','svg','psd'].includes(e)?svgIcon('image'):e==='pdf'?svgIcon('pdf'):['xlsx','xls','csv','ods'].includes(e)?svgIcon('sheet'):svgIcon('file');
-function resetResult(){resultContent.innerHTML='';resultContent.style.display='none';resultPlaceholder.style.display='block'}function hideOriginalPreview(){originalPreviewPanel.style.display='none';preview.style.display='none';preview.innerHTML='';if(objectURL){URL.revokeObjectURL(objectURL);objectURL=null}}function clearAll(){selectedFiles=[];serverOriginalPreview=null;input.value='';fileList.style.display='none';fileList.innerHTML='';formato.innerHTML='<option value="">Selecione primeiro um arquivo</option>';formato.disabled=true;convertButton.disabled=true;statusLine.textContent='';hideOriginalPreview();resetResult()}
-function renderFileList(){fileList.innerHTML='';selectedFiles.forEach((f,i)=>{const row=document.createElement('div');row.className='file-strip';row.innerHTML='<div class="file-icon">'+iconFor(extOf(f.name))+'</div><div class="file-info"><div class="file-name"></div><div class="file-meta"></div></div><button class="remove" type="button" aria-label="Remover arquivo">'+svgIcon('close')+'</button>';row.querySelector('.file-name').textContent=f.name;row.querySelector('.file-meta').textContent=sizeText(f.size);row.querySelector('.remove').onclick=()=>{selectedFiles.splice(i,1);if(!selectedFiles.length){clearAll();return}renderFileList();analyzeSelection()};fileList.appendChild(row)});fileList.style.display=selectedFiles.length?'flex':'none'}
+function resetResult(){resultContent.innerHTML='';resultContent.style.display='none';resultPlaceholder.style.display='block'}function hideOriginalPreview(){originalPreviewPanel.style.display='none';preview.style.display='none';preview.innerHTML='';if(objectURL){URL.revokeObjectURL(objectURL);objectURL=null}}function clearAll(){selectedFiles=[];serverOriginalPreview=null;input.value='';fileList.style.display='none';fileList.innerHTML='';formato.innerHTML='<option value="">Selecciona primero un archivo</option>';formato.disabled=true;convertButton.disabled=true;statusLine.textContent='';hideOriginalPreview();resetResult()}
+function renderFileList(){fileList.innerHTML='';selectedFiles.forEach((f,i)=>{const row=document.createElement('div');row.className='file-strip';row.innerHTML='<div class="file-icon">'+iconFor(extOf(f.name))+'</div><div class="file-info"><div class="file-name"></div><div class="file-meta"></div></div><button class="remove" type="button" aria-label="Quitar archivo">'+svgIcon('close')+'</button>';row.querySelector('.file-name').textContent=f.name;row.querySelector('.file-meta').textContent=sizeText(f.size);row.querySelector('.remove').onclick=()=>{selectedFiles.splice(i,1);if(!selectedFiles.length){clearAll();return}renderFileList();analyzeSelection()};fileList.appendChild(row)});fileList.style.display=selectedFiles.length?'flex':'none'}
 function showPreview(file){
     if(!previewOriginalToggle.checked){hideOriginalPreview();return}
     if(serverOriginalPreview){
@@ -1050,10 +1042,10 @@ function showPreview(file){
         originalPreviewPanel.style.display='block';
     }
 }
-async function analyzeSelection(){if(!selectedFiles.length)return;serverOriginalPreview=null;const total=selectedFiles.reduce((s,f)=>s+f.size,0);if(total>MAX_MB*1024*1024){alert('A seleção excede '+MAX_MB+' MB.');clearAll();return}if(previewOriginalToggle.checked)showPreview(selectedFiles[0]);else hideOriginalPreview();formato.disabled=true;convertButton.disabled=true;formato.innerHTML='<option>Analisando…</option>';statusLine.textContent='Detectando MIME e recursos…';let intersection=null;for(const file of selectedFiles){const fd=new FormData();fd.append('file',file);fd.append('preview',previewOriginalToggle.checked&&selectedFiles.length===1?'1':'0');const r=await fetch('/api/analyze',{method:'POST',body:fd});const j=await r.json();if(!r.ok){statusLine.textContent=j.error||'Não foi possível analisar o arquivo.';return}if(selectedFiles.length===1&&previewOriginalToggle.checked&&j.preview_html){serverOriginalPreview=j.preview_html;preview.innerHTML=j.preview_html;preview.style.display='block';originalPreviewPanel.style.display='block'}const set=new Set(j.targets||[]);intersection=intersection===null?set:new Set([...intersection].filter(x=>set.has(x)))}const targets=[...(intersection||[])];if(selectedFiles.length>1&&selectedFiles.every(f=>f.type.startsWith('image/')))targets.unshift('pdf');const unique=[...new Set(targets)];formato.innerHTML='';if(!unique.length){formato.innerHTML='<option>Sem conversões em comum</option>';statusLine.textContent='Não há um formato de saída comum disponível para esta seleção.';return}unique.forEach(x=>{const o=document.createElement('option');o.value=x;o.textContent=x.toUpperCase();formato.appendChild(o)});formato.disabled=false;convertButton.disabled=false;statusLine.textContent=unique.length+' formatos disponíveis.'}
+async function analyzeSelection(){if(!selectedFiles.length)return;serverOriginalPreview=null;const total=selectedFiles.reduce((s,f)=>s+f.size,0);if(total>MAX_MB*1024*1024){alert('La selección supera '+MAX_MB+' MB.');clearAll();return}if(previewOriginalToggle.checked)showPreview(selectedFiles[0]);else hideOriginalPreview();formato.disabled=true;convertButton.disabled=true;formato.innerHTML='<option>Analizando…</option>';statusLine.textContent='Detectando MIME y capacidades…';let intersection=null;for(const file of selectedFiles){const fd=new FormData();fd.append('file',file);fd.append('preview',previewOriginalToggle.checked&&selectedFiles.length===1?'1':'0');const r=await fetch('/api/analyze',{method:'POST',body:fd});const j=await r.json();if(!r.ok){statusLine.textContent=j.error||'No se pudo analizar.';return}if(selectedFiles.length===1&&previewOriginalToggle.checked&&j.preview_html){serverOriginalPreview=j.preview_html;preview.innerHTML=j.preview_html;preview.style.display='block';originalPreviewPanel.style.display='block'}const set=new Set(j.targets||[]);intersection=intersection===null?set:new Set([...intersection].filter(x=>set.has(x)))}const targets=[...(intersection||[])];if(selectedFiles.length>1&&selectedFiles.every(f=>f.type.startsWith('image/')))targets.unshift('pdf');const unique=[...new Set(targets)];formato.innerHTML='';if(!unique.length){formato.innerHTML='<option>Sin conversiones comunes</option>';statusLine.textContent='No hay un formato común disponible para esta selección.';return}unique.forEach(x=>{const o=document.createElement('option');o.value=x;o.textContent=x.toUpperCase();formato.appendChild(o)});formato.disabled=false;convertButton.disabled=false;statusLine.textContent=unique.length+' formatos disponibles.'}
 function setFiles(files){selectedFiles=[...files];renderFileList();resetResult();analyzeSelection().catch(e=>statusLine.textContent=e.message)}input.addEventListener('change',()=>setFiles(input.files));previewOriginalToggle.addEventListener('change',()=>{serverOriginalPreview=null;if(!selectedFiles.length){hideOriginalPreview();return}analyzeSelection().catch(e=>statusLine.textContent=e.message)});['dragenter','dragover'].forEach(n=>dropZone.addEventListener(n,e=>{e.preventDefault();dropZone.classList.add('dragging')}));['dragleave','drop'].forEach(n=>dropZone.addEventListener(n,e=>{e.preventDefault();dropZone.classList.remove('dragging')}));dropZone.addEventListener('drop',e=>setFiles(e.dataTransfer.files));document.getElementById('advancedToggle').onclick=()=>advanced.classList.toggle('open');
 function options(){return{quality:+document.getElementById('quality').value||92,dpi:+document.getElementById('dpi').value||150,audio_bitrate:document.getElementById('audioBitrate').value,resolution:'original',video_crf:23,ocr:document.getElementById('ocr').checked,ocr_lang:document.getElementById('ocrLang').value||'spa+eng',strip_metadata:document.getElementById('stripMetadata').checked,page_start:+document.getElementById('pageStart').value||1,page_end:+document.getElementById('pageEnd').value||0}}
-function renderResult(j){resultPlaceholder.style.display='none';resultContent.style.display='block';let media='';if(j.preview_html)media=j.preview_html;else if(j.preview_kind==='image')media='<img src="'+j.preview_url+'" alt="Visualização do resultado">';else if(j.preview_kind==='audio')media='<audio controls src="'+j.preview_url+'"></audio>';else if(j.preview_kind==='video')media='<video controls playsinline preload="metadata" src="'+j.preview_url+'"></video>';else if(j.preview_kind==='pdf')media='<div class="placeholder"><strong>PDF pronto.</strong><br>Não foi possível gerar a visualização, mas você pode baixar o arquivo.</div>';else media='<div class="placeholder"><strong>Conversão concluída.</strong><br>Este formato não pode ser exibido diretamente no navegador, mas o resultado está pronto para download.</div>';resultContent.innerHTML='<strong class="result-filename">'+j.filename+'</strong><div style="margin-top:9px">'+media+'</div><div style="color:#777;font-size:12px;margin-top:7px">Tamanho: '+sizeText(j.size)+' · Tempo: '+j.elapsed_seconds+' s</div><a class="download" id="downloadLink" href="'+j.download_url+'">'+svgIcon('download')+' Baixar '+j.extension.toUpperCase()+'</a><button class="again" id="againButton">Converter outro arquivo</button><p class="expiry-line">'+svgIcon('clock')+' Será removido automaticamente em '+j.expires_minutes+' minutos.</p>';document.getElementById('againButton').onclick=clearAll;sessionHistory.unshift(j.filename+' · '+j.elapsed_seconds+' s');sessionHistory=sessionHistory.slice(0,5);document.getElementById('sessionHistory').innerHTML='<strong>Histórico desta sessão</strong><br>'+sessionHistory.map(x=>'• '+x).join('<br>');if(autoDownload.checked)document.getElementById('downloadLink').click()}
+function renderResult(j){resultPlaceholder.style.display='none';resultContent.style.display='block';let media='';if(j.preview_html)media=j.preview_html;else if(j.preview_kind==='image')media='<img src="'+j.preview_url+'" alt="Vista previa del resultado">';else if(j.preview_kind==='audio')media='<audio controls src="'+j.preview_url+'"></audio>';else if(j.preview_kind==='video')media='<video controls playsinline preload="metadata" src="'+j.preview_url+'"></video>';else if(j.preview_kind==='pdf')media='<div class="placeholder"><strong>PDF listo.</strong><br>La vista previa no pudo generarse, pero puedes descargarlo.</div>';else media='<div class="placeholder"><strong>Conversión terminada.</strong><br>Este formato no puede reproducirse directamente en el navegador, pero el resultado está listo para descargar.</div>';resultContent.innerHTML='<strong class="result-filename">'+j.filename+'</strong><div style="margin-top:9px">'+media+'</div><div style="color:#777;font-size:12px;margin-top:7px">Tamaño: '+sizeText(j.size)+' · Tiempo: '+j.elapsed_seconds+' s</div><a class="download" id="downloadLink" href="'+j.download_url+'">'+svgIcon('download')+' Descargar '+j.extension.toUpperCase()+'</a><button class="again" id="againButton">Convertir otro archivo</button><p class="expiry-line">'+svgIcon('clock')+' Se eliminará automáticamente en '+j.expires_minutes+' minutos.</p>';document.getElementById('againButton').onclick=clearAll;sessionHistory.unshift(j.filename+' · '+j.elapsed_seconds+' s');sessionHistory=sessionHistory.slice(0,5);document.getElementById('sessionHistory').innerHTML='<strong>Historial de esta sesión</strong><br>'+sessionHistory.map(x=>'• '+x).join('<br>');if(autoDownload.checked)document.getElementById('downloadLink').click()}
 convertButton.onclick=()=>{
     if(!selectedFiles.length||!formato.value)return;
     const totalBytes=selectedFiles.reduce((sum,f)=>sum+f.size,0);
@@ -1079,7 +1071,7 @@ convertButton.onclick=()=>{
 
     convertButton.disabled=true;
     progressWrap.style.display='block';
-    setProgress(1,'Enviando arquivo… 1%');
+    setProgress(1,'Subiendo archivo… 1%');
     resetResult();
 
     let pollTimer=null;
@@ -1095,7 +1087,7 @@ convertButton.onclick=()=>{
             // El progreso del motor ocupa 20..99; jamás puede pisar hacia atrás la subida.
             const overall=20+(serverPct*0.79);
             const shown=Math.min(99,overall);
-            setProgress(shown,'Convertendo… '+Math.round(shown)+'%');
+            setProgress(shown,'Convirtiendo… '+Math.round(shown)+'%');
             if(j.done)stopPolling();
         }catch(e){}
     };
@@ -1106,12 +1098,12 @@ convertButton.onclick=()=>{
         if(e.lengthComputable && !finished){
             const raw=e.loaded/e.total;
             const overall=1+(raw*19);
-            setProgress(overall,'Enviando arquivo… '+Math.round(overall)+'%');
+            setProgress(overall,'Subiendo archivo… '+Math.round(overall)+'%');
         }
     };
     xhr.upload.onload=()=>{
         // NO reiniciar barra. La conversión continúa desde 20 %.
-        setProgress(20,'Preparando conversão… 20%');
+        setProgress(20,'Preparando conversión… 20%');
         if(tracked){
             pollProgress();
             pollTimer=setInterval(pollProgress,500);
@@ -1120,7 +1112,7 @@ convertButton.onclick=()=>{
             let synthetic=20;
             pollTimer=setInterval(()=>{
                 synthetic=Math.min(92,synthetic+Math.max(1,Math.round((92-synthetic)*0.08)));
-                setProgress(synthetic,'Convertendo… '+synthetic+'%');
+                setProgress(synthetic,'Convirtiendo… '+synthetic+'%');
             },650);
         }
     };
@@ -1128,14 +1120,14 @@ convertButton.onclick=()=>{
         stopPolling();
         convertButton.disabled=false;
         let j;
-        try{j=JSON.parse(xhr.responseText)}catch{j={error:'Resposta inválida do servidor.'}}
+        try{j=JSON.parse(xhr.responseText)}catch{j={error:'Respuesta inválida del servidor.'}}
         if(xhr.status<200||xhr.status>=300){
             finished=true;
-            statusLine.textContent=j.error||'Erro de conversão.';
+            statusLine.textContent=j.error||'Error de conversión.';
             return;
         }
         finished=true;
-        setProgress(100,'Conversão concluída.');
+        setProgress(100,'Conversión completada.');
         renderResult(j);
         setTimeout(()=>{progressWrap.style.display='none'},1200);
     };
@@ -1143,12 +1135,12 @@ convertButton.onclick=()=>{
         stopPolling();
         convertButton.disabled=false;
         finished=true;
-        statusLine.textContent='Não foi possível conectar ao servidor.';
+        statusLine.textContent='No se pudo conectar con el servidor.';
     };
     xhr.send(fd);
 };
 (async()=>{try{const r=await fetch('/api/status'),j=await r.json();const labels={ffmpeg:'FFmpeg',ffprobe:'FFprobe',libreoffice:'LibreOffice',pandoc:'Pandoc',imagemagick:'ImageMagick',tesseract_ocr:'Tesseract OCR',python_magic:'python-magic'};engineGrid.innerHTML='';Object.entries(labels).forEach(([k,v])=>{const d=document.createElement('div');d.className='engine '+(j.tools[k]?'ok':'missing');d.innerHTML=svgIcon(j.tools[k]?'check':'x')+' <span>'+v+'</span>';engineGrid.appendChild(d)})}catch{}})();
 </script>
 
-<script src="/static/js/site_ui.js?v=20260822-layout-seo-6" defer></script>
+<script src="file:///mnt/data/fix_current/static/js/site_ui.js?v=20260822-stable-5" defer></script>
 </body></html>

@@ -841,7 +841,7 @@ footer a{
   gtag('config', 'G-XLZM56PZHM');
 </script>
 
-<link rel="stylesheet" href="/static/css/site_ui.css?v=20260822-stable-5">
+<link rel="stylesheet" href="/static/css/site_ui.css?v=20260822-layout-seo-6">
   <link rel="prefetch" href="/en/create-cv">
   <link rel="prefetch" href="/static/css/create_cv.css" as="style">
   <link rel="prefetch" href="/static/js/create_cv.js" as="script">
@@ -984,6 +984,16 @@ footer a{
 {% endif %}
 <section class="info-section" id="formatos"><h2>Available formats</h2><p>Options are generated from the real MIME type and the engines available on this server.</p><div class="format-grid"><div class="format-card"><h3>Audio</h3><p>FFmpeg: MP3, WAV, FLAC, OGG, OPUS, M4A, AAC, WMA y más según compilación.</p></div><div class="format-card"><h3>Images</h3><p>PNG, JPG, WEBP, TIFF, GIF, AVIF, HEIC, PSD, SVG y formatos RAW cuando el motor los soporte. También salida a PDF, DOCX, PPTX y HTML; TXT por OCR cuando esté disponible.</p></div><div class="format-card"><h3>Documents</h3><p>PDF, DOCX, ODT, RTF, XLSX, ODS, CSV, PPTX, EPUB, Markdown, HTML y LaTeX.</p></div></div><div class="coming">PDF to Word, scanned PDF OCR, multi-page PDF to ZIP images, multiple images to PDF and batch conversion are integrated.</div><div class="engine-grid" id="engineGrid"></div></section>
 <section class="info-section" id="ayuda"><h2>How does Converti work?</h2><div class="help-grid"><div class="help-card"><div class="help-number">1</div><h3>Select</h3><p>Converti validates the content, detects MIME and classifies the file.</p></div><div class="help-card"><div class="help-number">2</div><h3>Choose</h3><p>Only formats supported by the engines actually available are shown.</p></div><div class="help-card"><div class="help-number">3</div><h3>Convert</h3><p>Conversion runs without reloading the page; multiple results are delivered in a ZIP file.</p></div></div></section>
+
+{% if canonical_override is defined %}
+<section class="convert-seo-guide" aria-labelledby="convert-seo-title">
+  <p class="convert-seo-guide__kicker">Online file converter</p><h2 id="convert-seo-title">Convert files for free, easily, on any device</h2><p class="convert-seo-guide__lead">Converti detects the real file type and only shows compatible outputs. Convert documents, PDFs, images, audio, video and data without installing software, with a workflow designed for phones too.</p>
+  <div class="convert-seo-grid"><article class="convert-seo-card"><h3>Formats and compatibility</h3><p>PDF, Word, images, spreadsheets, audio and video. Available outputs depend on the uploaded file and active engines.</p></article><article class="convert-seo-card"><h3>Transparent results</h3><p>Converti preserves structure and quality when possible, while clearly warning when scans, unusual fonts or complex layouts may need OCR or review.</p></article><article class="convert-seo-card"><h3>Private, no sign-up</h3><p>No account is required. Files are processed temporarily and results remain available only long enough to download them.</p></article></div>
+  <nav class="convert-seo-links" aria-label="Related conversions"><a href="/en/convertir/pdf-a-word">PDF to Word</a><a href="/en/convertir/word-a-pdf">Word to PDF</a><a href="/en/convertir/jpg-a-pdf">JPG to PDF</a><a href="/en/convertir/pdf-a-jpg">PDF to JPG</a></nav>
+  <div class="convert-seo-faq"><h3>Frequently asked questions</h3><details><summary>Is Converti free?</summary><p>Yes. The converter can be used without registration; some options depend on the engines available on the server.</p></details><details><summary>Can I convert files on Android or iPhone?</summary><p>Yes. File selection and primary actions are designed for touch screens.</p></details><details><summary>Why are some output formats unavailable?</summary><p>Converti checks the real file content and only offers combinations it can process reliably.</p></details></div>
+</section>
+{% endif %}
+
 <footer class="converti-site-footer">Converti · Simple and private file conversion · <a href="/en/privacy">Privacy</a></footer>
 
 <script>
@@ -1140,5 +1150,5 @@ convertButton.onclick=()=>{
 (async()=>{try{const r=await fetch('/api/status'),j=await r.json();const labels={ffmpeg:'FFmpeg',ffprobe:'FFprobe',libreoffice:'LibreOffice',pandoc:'Pandoc',imagemagick:'ImageMagick',tesseract_ocr:'Tesseract OCR',python_magic:'python-magic'};engineGrid.innerHTML='';Object.entries(labels).forEach(([k,v])=>{const d=document.createElement('div');d.className='engine '+(j.tools[k]?'ok':'missing');d.innerHTML=svgIcon(j.tools[k]?'check':'x')+' <span>'+v+'</span>';engineGrid.appendChild(d)})}catch{}})();
 </script>
 
-<script src="/static/js/site_ui.js?v=20260822-stable-5" defer></script>
+<script src="/static/js/site_ui.js?v=20260822-layout-seo-6" defer></script>
 </body></html>

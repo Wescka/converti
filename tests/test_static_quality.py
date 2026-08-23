@@ -155,6 +155,26 @@ class StaticQualityTests(unittest.TestCase):
         source = (ROOT / "app.py").read_text(encoding="utf-8")
         self.assertIn("from seo_content import enrich_tool_seo", source)
 
+    def test_compact_header_prevents_logo_nav_collision_on_narrow_windows(self):
+        css = (ROOT / "static" / "css" / "site_ui.css").read_text(encoding="utf-8")
+        js = (ROOT / "static" / "js" / "site_ui.js").read_text(encoding="utf-8")
+        self.assertIn("@media (max-width:1280px) and (min-width:721px)", css)
+        self.assertIn("grid-template-columns:minmax(0,1fr) auto auto", css)
+        self.assertIn("max-height:270px", css)
+        self.assertIn("window.innerWidth > 1280", js)
+
+    def test_convert_root_has_people_first_seo_content_without_blocking_converter(self):
+        for name in ("index.html", "index_en.html", "index_fr.html", "index_ptbr.html"):
+            html = (ROOT / "templates" / name).read_text(encoding="utf-8")
+            self.assertIn("convert-seo-guide", html, name)
+            self.assertIn("canonical_override is defined", html, name)
+            self.assertLess(html.index('id="convertir"'), html.index("convert-seo-guide"), name)
+
+    def test_site_ui_cache_version_is_bumped_for_layout_release(self):
+        for name in ("index.html", "index_en.html", "index_fr.html", "index_ptbr.html", "section_page.html", "tool_page.html"):
+            html = (ROOT / "templates" / name).read_text(encoding="utf-8")
+            self.assertIn("20260822-layout-seo-6", html, name)
+
 
 if __name__ == "__main__":
     unittest.main()

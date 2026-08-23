@@ -841,7 +841,7 @@ footer a{
   gtag('config', 'G-XLZM56PZHM');
 </script>
 
-<link rel="stylesheet" href="/static/css/site_ui.css?v=20260822-stable-5">
+<link rel="stylesheet" href="/static/css/site_ui.css?v=20260822-layout-seo-6">
   <link rel="prefetch" href="/crear-cv">
   <link rel="prefetch" href="/static/css/create_cv.css" as="style">
   <link rel="prefetch" href="/static/js/create_cv.js" as="script">
@@ -984,6 +984,30 @@ footer a{
 {% endif %}
 <section class="info-section" id="formatos"><h2>Formatos disponibles</h2><p>Las opciones se generan según el tipo MIME real y los motores disponibles en este equipo.</p><div class="format-grid"><div class="format-card"><h3>Audio</h3><p>FFmpeg: MP3, WAV, FLAC, OGG, OPUS, M4A, AAC, WMA y más según compilación.</p></div><div class="format-card"><h3>Imágenes</h3><p>PNG, JPG, WEBP, TIFF, GIF, AVIF, HEIC, PSD, SVG y formatos RAW cuando el motor los soporte. También salida a PDF, DOCX, PPTX y HTML; TXT por OCR cuando esté disponible.</p></div><div class="format-card"><h3>Documentos</h3><p>PDF, DOCX, ODT, RTF, XLSX, ODS, CSV, PPTX, EPUB, Markdown, HTML y LaTeX.</p></div></div><div class="coming">PDF a Word, PDF escaneado con OCR, PDF multipágina a imágenes ZIP, imágenes múltiples a PDF y conversión por lotes están integrados.</div><div class="engine-grid" id="engineGrid"></div></section>
 <section class="info-section" id="ayuda"><h2>¿Cómo funciona Converti?</h2><div class="help-grid"><div class="help-card"><div class="help-number">1</div><h3>Selecciona</h3><p>Converti valida el contenido, detecta MIME y clasifica el archivo.</p></div><div class="help-card"><div class="help-number">2</div><h3>Elige</h3><p>Solo muestra formatos compatibles con los motores realmente disponibles.</p></div><div class="help-card"><div class="help-number">3</div><h3>Convierte</h3><p>El proceso ocurre sin recargar la página; si hay varios resultados se entregan en ZIP.</p></div></div></section>
+
+{% if canonical_override is defined %}
+<section class="convert-seo-guide" aria-labelledby="convert-seo-title">
+  <p class="convert-seo-guide__kicker">Convertir archivos online</p>
+  <h2 id="convert-seo-title">Convierte archivos gratis, fácil y desde cualquier dispositivo</h2>
+  <p class="convert-seo-guide__lead">Converti detecta el tipo real del archivo y muestra únicamente salidas compatibles. Puedes convertir documentos, PDF, imágenes, audio, vídeo y datos sin instalar programas y con un flujo pensado también para celular.</p>
+  <div class="convert-seo-grid">
+    <article class="convert-seo-card"><h3>Formatos y compatibilidad</h3><p>Trabajamos con PDF, Word, imágenes, hojas de cálculo, audio y vídeo. La lista de salida cambia según el archivo que subas y los motores disponibles.</p><ul><li>PDF ↔ Word e imágenes</li><li>JPG, PNG, WEBP y PDF</li><li>CSV ↔ XLSX</li></ul></article>
+    <article class="convert-seo-card"><h3>Resultado transparente</h3><p>Converti intenta conservar estructura y calidad, pero no promete resultados imposibles: un PDF escaneado, una fuente poco común o una tabla compleja puede requerir revisión u OCR.</p></article>
+    <article class="convert-seo-card"><h3>Privado y sin registro</h3><p>No necesitas crear una cuenta. Los archivos se procesan de forma temporal y el resultado se mantiene disponible solo durante el tiempo necesario para descargarlo.</p></article>
+  </div>
+  <nav class="convert-seo-links" aria-label="Conversiones populares relacionadas">
+    <a href="/convertir/pdf-a-word">PDF a Word</a><a href="/convertir/word-a-pdf">Word a PDF</a><a href="/convertir/jpg-a-pdf">JPG a PDF</a><a href="/convertir/pdf-a-jpg">PDF a JPG</a><a href="/convertir/png-a-jpg">PNG a JPG</a><a href="/convertir/csv-a-xlsx">CSV a Excel</a>
+  </nav>
+  <div class="convert-seo-faq"><h3>Preguntas frecuentes</h3>
+    <details><summary>¿Convertir archivos en Converti es gratis?</summary><p>Sí. Puedes usar el convertidor sin registro. Algunas funciones dependen de que el motor necesario esté disponible en el servidor.</p></details>
+    <details><summary>¿Puedo convertir desde Android o iPhone?</summary><p>Sí. El selector de archivos y los botones están adaptados a pantallas táctiles; no necesitas arrastrar archivos para usar la herramienta.</p></details>
+    <details><summary>¿Por qué no aparecen todos los formatos de salida?</summary><p>Porque Converti analiza el contenido real del archivo y evita ofrecer combinaciones que no puede procesar correctamente.</p></details>
+    <details><summary>¿Qué pasa con PDFs escaneados o difíciles de editar?</summary><p>Cuando OCR está disponible puedes intentar reconocer el texto. Los diseños complejos pueden requerir pequeños ajustes después de convertirlos a Word.</p></details>
+    <details><summary>¿Mis archivos quedan guardados?</summary><p>No de forma permanente. Se usan temporalmente para realizar la conversión y luego se eliminan según la política de limpieza del servicio.</p></details>
+  </div>
+</section>
+{% endif %}
+
 <footer class="converti-site-footer">Converti · Conversión de archivos sencilla y privada · <a href="/privacidad">Privacidad</a></footer>
 
 <script>
@@ -1140,5 +1164,5 @@ convertButton.onclick=()=>{
 (async()=>{try{const r=await fetch('/api/status'),j=await r.json();const labels={ffmpeg:'FFmpeg',ffprobe:'FFprobe',libreoffice:'LibreOffice',pandoc:'Pandoc',imagemagick:'ImageMagick',tesseract_ocr:'Tesseract OCR',python_magic:'python-magic'};engineGrid.innerHTML='';Object.entries(labels).forEach(([k,v])=>{const d=document.createElement('div');d.className='engine '+(j.tools[k]?'ok':'missing');d.innerHTML=svgIcon(j.tools[k]?'check':'x')+' <span>'+v+'</span>';engineGrid.appendChild(d)})}catch{}})();
 </script>
 
-<script src="/static/js/site_ui.js?v=20260822-stable-5" defer></script>
+<script src="/static/js/site_ui.js?v=20260822-layout-seo-6" defer></script>
 </body></html>
