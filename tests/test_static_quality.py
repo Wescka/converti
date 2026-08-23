@@ -224,3 +224,17 @@ class HeaderResponsiveRegressionTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PtBrRoutingRegressionTests(unittest.TestCase):
+    def test_ptbr_internal_links_use_canonical_converter_prefix(self):
+        html = (ROOT / "templates" / "index_ptbr.html").read_text(encoding="utf-8")
+        self.assertNotIn('/pt-br/convertir/', html)
+        self.assertNotIn('/pt-br/convert/', html)
+        self.assertIn('/pt-br/converter/pdf-a-word', html)
+
+    def test_ptbr_canonical_and_legacy_routes_are_declared(self):
+        app_py = (ROOT / "app.py").read_text(encoding="utf-8")
+        self.assertIn('@app.get("/pt-br/converter/<slug>")', app_py)
+        self.assertIn('@app.get("/pt-br/convertir/<slug>")', app_py)
+        self.assertIn('@app.get("/pt-br/convert/<slug>")', app_py)

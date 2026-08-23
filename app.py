@@ -2296,6 +2296,22 @@ def seo_converter_ptbr(slug: str):
     return _render_tool("pt-br", slug)
 
 
+# Compatibilidad con enlaces antiguos/erróneos publicados antes de estandarizar PT-BR.
+# Mantiene una única URL canónica y evita 404 para Google o marcadores antiguos.
+@app.get("/pt-br/convertir")
+@app.get("/pt-br/convert")
+def legacy_ptbr_convert_root():
+    return redirect("/pt-br/converter", code=301)
+
+
+@app.get("/pt-br/convertir/<slug>")
+@app.get("/pt-br/convert/<slug>")
+def legacy_ptbr_converter(slug: str):
+    if not _tool_meta("pt-br", slug):
+        return "Not found", 404
+    return redirect(f"/pt-br/converter/{slug}", code=301)
+
+
 @app.get("/api/diagnostico-formatos")
 def diagnostico_formatos():
     tools = get_toolchain()
