@@ -13,5 +13,5 @@
   toggle.addEventListener('click', function(){ setOpen(!header.classList.contains('is-menu-open')); });
   nav.addEventListener('click', function(e){ if (e.target.closest('a')) setOpen(false); });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape') setOpen(false); });
-  window.addEventListener('resize', function(){ if(window.innerWidth > 760) setOpen(false); }, {passive:true});
+  window.addEventListener('resize', function(){ if(window.innerWidth > 860) setOpen(false); }, {passive:true});
 })();

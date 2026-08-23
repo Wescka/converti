@@ -158,12 +158,11 @@ class StaticQualityTests(unittest.TestCase):
     def test_mid_width_header_keeps_buttons_visible_without_logo_collision(self):
         css = (ROOT / "static" / "css" / "site_ui.css").read_text(encoding="utf-8")
         js = (ROOT / "static" / "js" / "site_ui.js").read_text(encoding="utf-8")
-        self.assertIn("@media (min-width:761px) and (max-width:1100px)", css)
-        self.assertIn("@media (min-width:1101px) and (max-width:1280px)", css)
-        self.assertIn("grid-template-rows:1fr", css)
-        self.assertIn("grid-template-columns:minmax(185px,235px) minmax(0,1fr) auto!important", css)
-        self.assertIn("grid-template-columns:minmax(190px,1fr) auto!important", css)
-        self.assertIn("window.innerWidth > 760", js)
+        self.assertIn("@media (max-width:1180px) and (min-width:861px)", css)
+        self.assertIn("@media (max-width:860px)", css)
+        self.assertIn("grid-template-columns:minmax(175px,220px) minmax(0,1fr) auto", css)
+        self.assertIn("white-space:nowrap", css)
+        self.assertIn("window.innerWidth > 860", js)
 
     def test_convert_root_has_people_first_seo_content_without_blocking_converter(self):
         for name in ("index.html", "index_en.html", "index_fr.html", "index_ptbr.html"):
@@ -175,48 +174,53 @@ class StaticQualityTests(unittest.TestCase):
     def test_site_ui_cache_version_is_bumped_for_layout_release(self):
         for name in ("index.html", "index_en.html", "index_fr.html", "index_ptbr.html", "section_page.html", "tool_page.html"):
             html = (ROOT / "templates" / name).read_text(encoding="utf-8")
-            self.assertIn("20260822-header-stable-10", html, name)
+            self.assertIn("20260822-responsive-final-11", html, name)
 
 
 
 class HeaderResponsiveRegressionTests(unittest.TestCase):
-    def test_mid_width_keeps_navigation_visible(self):
+    def test_desktop_header_stays_single_row_until_compact_mode(self):
         css = (ROOT / 'static/css/site_ui.css').read_text(encoding='utf-8')
-        self.assertIn('@media (min-width:761px) and (max-width:1100px)', css)
-        self.assertIn('@media (min-width:1101px) and (max-width:1280px)', css)
-        self.assertIn('grid-template-rows:1fr', css)
-        self.assertIn('grid-template-columns:minmax(185px,235px) minmax(0,1fr) auto!important', css)
-        self.assertIn('grid-template-columns:minmax(190px,1fr) auto!important', css)
-        self.assertIn('.site-mobile-menu-toggle,.cvb-mobile-menu-toggle{display:none!important}', css)
+        desktop = css.split('@media (max-width:1180px) and (min-width:861px)',1)[1].split('/* Navegación compacta',1)[0]
+        self.assertIn('grid-template-columns:minmax(175px,220px) minmax(0,1fr) auto', desktop)
+        self.assertNotIn('grid-template-rows:', desktop)
+        self.assertIn('min-height:46px', desktop)
+        self.assertIn('font-size:14px', desktop)
 
-    def test_only_mobile_collapses_navigation(self):
+    def test_compact_navigation_activates_before_collision(self):
         css = (ROOT / 'static/css/site_ui.css').read_text(encoding='utf-8')
-        self.assertIn('@media (max-width:760px)', css)
-        self.assertNotIn('@media (max-width:1280px) and (min-width:761px)', css)
+        js = (ROOT / 'static/js/site_ui.js').read_text(encoding='utf-8')
+        cvjs = (ROOT / 'static/js/create_cv.js').read_text(encoding='utf-8')
+        self.assertEqual(css.count('@media (max-width:860px)'), 1)
+        self.assertIn('display:grid;place-items:center', css)
+        self.assertIn('window.innerWidth > 860', js)
+        self.assertIn('window.innerWidth>860', cvjs)
 
-    def test_header_css_has_single_mid_width_strategy(self):
-        css = (ROOT / 'static/css/site_ui.css').read_text(encoding='utf-8')
-        self.assertEqual(css.count('@media (min-width:761px) and (max-width:1100px)'), 1)
-        self.assertEqual(css.count('@media (min-width:1101px) and (max-width:1280px)'), 1)
+    def test_header_label_is_short_and_consistent(self):
+        app = (ROOT / 'app.py').read_text(encoding='utf-8')
+        self.assertIn('"nav_fixdocs":"Corregir con IA"', app)
+        self.assertNotIn('"nav_fixdocs":"Corregir documentos con IA"', app)
+        for name in ('index.html','privacy.html','tool_page.html'):
+            html=(ROOT/'templates'/name).read_text(encoding='utf-8')
+            self.assertNotIn('>Corregir documentos con IA<', html, name)
 
-    def test_cv_seo_uses_shared_header_css_only(self):
-        html = (ROOT / 'templates/cv_seo_page.html').read_text(encoding='utf-8')
-        self.assertIn("css/site_ui.css", html)
-        self.assertIn('class="converti-header-tools"', html)
-        style = html.split('<style>',1)[1].split('</style>',1)[0]
-        self.assertNotIn('.header{', style)
-        self.assertNotIn('.nav{', style)
-        self.assertNotIn('.brand{', style)
+    def test_shared_templates_do_not_redefine_header_css(self):
+        for p in (ROOT/'templates').glob('*.html'):
+            html=p.read_text(encoding='utf-8')
+            if 'site_ui.css' not in html or '<style>' not in html:
+                continue
+            style=html.split('<style>',1)[1].split('</style>',1)[0]
+            self.assertNotIn('.header{', style, p.name)
+            self.assertNotIn('.nav{', style, p.name)
+            self.assertNotIn('.brand{', style, p.name)
+            self.assertNotIn('.brand-logo{', style, p.name)
 
-    def test_compact_desktop_header_stays_single_row(self):
-        css = (ROOT / 'static/css/site_ui.css').read_text(encoding='utf-8')
-        wide = css.split('@media (min-width:1101px) and (max-width:1280px)',1)[1].split('@media (min-width:761px) and (max-width:1100px)',1)[0]
-        narrow = css.split('@media (min-width:761px) and (max-width:1100px)',1)[1].split('/* ===== Móvil real',1)[0]
-        self.assertIn('grid-template-rows:1fr!important', wide)
-        self.assertIn('grid-template-rows:58px 48px!important', narrow)
-        self.assertIn('grid-column:1 / -1!important;grid-row:2!important', narrow)
-        self.assertIn('.site-mobile-menu-toggle,.cvb-mobile-menu-toggle{display:none!important}', wide)
-        self.assertIn('.site-mobile-menu-toggle,.cvb-mobile-menu-toggle{display:none!important}', narrow)
+    def test_mobile_cv_title_gets_full_width(self):
+        css=(ROOT/'static/css/create_cv.css').read_text(encoding='utf-8')
+        self.assertIn('.cvb-editor-head{display:block!important', css)
+        self.assertIn('.cvb-editor-title{width:100%!important', css)
+        self.assertIn('font-size:clamp(28px,7.8vw,34px)!important', css)
+        self.assertIn('.cvb-template-buttons{display:flex!important;flex-wrap:wrap!important', css)
 
 if __name__ == "__main__":
     unittest.main()

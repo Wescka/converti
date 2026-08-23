@@ -64,30 +64,8 @@ body{
     font-family:"Plus Jakarta Sans",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
 }
 a{color:inherit}
-.header{
-    height:70px;
-    display:grid;
-    grid-template-columns:minmax(210px,1fr) auto minmax(120px,1fr);
-    align-items:center;
-    column-gap:24px;
-    padding:0 3.2%;
-    border-bottom:1px solid var(--line-2);
-    background:rgba(255,255,255,.96);
-    backdrop-filter:saturate(180%) blur(10px);
-    position:sticky;
-    top:0;
-    z-index:100;
-}
-.brand{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    text-decoration:none;
-    font-size:30px;
-    font-weight:800;
-    letter-spacing:-1.3px;
-    color:var(--navy);
-}
+
+
 .brand-icon{
     width:48px;
     height:48px;
@@ -96,17 +74,11 @@ a{color:inherit}
 }
 .brand-wordmark{display:inline-flex;align-items:center;line-height:1}
 
-.brand-logo{height:62px!important;width:auto;max-width:330px;display:block;object-fit:contain}
-.nav{margin:0;display:flex;align-items:center;justify-self:center;gap:34px;flex:0 0 auto}
-.nav a{
-    color:var(--navy);
-    text-decoration:none;
-    font-weight:600;
-    font-size:15px;
-    opacity:.92;
-}
-.nav a:hover{color:var(--blue)}
-.lang-select{justify-self:end;margin-left:0;width:104px!important;min-width:104px;max-width:104px;flex:0 0 104px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--navy);padding:8px 10px;font:700 13px/1 "Plus Jakarta Sans",sans-serif;outline:none;cursor:pointer}
+
+
+
+
+
 .page{width:100%;max-width:1520px;margin:auto;padding:26px 5.2% 16px;position:relative}
 .workspace{display:grid;grid-template-columns:minmax(430px,.95fr) minmax(560px,1.05fr);gap:34px;align-items:start}
 .workspace>section:first-child,.workspace>section:last-child{position:relative;z-index:1}
@@ -324,52 +296,12 @@ body{min-width:0}
     html,body{width:100%;max-width:100%;overflow-x:hidden}
     body{min-width:0;font-size:14px}
 
-    .header{
-        height:auto;
-        min-height:0;
-        padding:5px 12px 6px;
-        display:grid;
-        grid-template-columns:1fr auto;
-        align-items:center;
-        gap:4px 10px;
-    }
-    .brand{
-        min-width:0;
-        max-width:230px;
-        gap:7px;
-        justify-self:start;
-    }
-    .brand-logo{
-        height:54px!important;
-        width:auto;
-        max-width:250px;
-        display:block;
-        object-fit:contain;
-        flex-shrink:0;
-    }
-    .lang-select{
-        grid-column:2;
-        grid-row:1;
-        justify-self:end;
-        margin:0;
-        width:84px!important;
-        min-width:84px;
-        max-width:84px;
-        padding:7px 8px;
-        font-size:11px;
-    }
-    .nav{
-        grid-column:1 / -1;
-        grid-row:2;
-        width:100%;
-        margin:0;
-        padding:5px 0 0;
-        border-top:1px solid var(--line-2);
-        display:flex;
-        justify-content:center;
-        gap:28px;
-    }
-    .nav a{font-size:12px;white-space:nowrap}
+    
+    
+    
+    
+    
+    
 
         .page,.info-section{width:100%;padding-left:14px;padding-right:14px}
     .page{padding-top:18px;padding-bottom:10px}
@@ -502,16 +434,8 @@ body{
     text-rendering:optimizeLegibility;
     -webkit-font-smoothing:antialiased;
 }
-.nav a{
-    font-size:16px;
-    font-weight:700;
-    letter-spacing:-.01em;
-}
-.lang-select{
-    font-family:"Plus Jakarta Sans",sans-serif;
-    font-size:13px;
-    font-weight:700;
-}
+
+
 .hero h1{
     font-size:68px;
     line-height:.99;
@@ -772,16 +696,7 @@ footer a{
 }
 
 /* Accesibilidad visual de interacciones */
-.file-button:focus-visible,
-.convert:focus-visible,
-.download:focus-visible,
-.again:focus-visible,
-.popular-tool:focus-visible,
-.advanced-toggle:focus-visible,
-.nav a:focus-visible{
-    outline:3px solid rgba(42,123,255,.2);
-    outline-offset:3px;
-}
+
 
 @media(max-width:1100px){
     .hero h1{font-size:56px}
@@ -789,8 +704,8 @@ footer a{
 
 @media(max-width:760px){
     body{font-size:15px}
-    .nav a{font-size:13px;font-weight:700}
-    .lang-select{font-size:12px}
+    
+    
     .hero h1{font-size:34px;line-height:1.08;letter-spacing:-1.4px}
     .hero p{font-size:16px;line-height:1.55}
     .limit-info{font-size:11px;font-weight:600}
@@ -831,6 +746,25 @@ footer a{
 }
 
 
+
+/* Converti · cierre responsive de la herramienta principal */
+@media(max-width:900px){
+  .page{padding-left:clamp(14px,3vw,24px);padding-right:clamp(14px,3vw,24px)}
+  .workspace{grid-template-columns:1fr;gap:22px}
+  .hero{max-width:760px}
+  .hero h1{max-width:100%;font-size:clamp(38px,6.2vw,52px);line-height:1.03;letter-spacing:-.045em;text-wrap:balance}
+  .hero p{max-width:720px;font-size:clamp(17px,2.3vw,21px);line-height:1.5}
+}
+@media(max-width:760px){
+  .page{padding-left:14px;padding-right:14px}
+  .hero h1{font-size:clamp(32px,9vw,40px);line-height:1.06;letter-spacing:-.04em;text-wrap:balance}
+  .hero p{font-size:16px;line-height:1.55}
+  .upload-title{font-size:clamp(23px,6.6vw,28px)}
+}
+@media(max-width:380px){
+  .hero h1{font-size:31px}
+  .hero p{font-size:15.5px}
+}
 </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XLZM56PZHM"></script>
@@ -841,7 +775,7 @@ footer a{
   gtag('config', 'G-XLZM56PZHM');
 </script>
 
-<link rel="stylesheet" href="/static/css/site_ui.css?v=20260822-header-stable-10">
+<link rel="stylesheet" href="/static/css/site_ui.css?v=20260822-responsive-final-11">
   <link rel="prefetch" href="/pt-br/criar-cv">
   <link rel="prefetch" href="/static/css/create_cv.css" as="style">
   <link rel="prefetch" href="/static/js/create_cv.js" as="script">
@@ -855,7 +789,7 @@ footer a{
         <a href="/pt-br/converter">Converter</a>
         <a href="/pt-br/formatos">Formatos</a>
         <a href="/pt-br/ajuda">Ajuda</a>
-        <a class="nav-doc-ai" href="/pt-br/corrigir-documentos-ia">Corrigir documentos com IA</a>
+        <a class="nav-doc-ai" href="/pt-br/corrigir-documentos-ia">Corrigir com IA</a>
     
         <a class="nav-cv" href="/pt-br/criar-cv">Criar CV</a></nav>
     <div class="converti-header-tools">
@@ -1150,5 +1084,5 @@ convertButton.onclick=()=>{
 (async()=>{try{const r=await fetch('/api/status'),j=await r.json();const labels={ffmpeg:'FFmpeg',ffprobe:'FFprobe',libreoffice:'LibreOffice',pandoc:'Pandoc',imagemagick:'ImageMagick',tesseract_ocr:'Tesseract OCR',python_magic:'python-magic'};engineGrid.innerHTML='';Object.entries(labels).forEach(([k,v])=>{const d=document.createElement('div');d.className='engine '+(j.tools[k]?'ok':'missing');d.innerHTML=svgIcon(j.tools[k]?'check':'x')+' <span>'+v+'</span>';engineGrid.appendChild(d)})}catch{}})();
 </script>
 
-<script src="/static/js/site_ui.js?v=20260822-header-stable-10" defer></script>
+<script src="/static/js/site_ui.js?v=20260822-responsive-final-11" defer></script>
 </body></html>

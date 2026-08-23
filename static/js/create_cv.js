@@ -49,7 +49,7 @@ mobileMenuToggle?.addEventListener('click',()=>{
   mobileMenuToggle.setAttribute('aria-expanded',String(open));
 });
 siteNav?.addEventListener('click',e=>{if(e.target.closest('a'))closeMobileMenu()});
-window.addEventListener('resize',()=>{if(window.innerWidth>760)closeMobileMenu()},{passive:true});
+window.addEventListener('resize',()=>{if(window.innerWidth>860)closeMobileMenu()},{passive:true});
 
 const navCreate=$('#cvbNavCreate');
 navCreate?.addEventListener('click',e=>{

@@ -266,3 +266,11 @@ La conversión a DOCX/PPTX inserta la imagen como contenido visual y no inventa 
 - `cv_seo_page.html` dejó de mantener un header paralelo y ahora consume `static/css/site_ui.css`, igual que el resto del sitio.
 - Cache CSS/JS actualizada a `20260822-header-stable-9`.
 - Se validó que todos los templates con header cargan el mismo `site_ui.css`.
+
+## Ajuste responsive global 2026-08-22
+- Header compartido refactorizado para evitar reglas superpuestas y colisiones al redimensionar.
+- Navegación: escritorio fluido hasta 861 px; modo compacto con menú a 860 px o menos.
+- Etiqueta de navegación acortada a “Corregir con IA” (traducciones equivalentes en EN/FR/PT-BR), sin cambiar la ruta.
+- Converti CV móvil: título del editor ocupa todo el ancho, controles de plantilla/color envuelven sin scroll horizontal y tipografía móvil más legible.
+- Inicio/Convertir: hero con escala fluida para evitar saltos de línea excesivos en ventanas estrechas.
+- CSS de header centralizado en `static/css/site_ui.css`; los templates ya no redefinen el header localmente.

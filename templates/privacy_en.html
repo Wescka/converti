@@ -32,31 +32,13 @@ body{
   color:var(--text);
   background:linear-gradient(180deg,#fff 0%,#f7faff 100%);
 }
-.header{
-  height:70px;
-  display:grid;
-  grid-template-columns:minmax(210px,1fr) auto minmax(120px,1fr);
-  align-items:center;
-  column-gap:24px;
-  padding:0 3.2%;
-  background:#fff;
-  border-bottom:1px solid #edf2fa;
-}
 
-.nav{margin:0;display:flex;align-items:center;justify-self:center;gap:34px}
-.nav a{color:var(--navy);text-decoration:none;font-size:14px;font-weight:600}
-.nav a:hover{color:var(--blue)}
 
-.brand{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  text-decoration:none;
-  
-  font-weight:800;
-  letter-spacing:-1.2px;
-  color:var(--navy);
-}
+
+
+
+
+
 
 .wrap{
   width:min(920px,calc(100% - 36px));
@@ -148,20 +130,20 @@ footer{
   padding:0 20px 28px;
 }
 
-.brand-logo{height:62px!important;width:auto;max-width:360px;display:block;object-fit:contain;flex-shrink:0}
+
 @media(max-width:700px){
-  .header{height:auto;min-height:0;padding:5px 12px 6px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 10px}
-  .brand{justify-self:start;min-width:0}
-  .brand-logo{height:54px!important;width:auto;max-width:250px}
-  .lang-select{grid-column:2;grid-row:1;justify-self:end;margin:0;width:84px!important;min-width:84px;max-width:84px;padding:7px 8px;font-size:11px}
-  .nav{grid-column:1/-1;grid-row:2;width:100%;margin:0;padding:5px 0 0;border-top:1px solid #edf2fa;justify-content:center;gap:28px}
-  .nav a{font-size:12px;white-space:nowrap}
+  
+  
+  
+  
+  
+  
   .wrap{margin-top:36px}
   h1{font-size:38px}
   .card{padding:20px}
 }
 
-.lang-select{justify-self:end;margin-left:0;width:104px!important;min-width:104px;max-width:104px;flex:0 0 104px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--navy);padding:8px 10px;font:700 13px/1 "Plus Jakarta Sans",sans-serif;outline:none;cursor:pointer}
+
 
 
 /* REDISEÑO VISUAL GLOBAL — mantiene estructura, paleta y logo */
@@ -173,8 +155,8 @@ body{
   text-rendering:optimizeLegibility;
   -webkit-font-smoothing:antialiased;
 }
-.nav a{font-size:16px;font-weight:700;letter-spacing:-.01em}
-.lang-select{font-family:"Plus Jakarta Sans",sans-serif;font-size:13px;font-weight:700}
+
+
 .eyebrow{
   padding:9px 14px;
   font-size:13px;
@@ -229,13 +211,13 @@ h1{
   transition:transform .18s ease,box-shadow .18s ease;
 }
 .back:hover{transform:translateY(-1px);box-shadow:0 16px 30px rgba(42,123,255,.25)}
-.back:focus-visible,.nav a:focus-visible{outline:3px solid rgba(42,123,255,.2);outline-offset:3px}
+
 footer{font-size:13px;line-height:1.65;font-weight:500}
 
 @media(max-width:700px){
   body{font-size:15px}
-  .nav a{font-size:13px}
-  .lang-select{font-size:12px}
+  
+  
   h1{font-size:41px;letter-spacing:-1.7px}
   .lead{font-size:17px}
   .card{padding:23px;border-radius:22px}
@@ -255,7 +237,7 @@ footer{font-size:13px;line-height:1.65;font-weight:500}
   gtag('js', new Date());
   gtag('config', 'G-XLZM56PZHM');
 </script>
-<link rel="stylesheet" href="/static/css/site_ui.css?v=20260822-header-stable-10">
+<link rel="stylesheet" href="/static/css/site_ui.css?v=20260822-responsive-final-11">
 </head>
 <body>
 <header class="header">
@@ -266,7 +248,7 @@ footer{font-size:13px;line-height:1.65;font-weight:500}
     <a href="/en/convert">Convert</a>
     <a href="/en/formats">Formats</a>
     <a href="/en/help">Help</a>
-        <a class="nav-doc-ai" href="/en/fix-documents-ai">Fix documents with AI</a>
+        <a class="nav-doc-ai" href="/en/fix-documents-ai">Fix with AI</a>
       <a class="nav-cv" href="/en/create-cv">Create CV</a>
   </nav>
 <div class="converti-header-tools">
@@ -331,6 +313,6 @@ footer{font-size:13px;line-height:1.65;font-weight:500}
 <script>(function(){const s=document.getElementById('langSelector');if(!s)return;s.value="en";const p={es:'/privacidad',en:'/en/privacy',fr:'/fr/confidentialite','pt-br':'/pt-br/privacidade'};s.onchange=()=>{localStorage.setItem('converti_lang',s.value);location.href=p[s.value]};})();</script>
 
 
-<script src="/static/js/site_ui.js?v=20260822-header-stable-10" defer></script>
+<script src="/static/js/site_ui.js?v=20260822-responsive-final-11" defer></script>
 </body>
 </html>
