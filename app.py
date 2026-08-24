@@ -2522,41 +2522,133 @@ def _tool_url(locale: str, slug: str) -> str:
     return "https://converti.lat" + LOCALE_PATHS[locale]["tool"] + slug
 
 
-@app.get("/sitemap.xml")
-def sitemap():
-    from xml.sax.saxutils import escape
-    locales = ("es", "en", "fr", "pt-br")
-    lang_attr = {"es":"es", "en":"en", "fr":"fr", "pt-br":"pt-BR"}
-    groups = []
+SITEMAP_LASTMOD = "2026-08-24"
+SITEMAP_LOCALES = ("es", "en", "fr", "pt-br")
+SITEMAP_LANG_ATTR = {"es":"es", "en":"en", "fr":"fr", "pt-br":"pt-BR"}
+SITEMAP_FILES = (
+    ("https://converti.lat/sitemap-english.xml", "English pages"),
+    ("https://converti.lat/sitemap-spanish.xml", "Spanish pages"),
+    ("https://converti.lat/sitemap-french.xml", "French pages"),
+    ("https://converti.lat/sitemap-portuguese.xml", "Brazilian Portuguese pages"),
+    ("https://converti.lat/sitemap-resume.xml", "CV and resume pages"),
+)
 
-    # Core pages grouped with their localized equivalents.
-    core_keys = ("home", "create", "convert", "formats", "help")
-    for key in core_keys:
-        alts = {}
-        for locale in locales:
-            if key == "home": path = SECTION_PATHS[locale]["home"]
-            elif key == "create": path = CV_PATHS[locale]
-            else: path = SECTION_PATHS[locale][key]
-            alts[locale] = "https://converti.lat" + path
-        groups.append(alts)
 
-    # Conversion landing pages use the same slug in every language.
-    for slug, _, _ in SEO_ROUTES_I18N["es"]:
-        groups.append({locale:_tool_url(locale, slug) for locale in locales})
+def _sitemap_core_group(key: str):
+    alts = {}
+    for locale in SITEMAP_LOCALES:
+        if key == "home":
+            path = SECTION_PATHS[locale]["home"]
+        else:
+            path = SECTION_PATHS[locale][key]
+        alts[locale] = "https://converti.lat" + path
+    return alts
 
-    # CV/AI landing pages are paired by intent and position across locales.
+
+def _sitemap_conversion_groups():
+    return [
+        {locale: _tool_url(locale, slug) for locale in SITEMAP_LOCALES}
+        for slug, _, _ in SEO_ROUTES_I18N["es"]
+    ]
+
+
+def _sitemap_resume_groups():
+    groups = [{locale: "https://converti.lat" + CV_PATHS[locale] for locale in SITEMAP_LOCALES}]
     es_slugs = list(CV_SEO_SLUGS["es"])
     for idx, _ in enumerate(es_slugs):
-        groups.append({locale:_cv_seo_url(locale, list(CV_SEO_SLUGS[locale])[idx]) for locale in locales})
+        groups.append({
+            locale: _cv_seo_url(locale, list(CV_SEO_SLUGS[locale])[idx])
+            for locale in SITEMAP_LOCALES
+        })
+    return groups
 
-    parts = ["<?xml version='1.0' encoding='UTF-8'?>", '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">']
+
+def _sitemap_urlset(groups, only_locale=None):
+    from xml.sax.saxutils import escape
+
+    lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
+        'xmlns:xhtml="http://www.w3.org/1999/xhtml">',
+    ]
+
+    seen = set()
     for alts in groups:
-        for locale, url in alts.items():
-            links = ''.join(f'<xhtml:link rel="alternate" hreflang="{lang_attr[c]}" href="{escape(u)}" />' for c,u in alts.items())
-            links += f'<xhtml:link rel="alternate" hreflang="x-default" href="{escape(alts["es"])}" />'
-            parts.append(f'<url><loc>{escape(url)}</loc><lastmod>2026-08-22</lastmod>{links}</url>')
-    parts.append('</urlset>')
-    return ''.join(parts), 200, {"Content-Type":"application/xml; charset=utf-8", "Cache-Control":"public, max-age=1800"}
+        locale_items = [(only_locale, alts[only_locale])] if only_locale else list(alts.items())
+        for locale, url in locale_items:
+            if url in seen:
+                continue
+            seen.add(url)
+            lines.append('  <url>')
+            lines.append(f'    <loc>{escape(url)}</loc>')
+            lines.append(f'    <lastmod>{SITEMAP_LASTMOD}</lastmod>')
+            for alt_locale, alt_url in alts.items():
+                lines.append(
+                    '    <xhtml:link rel="alternate" '
+                    f'hreflang="{SITEMAP_LANG_ATTR[alt_locale]}" href="{escape(alt_url)}" />'
+                )
+            lines.append(
+                '    <xhtml:link rel="alternate" hreflang="x-default" '
+                f'href="{escape(alts["es"])}" />'
+            )
+            lines.append('  </url>')
+
+    lines.append('</urlset>')
+    return "\n".join(lines) + "\n"
+
+
+def _sitemap_language(locale: str):
+    groups = [_sitemap_core_group(key) for key in ("home", "convert", "formats", "help")]
+    groups.extend(_sitemap_conversion_groups())
+    return _sitemap_urlset(groups, only_locale=locale)
+
+
+@app.get("/sitemap.xml")
+def sitemap():
+    """Sitemap index. Search Console can use this single URL or any child sitemap."""
+    from xml.sax.saxutils import escape
+
+    lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ]
+    for url, _label in SITEMAP_FILES:
+        lines.extend([
+            '  <sitemap>',
+            f'    <loc>{escape(url)}</loc>',
+            f'    <lastmod>{SITEMAP_LASTMOD}</lastmod>',
+            '  </sitemap>',
+        ])
+    lines.append('</sitemapindex>')
+    return "\n".join(lines) + "\n", 200, {
+        "Content-Type":"application/xml; charset=utf-8",
+        "Cache-Control":"public, max-age=1800",
+    }
+
+
+@app.get("/sitemap-english.xml")
+def sitemap_english():
+    return _sitemap_language("en"), 200, {"Content-Type":"application/xml; charset=utf-8", "Cache-Control":"public, max-age=1800"}
+
+
+@app.get("/sitemap-spanish.xml")
+def sitemap_spanish():
+    return _sitemap_language("es"), 200, {"Content-Type":"application/xml; charset=utf-8", "Cache-Control":"public, max-age=1800"}
+
+
+@app.get("/sitemap-french.xml")
+def sitemap_french():
+    return _sitemap_language("fr"), 200, {"Content-Type":"application/xml; charset=utf-8", "Cache-Control":"public, max-age=1800"}
+
+
+@app.get("/sitemap-portuguese.xml")
+def sitemap_portuguese():
+    return _sitemap_language("pt-br"), 200, {"Content-Type":"application/xml; charset=utf-8", "Cache-Control":"public, max-age=1800"}
+
+
+@app.get("/sitemap-resume.xml")
+def sitemap_resume():
+    return _sitemap_urlset(_sitemap_resume_groups()), 200, {"Content-Type":"application/xml; charset=utf-8", "Cache-Control":"public, max-age=1800"}
 
 
 def _render_tool(locale: str, slug: str):

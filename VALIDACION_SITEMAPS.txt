@@ -1,0 +1,43 @@
+CONVERTI — VALIDACIÓN SITEMAP 2026-08-24
+
+CORRECCIÓN
+- /sitemap.xml ahora es un sitemap INDEX legible y XML válido.
+- Se eliminó la salida compactada sin saltos de línea.
+- lastmod actualizado a 2026-08-24 para esta versión.
+- hreflang conservado para es, en, fr y pt-BR.
+- x-default conservado apuntando al equivalente español.
+- Se añadieron 5 sitemaps segmentados con nombres en inglés:
+  1. /sitemap-english.xml
+  2. /sitemap-spanish.xml
+  3. /sitemap-french.xml
+  4. /sitemap-portuguese.xml
+  5. /sitemap-resume.xml
+
+COBERTURA
+- English: 19 URLs
+- Spanish: 19 URLs
+- French: 19 URLs
+- Portuguese: 19 URLs
+- Resume/CV (todos los idiomas): 24 URLs
+- Total de <loc> únicos entre los 5 hijos: 100
+- Duplicados de <loc> entre sitemaps: 0
+- Sitemaps hijos en el índice: 5
+
+VALIDACIONES
+- Python py_compile: OK
+- Python AST: OK
+- XML sitemap index: OK
+- XML 5 sitemaps hijos: OK
+- URLs duplicadas dentro de cada sitemap: 0
+- URLs duplicadas entre los 5 sitemaps: 0
+- Referencias de templates: sin cambios
+- Motor/API posterior a /api/diagnostico-formatos: idéntico
+
+NO TOCADO EN ESTA CORRECCIÓN
+- HTML/CSS
+- Fuentes
+- Diseño
+- JavaScript
+- Motores de conversión
+- Gemini
+- Cloudflare
