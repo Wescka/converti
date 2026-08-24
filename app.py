@@ -1910,6 +1910,153 @@ CV_SEO_SLUGS = {
     },
 }
 
+
+# SEO 2026-08-24: richer localized copy for CV/resume search intents.
+# This changes content/metadata only; it does not alter templates, CSS, fonts or layout.
+CV_SEO_DETAIL_I18N = {
+    "en": {
+        "ai-resume-builder": {
+            "h1": "Create a professional resume with AI for free",
+            "lead": "Build a professional resume online with AI assistance, import an existing PDF or DOCX, edit every section and download a clean PDF or editable Word file without registration.",
+            "what_title": "A free AI resume builder you can edit",
+            "what_text": "Converti helps you turn your real experience, education and skills into a clearer resume. You stay in control of the content: review every field, choose a template and export the result when it is ready.",
+            "benefits": ["Create a resume from scratch or import PDF/DOCX.", "Improve wording without inventing employers, education or dates.", "Choose an ATS-friendly structure and review every section.", "Download PDF or editable Word without a watermark."],
+            "steps": ["Open Converti CV and enter or import your information.", "Use AI only on the sections you want to improve.", "Review names, dates, roles, skills and contact details.", "Choose a template and download PDF or Word."],
+            "faq": [("Is the AI resume builder free?", "Converti CV is designed so you can create, edit and download a resume without registration or a watermark."), ("Can I upload my current resume?", "Yes. Compatible PDF and DOCX resumes can be imported so you can review and reorganize the extracted information."), ("Can I edit the Word file later?", "Yes. The DOCX export is editable in compatible word processors.")]
+        },
+        "improve-resume-with-ai": {
+            "h1": "Improve your resume with AI",
+            "lead": "Improve resume wording, structure and clarity while keeping your real work history, education and dates intact. Review every suggestion before downloading.",
+            "what_title": "What AI can improve in your resume",
+            "what_text": "Converti can rewrite repetitive sentences, make responsibilities clearer and organize sections consistently. It is intended to improve presentation, not to create experience you did not provide.",
+            "benefits": ["Strengthen professional summaries and experience descriptions.", "Reduce repetition and unclear wording.", "Keep your real employers, education and dates.", "Export the reviewed result to PDF or editable DOCX."],
+            "steps": ["Import your resume or complete the editor.", "Choose the AI improvement option for the relevant content.", "Review each suggested change against your real information.", "Download the final resume in PDF or Word."],
+            "faq": [("Does AI invent work experience?", "It is instructed to preserve user-provided facts and not invent employers, education or dates."), ("Can I reject a suggestion?", "Yes. You remain in control and can edit the resume before exporting it."), ("Can I use the result for job applications?", "Yes. Review the final document and use the format requested by the employer or job portal.")]
+        },
+        "optimize-computrabajo-resume": {
+            "h1": "Optimize your CompuTrabajo resume with AI",
+            "lead": "Import a resume exported from CompuTrabajo, reorganize its content in a cleaner structure and optionally improve the wording before exporting PDF or Word.",
+            "what_title": "Turn a CompuTrabajo export into a cleaner resume",
+            "what_text": "Converti separates the information from the original presentation, identifies common resume sections and lets you rebuild them in an editable template before download.",
+            "benefits": ["Import compatible CompuTrabajo PDF or DOCX files.", "Review detected experience, education, skills and languages.", "Improve wording with optional AI assistance.", "Export a cleaner PDF or editable DOCX."],
+            "steps": ["Upload the CompuTrabajo resume.", "Review the extracted information and correct any field that needs attention.", "Use AI optionally to improve wording and structure.", "Choose a template and download the result."],
+            "faq": [("Does Converti copy the CompuTrabajo design?", "No. It focuses on extracting and reorganizing the resume content inside Converti templates."), ("Can I edit extracted information?", "Yes. Review and edit the fields before exporting."), ("Which files can I import?", "Compatible PDF and DOCX resume files can be imported.")]
+        },
+        "ats-resume": {
+            "h1": "Optimize your resume for ATS screening",
+            "lead": "Create a clearer ATS-friendly resume with recognizable sections, selectable text and consistent structure for applicant tracking systems and recruiters.",
+            "what_title": "What makes a resume easier for ATS to read",
+            "what_text": "Applicant tracking systems generally work better with real text, logical section headings and predictable structure. Converti helps organize your resume without claiming that any format can guarantee an ATS result.",
+            "benefits": ["Use clear headings for experience, education and skills.", "Keep text selectable instead of flattening the resume into an image.", "Reduce layout elements that can make parsing harder.", "Download PDF or editable Word depending on the application requirements."],
+            "steps": ["Create or import your resume.", "Review the structure and optimize it for clearer parsing.", "Check all content and factual details.", "Download the format requested by the job portal."],
+            "faq": [("Can Converti guarantee I pass an ATS?", "No. No tool can guarantee the outcome of every ATS, but clear structure can make automated parsing easier."), ("Should I use PDF or Word?", "Follow the employer or job portal instructions. Converti can generate both formats."), ("Does ATS optimization change my experience?", "It should reorganize and clarify your real information, not invent experience.")]
+        },
+        "convert-computrabajo-resume": {
+            "h1": "Convert a CompuTrabajo resume to Word or PDF",
+            "lead": "Import your CompuTrabajo resume, review the extracted information and rebuild it in a clean Converti template that you can download as editable Word or PDF.",
+            "what_title": "Convert and reorganize your CompuTrabajo resume",
+            "what_text": "Instead of simply changing the file extension, Converti extracts the resume content and places it into editable fields so you can correct information and choose a cleaner output format.",
+            "benefits": ["Import compatible PDF or DOCX files.", "Review and edit the extracted resume data.", "Choose a clean template for the rebuilt resume.", "Download editable DOCX or PDF."],
+            "steps": ["Upload your CompuTrabajo resume.", "Check the extracted sections and correct any errors.", "Choose the template and make final edits.", "Download Word or PDF."],
+            "faq": [("Is this only a file conversion?", "No. The goal is to extract and reorganize resume information into an editable Converti template."), ("Can I download Word?", "Yes. DOCX export is available for compatible resume data."), ("Can I also download PDF?", "Yes. You can export the finished resume as PDF.")]
+        },
+    },
+    "fr": {
+        "creer-cv-avec-ia": {
+            "h1": "Créer un CV professionnel avec IA gratuitement",
+            "lead": "Créez un CV en ligne avec l’aide de l’IA, importez un PDF ou DOCX existant, modifiez chaque section et téléchargez le résultat en PDF ou Word sans inscription.",
+            "what_title": "Un créateur de CV avec IA que vous gardez sous contrôle",
+            "what_text": "Converti améliore la présentation des informations que vous fournissez. Vous pouvez relire chaque champ, corriger les données, choisir un modèle et exporter seulement lorsque le CV vous convient.",
+            "benefits": ["Créez un CV ou importez un PDF/DOCX compatible.", "Améliorez la rédaction sans inventer d’employeur, d’études ou de dates.", "Utilisez une structure claire et compatible avec les candidatures.", "Téléchargez en PDF ou DOCX modifiable."],
+            "steps": ["Ouvrez Converti CV et saisissez ou importez vos informations.", "Utilisez l’IA uniquement sur les sections à améliorer.", "Vérifiez les postes, dates, compétences et coordonnées.", "Choisissez un modèle puis téléchargez PDF ou Word."],
+            "faq": [("Le créateur de CV est-il gratuit ?", "Converti CV est conçu pour créer, modifier et télécharger un CV sans inscription ni filigrane."), ("Puis-je importer mon CV actuel ?", "Oui, les fichiers PDF et DOCX compatibles peuvent être importés puis vérifiés."), ("Le fichier Word est-il modifiable ?", "Oui, l’export DOCX reste modifiable dans un traitement de texte compatible.")]
+        },
+        "ameliorer-cv-avec-ia": {
+            "h1": "Améliorer son CV avec l’intelligence artificielle",
+            "lead": "Améliorez la rédaction, la structure et la clarté de votre CV tout en conservant votre véritable expérience, vos études et vos dates.",
+            "what_title": "Ce que l’IA peut améliorer dans votre CV",
+            "what_text": "Converti peut rendre les descriptions plus claires, réduire les répétitions et harmoniser les sections. Chaque suggestion reste modifiable avant l’export.",
+            "benefits": ["Clarifiez le profil professionnel et les expériences.", "Réduisez les répétitions et formulations vagues.", "Conservez vos informations réelles.", "Exportez le résultat vérifié en PDF ou DOCX."],
+            "steps": ["Importez ou complétez votre CV.", "Appliquez l’amélioration IA aux sections souhaitées.", "Relisez les suggestions et vérifiez les données.", "Téléchargez le CV final."],
+            "faq": [("L’IA invente-t-elle de l’expérience ?", "Elle est conçue pour préserver les informations fournies et ne pas inventer d’employeur, d’études ou de dates."), ("Puis-je modifier une suggestion ?", "Oui, toutes les données restent éditables avant l’export."), ("Puis-je utiliser le CV pour candidater ?", "Oui, après votre vérification finale et selon le format demandé par l’employeur.")]
+        },
+        "optimiser-cv-computrabajo": {
+            "h1": "Optimiser un CV CompuTrabajo avec IA",
+            "lead": "Importez un CV exporté depuis CompuTrabajo, réorganisez son contenu dans une structure plus propre et améliorez facultativement la rédaction avant l’export.",
+            "what_title": "Passer d’un export CompuTrabajo à un CV plus propre",
+            "what_text": "Converti sépare le contenu de la présentation d’origine, identifie les sections principales et permet de les reconstruire dans un modèle modifiable.",
+            "benefits": ["Importez des fichiers PDF ou DOCX compatibles.", "Vérifiez expérience, études, compétences et langues.", "Améliorez facultativement la rédaction avec l’IA.", "Exportez en PDF ou DOCX modifiable."],
+            "steps": ["Importez le CV CompuTrabajo.", "Vérifiez et corrigez les informations extraites.", "Utilisez l’IA si vous souhaitez améliorer la rédaction.", "Choisissez le modèle et téléchargez."],
+            "faq": [("Converti copie-t-il le design CompuTrabajo ?", "Non. Il se concentre sur le contenu pour le reconstruire dans les modèles Converti."), ("Puis-je corriger les données extraites ?", "Oui, les champs sont vérifiables et modifiables avant l’export."), ("Quels fichiers puis-je importer ?", "Les PDF et DOCX compatibles sont pris en charge.")]
+        },
+        "cv-ats": {
+            "h1": "Optimiser un CV pour les systèmes ATS",
+            "lead": "Structurez votre CV avec des sections reconnaissables, du texte sélectionnable et une organisation cohérente pour faciliter sa lecture par les ATS et les recruteurs.",
+            "what_title": "Rendre un CV plus lisible par un ATS",
+            "what_text": "Les systèmes de suivi de candidatures interprètent généralement mieux un document avec du vrai texte, des titres de sections explicites et une structure prévisible.",
+            "benefits": ["Utilisez des rubriques claires pour expérience, études et compétences.", "Conservez du texte sélectionnable.", "Limitez les éléments de mise en page difficiles à analyser.", "Téléchargez en Word ou PDF selon les consignes de candidature."],
+            "steps": ["Créez ou importez votre CV.", "Vérifiez sa structure et ses rubriques.", "Relisez toutes les informations.", "Téléchargez le format demandé par le recruteur."],
+            "faq": [("Converti garantit-il le passage d’un ATS ?", "Non. Aucun outil ne peut garantir le résultat de tous les ATS, mais une structure claire peut faciliter l’analyse automatique."), ("PDF ou Word pour un ATS ?", "Suivez toujours les instructions du portail ou de l’employeur. Converti permet les deux formats."), ("L’optimisation modifie-t-elle mon expérience ?", "Elle doit clarifier vos informations réelles sans inventer d’expérience.")]
+        },
+        "convertir-cv-computrabajo": {
+            "h1": "Convertir un CV CompuTrabajo en Word ou PDF",
+            "lead": "Importez votre CV CompuTrabajo, vérifiez les informations extraites et reconstruisez-le dans un modèle Converti propre à télécharger en Word modifiable ou PDF.",
+            "what_title": "Convertir et réorganiser un CV CompuTrabajo",
+            "what_text": "Converti ne se contente pas de renommer le fichier : il extrait les informations du CV et les place dans des champs modifiables avant l’export.",
+            "benefits": ["Importez un PDF ou DOCX compatible.", "Vérifiez et corrigez les informations extraites.", "Choisissez un modèle propre.", "Téléchargez DOCX modifiable ou PDF."],
+            "steps": ["Importez le CV CompuTrabajo.", "Contrôlez les sections extraites.", "Choisissez le modèle et effectuez les dernières corrections.", "Téléchargez Word ou PDF."],
+            "faq": [("S’agit-il seulement d’une conversion de fichier ?", "Non. L’objectif est d’extraire et réorganiser les informations dans un modèle modifiable."), ("Puis-je télécharger en Word ?", "Oui, l’export DOCX est disponible pour les données compatibles."), ("Puis-je télécharger en PDF ?", "Oui, le CV final peut aussi être exporté en PDF.")]
+        },
+    },
+    "pt-br": {
+        "criar-curriculo-com-ia": {
+            "h1": "Criar currículo profissional com IA grátis",
+            "lead": "Crie um currículo online com ajuda de IA, importe um PDF ou DOCX existente, edite cada seção e baixe em PDF ou Word sem cadastro.",
+            "what_title": "Um criador de currículo com IA que você controla",
+            "what_text": "O Converti ajuda a organizar e melhorar as informações que você fornece. Revise cada campo, escolha um modelo e exporte apenas quando o currículo estiver correto.",
+            "benefits": ["Crie do zero ou importe PDF/DOCX compatível.", "Melhore a redação sem inventar empresas, estudos ou datas.", "Use uma estrutura clara para candidaturas.", "Baixe PDF ou DOCX editável."],
+            "steps": ["Abra o Converti CV e preencha ou importe seus dados.", "Use IA somente nas seções que deseja melhorar.", "Revise cargos, datas, habilidades e contato.", "Escolha o modelo e baixe PDF ou Word."],
+            "faq": [("O criador de currículo é grátis?", "O Converti CV foi desenvolvido para criar, editar e baixar o currículo sem cadastro ou marca d’água."), ("Posso importar meu currículo atual?", "Sim. Arquivos PDF e DOCX compatíveis podem ser importados e revisados."), ("O arquivo Word é editável?", "Sim. O DOCX exportado pode ser editado em processadores de texto compatíveis.")]
+        },
+        "melhorar-curriculo-com-ia": {
+            "h1": "Melhorar currículo com inteligência artificial",
+            "lead": "Melhore a redação, a estrutura e a clareza do currículo mantendo sua experiência, formação e datas reais.",
+            "what_title": "O que a IA pode melhorar no currículo",
+            "what_text": "O Converti pode tornar descrições mais claras, reduzir repetições e organizar as seções de forma consistente. Todas as sugestões podem ser revisadas antes do download.",
+            "benefits": ["Melhore o resumo profissional e as experiências.", "Reduza repetições e frases pouco claras.", "Preserve informações reais.", "Exporte o resultado revisado em PDF ou DOCX."],
+            "steps": ["Importe ou preencha seu currículo.", "Use a melhoria por IA nas seções desejadas.", "Revise sugestões e confirme os dados.", "Baixe o currículo final."],
+            "faq": [("A IA inventa experiências?", "Ela é orientada a preservar os dados fornecidos e não inventar empresas, estudos ou datas."), ("Posso alterar uma sugestão?", "Sim. O currículo permanece editável antes da exportação."), ("Posso usar o resultado em candidaturas?", "Sim, depois de revisar o documento e escolher o formato solicitado.")]
+        },
+        "otimizar-curriculo-computrabajo": {
+            "h1": "Otimizar currículo do CompuTrabajo com IA",
+            "lead": "Importe um currículo exportado do CompuTrabajo, reorganize o conteúdo em uma estrutura mais limpa e melhore opcionalmente a redação antes de baixar.",
+            "what_title": "Do CompuTrabajo para um currículo mais limpo",
+            "what_text": "O Converti separa o conteúdo da apresentação original, identifica seções comuns e permite reconstruir o currículo em um modelo editável.",
+            "benefits": ["Importe PDF ou DOCX compatível do CompuTrabajo.", "Revise experiência, formação, habilidades e idiomas.", "Melhore a redação opcionalmente com IA.", "Exporte PDF ou DOCX editável."],
+            "steps": ["Envie o currículo do CompuTrabajo.", "Revise e corrija os dados extraídos.", "Use IA opcionalmente para melhorar a redação.", "Escolha o modelo e baixe."],
+            "faq": [("O Converti copia o design do CompuTrabajo?", "Não. O foco é extrair e reorganizar o conteúdo nos modelos do Converti."), ("Posso editar as informações extraídas?", "Sim. Revise e altere os campos antes de exportar."), ("Quais arquivos posso importar?", "Arquivos PDF e DOCX compatíveis.")]
+        },
+        "curriculo-ats": {
+            "h1": "Otimizar currículo para sistemas ATS",
+            "lead": "Organize seu currículo com seções reconhecíveis, texto selecionável e estrutura consistente para facilitar a leitura por ATS e recrutadores.",
+            "what_title": "Como facilitar a leitura do currículo por ATS",
+            "what_text": "Sistemas de rastreamento de candidatos costumam interpretar melhor documentos com texto real, títulos claros de seção e estrutura previsível.",
+            "benefits": ["Use títulos claros para experiência, formação e habilidades.", "Mantenha o texto selecionável.", "Reduza elementos de layout que dificultam a leitura automática.", "Baixe em Word ou PDF conforme a vaga exigir."],
+            "steps": ["Crie ou importe seu currículo.", "Revise a estrutura para torná-la mais clara.", "Confira todas as informações.", "Baixe o formato solicitado pelo portal ou empregador."],
+            "faq": [("O Converti garante aprovação no ATS?", "Não. Nenhuma ferramenta pode garantir o resultado de todos os ATS, mas uma estrutura clara pode facilitar a leitura automática."), ("Word ou PDF para ATS?", "Siga as instruções da vaga. O Converti permite gerar os dois formatos."), ("A otimização muda minha experiência?", "Ela deve organizar e esclarecer seus dados reais, sem inventar experiência.")]
+        },
+        "converter-curriculo-computrabajo": {
+            "h1": "Converter currículo do CompuTrabajo para Word ou PDF",
+            "lead": "Importe seu currículo do CompuTrabajo, revise os dados extraídos e reconstrua em um modelo limpo do Converti para baixar em Word editável ou PDF.",
+            "what_title": "Converter e reorganizar um currículo do CompuTrabajo",
+            "what_text": "O Converti não apenas troca a extensão: ele extrai as informações e coloca o conteúdo em campos editáveis antes da exportação.",
+            "benefits": ["Importe PDF ou DOCX compatível.", "Revise e corrija os dados extraídos.", "Escolha um modelo limpo.", "Baixe DOCX editável ou PDF."],
+            "steps": ["Envie o currículo do CompuTrabajo.", "Confira as seções extraídas.", "Escolha o modelo e faça ajustes finais.", "Baixe Word ou PDF."],
+            "faq": [("É apenas uma conversão de arquivo?", "Não. O objetivo é extrair e reorganizar as informações em um modelo editável."), ("Posso baixar em Word?", "Sim. A exportação DOCX está disponível para dados compatíveis."), ("Posso baixar em PDF?", "Sim. O currículo final também pode ser exportado em PDF.")]
+        },
+    },
+}
+
 CV_SEO_PREFIX = {"es":"/cv/", "en":"/en/resume/", "fr":"/fr/cv/", "pt-br":"/pt-br/curriculo/"}
 
 def _cv_seo_url(locale, slug):
@@ -1948,6 +2095,15 @@ def _cv_seo_page(locale, slug):
     else:
         # Localized concise copy; title/description remain unique for each intent.
         h1=title.split(" | ")[0]; lead=description; what_title={"en":"What this tool does","fr":"Ce que fait cet outil","pt-br":"O que esta ferramenta faz"}[locale]; what_text=description; benefits=[description, {"en":"Review every field before downloading.","fr":"Vérifiez chaque champ avant le téléchargement.","pt-br":"Revise cada campo antes de baixar."}[locale], {"en":"Export to PDF or editable Word.","fr":"Exportez en PDF ou Word modifiable.","pt-br":"Exporte para PDF ou Word editável."}[locale]]; steps=[{"en":"Open Converti CV.","fr":"Ouvrez Converti CV.","pt-br":"Abra o Converti CV."}[locale], {"en":"Create or import your resume.","fr":"Créez ou importez votre CV.","pt-br":"Crie ou importe seu currículo."}[locale], {"en":"Review AI suggestions and edit your data.","fr":"Vérifiez les suggestions de l’IA et modifiez vos données.","pt-br":"Revise as sugestões da IA e edite seus dados."}[locale], {"en":"Download PDF or Word.","fr":"Téléchargez en PDF ou Word.","pt-br":"Baixe em PDF ou Word."}[locale]]; faq=[({"en":"Can I edit the result?","fr":"Puis-je modifier le résultat ?","pt-br":"Posso editar o resultado?"}[locale], {"en":"Yes. You can edit the resume in Converti and export an editable DOCX.","fr":"Oui. Vous pouvez modifier le CV dans Converti et exporter un DOCX modifiable.","pt-br":"Sim. Você pode editar no Converti e exportar um DOCX editável."}[locale]), ({"en":"Does AI invent experience?","fr":"L’IA invente-t-elle de l’expérience ?","pt-br":"A IA inventa experiências?"}[locale], {"en":"It is instructed to preserve real user-provided information and not invent employers, education or dates.","fr":"Elle doit conserver les informations réelles fournies et ne pas inventer d’employeur, d’études ou de dates.","pt-br":"Ela deve preservar as informações reais fornecidas e não inventar empresas, estudos ou datas."}[locale])]
+    localized_detail = CV_SEO_DETAIL_I18N.get(locale, {}).get(slug)
+    if localized_detail:
+        h1 = localized_detail["h1"]
+        lead = localized_detail["lead"]
+        what_title = localized_detail["what_title"]
+        what_text = localized_detail["what_text"]
+        benefits = localized_detail["benefits"]
+        steps = localized_detail["steps"]
+        faq = localized_detail["faq"]
     page=dict(common, title=title, description=description, h1=h1, lead=lead, what_title=what_title, what_text=what_text, benefits=benefits, steps=steps, faq=faq)
     return page
 
@@ -1998,14 +2154,14 @@ SEO_ROUTES_I18N = {
         ("jpg-a-png", "JPG a PNG", "Convierte imágenes JPG a PNG online."),
         ("pdf-a-jpg", "PDF a JPG", "Convierte las páginas de un PDF en imágenes JPG."),
         ("pdf-a-png", "PDF a PNG", "Convierte las páginas de un PDF en imágenes PNG."),
-        ("docx-a-txt", "DOCX a TXT", "Extrae el contenido de un documento DOCX y conviértelo a TXT."),
-        ("docx-a-html", "DOCX a HTML", "Convierte documentos DOCX a HTML online."),
+        ("docx-a-txt", "DOCX a TXT", "Convierte DOCX a TXT online gratis y extrae el texto de documentos Word de forma sencilla."),
+        ("docx-a-html", "DOCX a HTML", "Convierte documentos Word DOCX a HTML online gratis para editar, publicar o reutilizar su contenido en la web."),
         ("mp3-a-wav", "MP3 a WAV", "Convierte archivos de audio MP3 a WAV online."),
         ("wav-a-mp3", "WAV a MP3", "Convierte archivos WAV a MP3 online."),
         ("png-a-webp", "PNG a WEBP", "Convierte imágenes PNG a WEBP online."),
         ("webp-a-jpg", "WEBP a JPG", "Convierte imágenes WEBP a JPG online."),
-        ("csv-a-xlsx", "CSV a XLSX", "Convierte archivos CSV a Excel XLSX online."),
-        ("xlsx-a-csv", "XLSX a CSV", "Convierte hojas de cálculo XLSX a CSV online."),
+        ("csv-a-xlsx", "CSV a XLSX", "Convierte CSV a Excel XLSX online gratis para editar, ordenar y trabajar tus datos en una hoja de cálculo."),
+        ("xlsx-a-csv", "XLSX a CSV", "Convierte Excel XLSX a CSV online gratis para exportar datos y usarlos en otras aplicaciones."),
     ],
     "en": [
         ("pdf-a-word", "PDF to Word", "Convert PDF files to editable Word (DOCX) documents online."),
@@ -2014,15 +2170,15 @@ SEO_ROUTES_I18N = {
         ("png-a-jpg", "PNG to JPG", "Convert PNG images to JPG online."),
         ("jpg-a-png", "JPG to PNG", "Convert JPG images to PNG online."),
         ("pdf-a-jpg", "PDF to JPG", "Convert PDF pages into JPG images."),
-        ("pdf-a-png", "PDF to PNG", "Convert PDF pages into PNG images."),
-        ("docx-a-txt", "DOCX to TXT", "Extract text from a DOCX document and convert it to TXT."),
-        ("docx-a-html", "DOCX to HTML", "Convert DOCX documents to HTML online."),
+        ("pdf-a-png", "PDF to PNG", "Convert PDF pages to high-quality PNG images online for free, with no registration and support for multi-page documents."),
+        ("docx-a-txt", "DOCX to TXT", "Convert DOCX to plain TXT online and extract readable text from Word documents without registration."),
+        ("docx-a-html", "DOCX to HTML", "Convert DOCX Word documents to clean HTML online for editing, publishing or reusing document content."),
         ("mp3-a-wav", "MP3 to WAV", "Convert MP3 audio files to WAV online."),
         ("wav-a-mp3", "WAV to MP3", "Convert WAV audio files to MP3 online."),
         ("png-a-webp", "PNG to WEBP", "Convert PNG images to WEBP online."),
         ("webp-a-jpg", "WEBP to JPG", "Convert WEBP images to JPG online."),
-        ("csv-a-xlsx", "CSV to XLSX", "Convert CSV files to Excel XLSX online."),
-        ("xlsx-a-csv", "XLSX to CSV", "Convert XLSX spreadsheets to CSV online."),
+        ("csv-a-xlsx", "CSV to XLSX", "Convert CSV files to Excel XLSX online for easier spreadsheet editing, formatting and sharing."),
+        ("xlsx-a-csv", "XLSX to CSV", "Convert Excel XLSX spreadsheets to CSV online for data import, export and compatibility with other tools."),
     ],
     "fr": [
         ("pdf-a-word", "PDF vers Word", "Convertissez vos fichiers PDF en documents Word (DOCX) modifiables en ligne."),
@@ -2042,15 +2198,15 @@ SEO_ROUTES_I18N = {
         ("xlsx-a-csv", "XLSX vers CSV", "Convertissez des feuilles XLSX en CSV en ligne."),
     ],
     "pt-br": [
-        ("pdf-a-word", "PDF para Word", "Converta arquivos PDF em documentos Word (DOCX) editáveis online."),
+        ("pdf-a-word", "PDF para Word", "Converta PDF para Word DOCX editável online grátis, sem cadastro, para corrigir, reutilizar e atualizar documentos."),
         ("word-a-pdf", "Word para PDF", "Converta documentos Word (DOCX) para PDF online."),
         ("jpg-a-pdf", "JPG para PDF", "Converta uma ou várias imagens JPG em um arquivo PDF."),
         ("png-a-jpg", "PNG para JPG", "Converta imagens PNG para JPG online."),
         ("jpg-a-png", "JPG para PNG", "Converta imagens JPG para PNG online."),
         ("pdf-a-jpg", "PDF para JPG", "Converta as páginas de um PDF em imagens JPG."),
         ("pdf-a-png", "PDF para PNG", "Converta as páginas de um PDF em imagens PNG."),
-        ("docx-a-txt", "DOCX para TXT", "Extraia o texto de um documento DOCX e converta para TXT."),
-        ("docx-a-html", "DOCX para HTML", "Converta documentos DOCX para HTML online."),
+        ("docx-a-txt", "DOCX para TXT", "Converta DOCX para TXT online e extraia texto simples de documentos Word sem cadastro."),
+        ("docx-a-html", "DOCX para HTML", "Converta documentos Word DOCX para HTML online para editar, publicar ou reutilizar o conteúdo na web."),
         ("mp3-a-wav", "MP3 para WAV", "Converta arquivos de áudio MP3 para WAV online."),
         ("wav-a-mp3", "WAV para MP3", "Converta arquivos WAV para MP3 online."),
         ("png-a-webp", "PNG para WEBP", "Converta imagens PNG para WEBP online."),
@@ -2185,6 +2341,163 @@ SEO_CONTENT_I18N = {
         "png-a-jpg": {"intro":"Converta imagens PNG para JPG para maior compatibilidade e, muitas vezes, arquivos menores.","benefits":["Crie imagens JPG amplamente compatíveis.","Útil quando transparência não é necessária.","Ajuste a qualidade nas opções avançadas."],"steps":["Selecione a imagem PNG.","Escolha JPG.","Converta, visualize e faça o download."],"faq":[("O que acontece com a transparência do PNG?","JPG não suporta transparência, então as áreas transparentes precisam ser achatadas."),("Posso escolher a qualidade do JPG?","Sim. Use a opção de qualidade da imagem."),("O arquivo sempre ficará menor?","Muitas vezes, mas não sempre; depende do conteúdo e da qualidade escolhida.")],"related":[("jpg-a-png","JPG para PNG"),("png-a-webp","PNG para WEBP"),("jpg-a-pdf","JPG para PDF")]},
     },
 }
+
+
+# SEO 2026-08-24: expand document/data landing pages that are already receiving
+# Search Console impressions. Content only; no template/CSS/layout changes.
+SEO_PRIORITY_CONTENT = {
+    "es": {
+        "pdf-a-png": {
+            "intro": "Convierte las páginas de un PDF en imágenes PNG cuando necesitas conservar texto, gráficos o capturas con buena nitidez y trabajar cada página por separado.",
+            "benefits": ["Genera una imagen PNG por cada página procesada.", "Útil para presentaciones, documentos visuales, capturas y material web.", "Puedes procesar documentos de varias páginas y descargar los resultados generados."],
+            "steps": ["Selecciona tu archivo PDF.", "Elige PNG como formato de salida.", "Convierte y descarga las imágenes resultantes."],
+            "faq": [("¿PDF a PNG mantiene buena calidad?", "PNG es un formato sin pérdida adecuado para texto, gráficos y capturas. La calidad final también depende de la resolución utilizada al renderizar el PDF."), ("¿Puedo convertir un PDF de varias páginas?", "Sí. Cada página procesada puede convertirse en una imagen PNG independiente."), ("¿PNG o JPG para un PDF?", "PNG suele ser conveniente para texto y gráficos definidos; JPG puede producir archivos más pequeños en páginas con muchas fotografías.")],
+            "related": [("pdf-a-word","PDF a Word"),("pdf-a-jpg","PDF a JPG"),("jpg-a-pdf","JPG a PDF")]
+        },
+        "docx-a-txt": {
+            "intro": "Convierte un documento Word DOCX a TXT para obtener su contenido como texto simple, reutilizarlo en otras aplicaciones o eliminar formato cuando solo necesitas las palabras.",
+            "benefits": ["Extrae texto legible de documentos DOCX compatibles.", "Obtén un TXT ligero y fácil de abrir en prácticamente cualquier dispositivo.", "Útil para copiar contenido, procesar texto o preparar información para otras herramientas."],
+            "steps": ["Selecciona tu archivo DOCX.", "Elige TXT como formato de salida.", "Convierte y descarga el archivo de texto."],
+            "faq": [("¿Se conservan imágenes y formato?", "No. TXT contiene texto plano, por lo que estilos, imágenes y elementos complejos del documento no forman parte del resultado."), ("¿Necesito Microsoft Word?", "No. La conversión se procesa en el servidor de Converti."), ("¿Puedo convertir el TXT después?", "Sí. Dependiendo de los motores disponibles, Converti ofrece otras rutas compatibles para archivos de texto.")],
+            "related": [("docx-a-html","DOCX a HTML"),("word-a-pdf","Word a PDF"),("pdf-a-word","PDF a Word")]
+        },
+        "docx-a-html": {
+            "intro": "Convierte DOCX a HTML para reutilizar el contenido de un documento Word en una página web, editor CMS, correo o proyecto que acepte código HTML.",
+            "benefits": ["Transforma el contenido del DOCX en HTML reutilizable.", "Útil para publicar texto de Word en la web sin copiarlo manualmente.", "Mantiene una estructura de contenido compatible con navegadores, según la complejidad del documento."],
+            "steps": ["Selecciona el documento DOCX.", "Elige HTML como salida.", "Convierte, revisa el resultado y descarga el archivo HTML."],
+            "faq": [("¿El HTML será idéntico a Word?", "No necesariamente. Word y HTML usan modelos de diseño distintos; el objetivo es conservar el contenido y una estructura útil, no reproducir cada detalle visual."), ("¿Puedo editar el HTML después?", "Sí. El archivo resultante puede abrirse en un editor de texto o código."), ("¿Sirve para publicar en una web?", "Sí como base, aunque conviene revisar estilos, enlaces e imágenes antes de publicar en producción.")],
+            "related": [("docx-a-txt","DOCX a TXT"),("word-a-pdf","Word a PDF"),("csv-a-xlsx","CSV a XLSX")]
+        },
+        "csv-a-xlsx": {
+            "intro": "Convierte CSV a Excel XLSX para trabajar tus datos en una hoja de cálculo con una estructura más cómoda para ordenar, filtrar, dar formato y compartir.",
+            "benefits": ["Abre datos CSV como un archivo Excel XLSX.", "Útil para reportes, listados, exportaciones y trabajo administrativo.", "Facilita continuar el trabajo en Excel o aplicaciones compatibles con XLSX."],
+            "steps": ["Selecciona el archivo CSV.", "Elige XLSX como formato de salida.", "Convierte y descarga la hoja de cálculo."],
+            "faq": [("¿Qué separador debe usar mi CSV?", "Converti intenta procesar archivos CSV compatibles. Si los datos quedan en una sola columna, revisa el delimitador y la codificación del archivo original."), ("¿Se crean fórmulas automáticamente?", "No. La conversión transporta los datos; no inventa fórmulas que no existan en el origen."), ("¿Puedo volver de XLSX a CSV?", "Sí. Converti también dispone de la ruta XLSX a CSV.")],
+            "related": [("xlsx-a-csv","XLSX a CSV"),("docx-a-html","DOCX a HTML"),("pdf-a-word","PDF a Word")]
+        },
+        "xlsx-a-csv": {
+            "intro": "Convierte Excel XLSX a CSV para exportar datos de una hoja de cálculo a un formato simple y ampliamente compatible con sistemas, bases de datos y otras aplicaciones.",
+            "benefits": ["Obtén un CSV fácil de importar en muchas herramientas.", "Útil para migraciones, reportes y procesamiento de datos.", "Convierte datos tabulares sin depender de Microsoft Excel en el navegador."],
+            "steps": ["Selecciona el archivo XLSX.", "Elige CSV como salida.", "Convierte y descarga el archivo resultante."],
+            "faq": [("¿CSV conserva colores y fórmulas?", "CSV es un formato de datos planos y no conserva estilos de Excel. El resultado representa los valores tabulares exportados."), ("¿Qué ocurre si el XLSX tiene varias hojas?", "La forma de exportación depende del motor de conversión disponible; revisa el resultado cuando el libro contiene varias hojas."), ("¿Puedo convertir CSV a XLSX?", "Sí. Converti incluye la conversión inversa CSV a XLSX.")],
+            "related": [("csv-a-xlsx","CSV a XLSX"),("docx-a-txt","DOCX a TXT"),("pdf-a-word","PDF a Word")]
+        },
+    },
+    "en": {
+        "pdf-a-png": {
+            "intro": "Convert PDF pages to PNG images when you need sharp text, graphics or screenshots and want to work with each page as an individual image.",
+            "benefits": ["Create a PNG image from each processed PDF page.", "Useful for presentations, web content, document previews and graphics.", "Process multi-page PDFs and download the generated images."],
+            "steps": ["Select your PDF file.", "Choose PNG as the output format.", "Convert and download the resulting images."],
+            "faq": [("Does PDF to PNG keep good image quality?", "PNG is lossless and works well for text, graphics and screenshots. Final detail also depends on the resolution used to render the PDF."), ("Can I convert a multi-page PDF?", "Yes. Each processed page can become a separate PNG image."), ("Should I use PNG or JPG?", "PNG is often better for sharp text and graphics; JPG can be smaller for pages dominated by photographs.")],
+            "related": [("pdf-a-word","PDF to Word"),("pdf-a-jpg","PDF to JPG"),("jpg-a-pdf","JPG to PDF")]
+        },
+        "docx-a-txt": {
+            "intro": "Convert DOCX to plain TXT online when you need the readable text from a Word document without its formatting, images or complex layout.",
+            "benefits": ["Extract readable text from compatible DOCX files.", "Create a lightweight TXT file that opens on almost any device.", "Useful for text processing, copying content and moving information into other tools."],
+            "steps": ["Select your DOCX document.", "Choose TXT as the output format.", "Convert and download the text file."],
+            "faq": [("Are images and formatting preserved?", "No. TXT is plain text, so Word styles, images and complex layout are not included."), ("Do I need Microsoft Word installed?", "No. The conversion is processed by Converti on the server."), ("Can I convert the TXT again?", "Yes. Other text conversion routes are available when the required engines support them.")],
+            "related": [("docx-a-html","DOCX to HTML"),("word-a-pdf","Word to PDF"),("pdf-a-word","PDF to Word")]
+        },
+        "docx-a-html": {
+            "intro": "Convert DOCX Word documents to HTML online when you want to reuse document content on a website, in a CMS, an email workflow or another HTML-compatible project.",
+            "benefits": ["Turn DOCX content into reusable HTML.", "Save time when moving Word content to the web.", "Keep a browser-friendly content structure based on the original document."],
+            "steps": ["Select the DOCX document.", "Choose HTML as the output format.", "Convert, review and download the HTML file."],
+            "faq": [("Will the HTML look exactly like Word?", "Not always. Word and HTML use different layout models. The goal is useful structured content rather than an exact visual replica."), ("Can I edit the generated HTML?", "Yes. Open the file in a text or code editor and adjust it as needed."), ("Can I publish the result directly?", "It can be used as a starting point, but review styles, links and embedded resources before publishing to a production website.")],
+            "related": [("docx-a-txt","DOCX to TXT"),("word-a-pdf","Word to PDF"),("csv-a-xlsx","CSV to XLSX")]
+        },
+        "csv-a-xlsx": {
+            "intro": "Convert CSV to Excel XLSX online so you can continue working with exported data in a spreadsheet that is easier to format, sort, filter and share.",
+            "benefits": ["Turn CSV data into an Excel-compatible XLSX workbook.", "Useful for reports, lists, exports and office workflows.", "Continue editing in Excel or other applications that support XLSX."],
+            "steps": ["Select the CSV file.", "Choose XLSX as the output format.", "Convert and download the spreadsheet."],
+            "faq": [("Which CSV delimiter is supported?", "Converti processes compatible CSV files. If values appear in one column, check the delimiter and encoding used by the source file."), ("Does conversion create formulas?", "No. Converti transfers the source data and does not invent spreadsheet formulas."), ("Can I convert XLSX back to CSV?", "Yes. Converti also provides an XLSX to CSV converter.")],
+            "related": [("xlsx-a-csv","XLSX to CSV"),("docx-a-html","DOCX to HTML"),("pdf-a-word","PDF to Word")]
+        },
+        "xlsx-a-csv": {
+            "intro": "Convert Excel XLSX to CSV online when you need a simple data file for imports, exports, databases, scripts or applications that do not require Excel formatting.",
+            "benefits": ["Create a widely compatible CSV data file.", "Useful for data imports, reporting and migrations.", "Export tabular values without needing Excel in your browser."],
+            "steps": ["Select the XLSX spreadsheet.", "Choose CSV as the output format.", "Convert and download the result."],
+            "faq": [("Does CSV keep Excel colors and formatting?", "No. CSV stores plain tabular data and does not preserve Excel styles."), ("What happens with multiple worksheets?", "Export behavior depends on the active conversion engine, so review the result when a workbook contains multiple sheets."), ("Can I convert CSV back to XLSX?", "Yes. Converti also includes the reverse CSV to XLSX route.")],
+            "related": [("csv-a-xlsx","CSV to XLSX"),("docx-a-txt","DOCX to TXT"),("pdf-a-word","PDF to Word")]
+        },
+    },
+    "fr": {
+        "pdf-a-png": {
+            "intro": "Convertissez les pages d’un PDF en images PNG lorsque vous souhaitez conserver des textes et graphiques nets et traiter chaque page séparément.",
+            "benefits": ["Créez une image PNG pour chaque page traitée.", "Pratique pour présentations, aperçus de documents et contenus web.", "Traitez des PDF multipages et téléchargez les images générées."],
+            "steps": ["Sélectionnez le fichier PDF.", "Choisissez PNG comme format de sortie.", "Convertissez puis téléchargez les images."],
+            "faq": [("La qualité du PNG est-elle bonne ?", "Le PNG est un format sans perte adapté aux textes, graphiques et captures. Le niveau de détail dépend aussi de la résolution de rendu du PDF."), ("Puis-je convertir un PDF multipage ?", "Oui. Chaque page traitée peut devenir une image PNG séparée."), ("PNG ou JPG ?", "Le PNG convient souvent mieux au texte et aux graphiques nets, tandis que le JPG peut être plus léger pour les photos.")],
+            "related": [("pdf-a-word","PDF vers Word"),("pdf-a-jpg","PDF vers JPG"),("jpg-a-pdf","JPG vers PDF")]
+        },
+        "docx-a-txt": {
+            "intro": "Convertissez DOCX en TXT pour récupérer le texte lisible d’un document Word sans mise en forme, images ni mise en page complexe.",
+            "benefits": ["Extrayez le texte de fichiers DOCX compatibles.", "Obtenez un fichier TXT léger et largement compatible.", "Pratique pour réutiliser ou traiter du contenu textuel."],
+            "steps": ["Sélectionnez le document DOCX.", "Choisissez TXT comme sortie.", "Convertissez puis téléchargez le fichier texte."],
+            "faq": [("Les images et styles sont-ils conservés ?", "Non. TXT contient uniquement du texte brut."), ("Microsoft Word est-il nécessaire ?", "Non. La conversion est réalisée par Converti."), ("Puis-je reconvertir le TXT ?", "Oui, lorsque les moteurs disponibles prennent en charge la route souhaitée.")],
+            "related": [("docx-a-html","DOCX vers HTML"),("word-a-pdf","Word vers PDF"),("pdf-a-word","PDF vers Word")]
+        },
+        "docx-a-html": {
+            "intro": "Convertissez un document Word DOCX en HTML pour réutiliser son contenu dans un site web, un CMS ou tout autre projet compatible HTML.",
+            "benefits": ["Transformez le contenu DOCX en HTML réutilisable.", "Évitez de recopier manuellement un document Word pour le web.", "Obtenez une structure adaptée aux navigateurs selon la complexité du document."],
+            "steps": ["Sélectionnez le fichier DOCX.", "Choisissez HTML comme sortie.", "Convertissez, vérifiez puis téléchargez le fichier HTML."],
+            "faq": [("Le HTML sera-t-il identique à Word ?", "Pas toujours. Word et HTML utilisent des modèles de mise en page différents."), ("Puis-je modifier le HTML ?", "Oui. Le fichier peut être ouvert dans un éditeur de texte ou de code."), ("Puis-je le publier directement ?", "Utilisez-le comme base et vérifiez les styles, liens et ressources avant une publication en production.")],
+            "related": [("docx-a-txt","DOCX vers TXT"),("word-a-pdf","Word vers PDF"),("csv-a-xlsx","CSV vers XLSX")]
+        },
+        "csv-a-xlsx": {
+            "intro": "Convertissez CSV en Excel XLSX pour travailler vos données dans une feuille de calcul plus pratique à trier, filtrer, mettre en forme et partager.",
+            "benefits": ["Transformez les données CSV en classeur XLSX compatible.", "Pratique pour rapports, listes et tâches administratives.", "Continuez le travail dans Excel ou une application compatible XLSX."],
+            "steps": ["Sélectionnez le fichier CSV.", "Choisissez XLSX comme sortie.", "Convertissez puis téléchargez la feuille de calcul."],
+            "faq": [("Quel séparateur CSV utiliser ?", "Converti traite les CSV compatibles. Si les valeurs apparaissent dans une seule colonne, vérifiez le séparateur et l’encodage du fichier source."), ("Des formules sont-elles créées ?", "Non. La conversion transporte les données sans inventer de formules."), ("Puis-je revenir de XLSX à CSV ?", "Oui. Converti propose aussi la conversion XLSX vers CSV.")],
+            "related": [("xlsx-a-csv","XLSX vers CSV"),("docx-a-html","DOCX vers HTML"),("pdf-a-word","PDF vers Word")]
+        },
+        "xlsx-a-csv": {
+            "intro": "Convertissez Excel XLSX en CSV pour exporter des données vers un format simple compatible avec de nombreux logiciels, bases de données et processus d’import.",
+            "benefits": ["Obtenez un fichier CSV largement compatible.", "Pratique pour imports, rapports et migrations de données.", "Exportez les valeurs tabulaires sans utiliser Excel dans le navigateur."],
+            "steps": ["Sélectionnez le fichier XLSX.", "Choisissez CSV comme sortie.", "Convertissez puis téléchargez le résultat."],
+            "faq": [("CSV conserve-t-il les couleurs et styles Excel ?", "Non. CSV contient des données tabulaires simples et ne conserve pas les styles Excel."), ("Que se passe-t-il avec plusieurs feuilles ?", "Le comportement dépend du moteur de conversion actif ; vérifiez le résultat si le classeur contient plusieurs feuilles."), ("Puis-je convertir CSV en XLSX ?", "Oui. Converti propose également la conversion inverse.")],
+            "related": [("csv-a-xlsx","CSV vers XLSX"),("docx-a-txt","DOCX vers TXT"),("pdf-a-word","PDF vers Word")]
+        },
+    },
+    "pt-br": {
+        "pdf-a-png": {
+            "intro": "Converta páginas de PDF em imagens PNG quando precisar manter textos e gráficos nítidos e trabalhar com cada página separadamente.",
+            "benefits": ["Crie uma imagem PNG para cada página processada.", "Útil para apresentações, visualizações de documentos e conteúdo web.", "Processe PDFs com várias páginas e baixe as imagens geradas."],
+            "steps": ["Selecione o arquivo PDF.", "Escolha PNG como formato de saída.", "Converta e baixe as imagens."],
+            "faq": [("PDF para PNG mantém boa qualidade?", "PNG é um formato sem perda adequado para textos, gráficos e capturas. O detalhe final também depende da resolução usada para renderizar o PDF."), ("Posso converter um PDF com várias páginas?", "Sim. Cada página processada pode virar uma imagem PNG separada."), ("PNG ou JPG?", "PNG costuma ser melhor para texto e gráficos nítidos; JPG pode gerar arquivos menores em páginas com muitas fotografias.")],
+            "related": [("pdf-a-word","PDF para Word"),("pdf-a-jpg","PDF para JPG"),("jpg-a-pdf","JPG para PDF")]
+        },
+        "docx-a-txt": {
+            "intro": "Converta DOCX para TXT online para extrair o texto legível de um documento Word sem formatação, imagens ou layout complexo.",
+            "benefits": ["Extraia texto de arquivos DOCX compatíveis.", "Crie um TXT leve e fácil de abrir em praticamente qualquer dispositivo.", "Útil para reutilizar, copiar ou processar conteúdo textual."],
+            "steps": ["Selecione o documento DOCX.", "Escolha TXT como formato de saída.", "Converta e baixe o arquivo de texto."],
+            "faq": [("Imagens e formatação são preservadas?", "Não. TXT é texto simples e não mantém estilos, imagens ou layout do Word."), ("Preciso ter Microsoft Word?", "Não. A conversão é processada pelo Converti."), ("Posso converter o TXT novamente?", "Sim, quando os mecanismos disponíveis suportarem a rota desejada.")],
+            "related": [("docx-a-html","DOCX para HTML"),("word-a-pdf","Word para PDF"),("pdf-a-word","PDF para Word")]
+        },
+        "docx-a-html": {
+            "intro": "Converta documentos Word DOCX para HTML online para reutilizar o conteúdo em sites, CMS, e-mails ou outros projetos compatíveis com HTML.",
+            "benefits": ["Transforme conteúdo DOCX em HTML reutilizável.", "Evite copiar manualmente documentos Word para a web.", "Obtenha uma estrutura compatível com navegadores conforme a complexidade do documento."],
+            "steps": ["Selecione o arquivo DOCX.", "Escolha HTML como saída.", "Converta, revise e baixe o arquivo HTML."],
+            "faq": [("O HTML ficará idêntico ao Word?", "Nem sempre. Word e HTML usam modelos de layout diferentes; o objetivo é preservar conteúdo e uma estrutura útil."), ("Posso editar o HTML?", "Sim. Abra o arquivo em um editor de texto ou código."), ("Posso publicar diretamente?", "Use o resultado como base e revise estilos, links e recursos antes de publicar em produção.")],
+            "related": [("docx-a-txt","DOCX para TXT"),("word-a-pdf","Word para PDF"),("csv-a-xlsx","CSV para XLSX")]
+        },
+        "csv-a-xlsx": {
+            "intro": "Converta CSV para Excel XLSX online para continuar trabalhando com os dados em uma planilha mais fácil de formatar, ordenar, filtrar e compartilhar.",
+            "benefits": ["Transforme dados CSV em uma planilha XLSX compatível.", "Útil para relatórios, listas, exportações e rotinas administrativas.", "Continue a edição no Excel ou em aplicativos compatíveis com XLSX."],
+            "steps": ["Selecione o arquivo CSV.", "Escolha XLSX como formato de saída.", "Converta e baixe a planilha."],
+            "faq": [("Qual separador CSV é aceito?", "O Converti processa arquivos CSV compatíveis. Se os valores aparecerem em uma única coluna, verifique o delimitador e a codificação do arquivo original."), ("A conversão cria fórmulas?", "Não. O Converti transporta os dados e não inventa fórmulas."), ("Posso converter XLSX de volta para CSV?", "Sim. O Converti também oferece a conversão XLSX para CSV.")],
+            "related": [("xlsx-a-csv","XLSX para CSV"),("docx-a-html","DOCX para HTML"),("pdf-a-word","PDF para Word")]
+        },
+        "xlsx-a-csv": {
+            "intro": "Converta Excel XLSX para CSV online para exportar dados para um formato simples e compatível com sistemas, bancos de dados e outras aplicações.",
+            "benefits": ["Crie um CSV amplamente compatível.", "Útil para importações, relatórios e migrações de dados.", "Exporte valores tabulares sem depender do Excel no navegador."],
+            "steps": ["Selecione a planilha XLSX.", "Escolha CSV como saída.", "Converta e baixe o resultado."],
+            "faq": [("CSV mantém cores e formatação do Excel?", "Não. CSV armazena dados tabulares simples e não preserva estilos do Excel."), ("O que acontece com várias planilhas?", "O comportamento depende do mecanismo ativo; revise o resultado quando o arquivo tiver várias abas."), ("Posso converter CSV para XLSX?", "Sim. O Converti também inclui a conversão inversa.")],
+            "related": [("csv-a-xlsx","CSV para XLSX"),("docx-a-txt","DOCX para TXT"),("pdf-a-word","PDF para Word")]
+        },
+    },
+}
+
+for _locale, _items in SEO_PRIORITY_CONTENT.items():
+    SEO_CONTENT_I18N.setdefault(_locale, {}).update(_items)
 
 TOOL_UI = {
     "es": {"html_lang":"es","badge":"Herramienta Converti","converter":"Convertidor","convert_title":"Convierte tu archivo con Converti","same_engine":"Esta página utiliza el mismo motor de conversión de Converti y admite archivos de hasta {max_mb} MB.","open":"Abrir convertidor","back":"Volver al inicio","note":"Detección automática de formato · Conversión segura · Archivos temporales","about":"Sobre {title}","how":"Cómo convertir {title}","faq":"Preguntas frecuentes","related":"Herramientas relacionadas","footer":"Converti · Conversión de archivos sencilla y privada"},

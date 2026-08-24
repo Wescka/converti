@@ -1,0 +1,43 @@
+CONVERTI — AJUSTE SEO 2026-08-24
+
+OBJETIVO
+Dar mayor prioridad SEO a CV/resume y a documentos/datos sin modificar el diseño,
+las fuentes, CSS, plantillas, rutas ni el motor de conversión.
+
+CAMBIOS
+- CV/resume:
+  * Contenido específico por intención en EN, FR y PT-BR.
+  * AI resume builder / improve resume / ATS / CompuTrabajo.
+  * Se mantiene intacta la funcionalidad de Converti CV.
+
+- Conversiones reforzadas en ES, EN, FR y PT-BR:
+  * PDF -> PNG
+  * DOCX -> TXT
+  * DOCX -> HTML
+  * CSV -> XLSX
+  * XLSX -> CSV
+
+- Metadatos reforzados especialmente para:
+  * Inglés: PDF->PNG, DOCX->TXT, DOCX->HTML, CSV->XLSX, XLSX->CSV.
+  * Español: DOCX->TXT, DOCX->HTML, CSV->XLSX, XLSX->CSV.
+  * Portugués BR: PDF->Word, DOCX->TXT y DOCX->HTML.
+
+DATOS QUE MOTIVARON LA PRIORIDAD
+Exportación de Search Console: últimas 24 horas.
+Por las páginas exportadas:
+- EN: 78 impresiones
+- PT-BR: 43 impresiones
+- ES: 15 impresiones
+- FR: 2 impresiones
+CV /cv/mejorar-cv-con-ia obtuvo 1 clic con posición 2 en la exportación.
+
+VALIDACIÓN TÉCNICA
+- py_compile: OK
+- AST de Python: OK
+- Rutas Flask antes/después: IGUALES
+- Templates referenciados antes/después: IGUALES
+- Código de API/motor de conversión posterior al bloque SEO: IDÉNTICO
+- No se editaron archivos HTML, CSS, JS, fuentes ni imágenes.
+
+DESPLIEGUE
+Sustituir únicamente app.py en el proyecto Converti por el app.py incluido.
