@@ -1,0 +1,7 @@
+1. Sustituye app.py por el incluido.
+2. Añade templates/email_viewer.html al directorio templates/.
+3. Añade requirements_email.txt a la raíz del proyecto.
+4. En el Redmi instala las dependencias nuevas y reinicia app.py.
+
+Comando recomendado después de subir estos archivos a GitHub:
+cd ~/converti && git fetch origin && git reset --hard origin/main && source venv/bin/activate && python -m pip install -r requirements.txt && python -m pip install -r requirements_email.txt && { pkill -f "app.py" 2>/dev/null || true; nohup ~/converti/venv/bin/python ~/converti/app.py > ~/converti.log 2>&1 & sleep 5; tail -60 ~/converti.log; }

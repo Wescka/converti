@@ -15,6 +15,14 @@ import urllib.error
 import zipfile
 from io import BytesIO
 from pathlib import Path
+from email import policy
+from email.header import decode_header, make_header
+from email.parser import BytesParser
+from html.parser import HTMLParser
+from urllib.parse import quote
+import mimetypes
+import uuid
+import textwrap
 
 from flask import Flask, jsonify, render_template, request, send_from_directory, send_file, url_for, redirect
 from werkzeug.exceptions import RequestEntityTooLarge
@@ -103,6 +111,73 @@ from security_utils import (
 )
 
 app = Flask(__name__)
+
+# -----------------------------------------------------------------------------
+# Internationalized core-page cleanup
+# Keeps the existing templates/design intact while removing legacy Spanish copy
+# that still survives in the shared homepage converter block for EN/FR/PT-BR.
+# Exact replacements only; APIs, downloads and non-HTML responses are untouched.
+# -----------------------------------------------------------------------------
+_CORE_LOCALE_TEXT_REPLACEMENTS = {
+    "en": {
+        "Converti CV · IA": "Converti CV · AI",
+        "FFmpeg: MP3, WAV, FLAC, OGG, OPUS, M4A, AAC, WMA y más según compilación.":
+            "FFmpeg: MP3, WAV, FLAC, OGG, OPUS, M4A, AAC, WMA and more depending on the available build.",
+        "PNG, JPG, WEBP, TIFF, GIF, AVIF, HEIC, PSD, SVG y formatos RAW cuando el motor los soporte. También salida a PDF, DOCX, PPTX y HTML; TXT por OCR cuando esté disponible.":
+            "PNG, JPG, WEBP, TIFF, GIF, AVIF, HEIC, PSD, SVG and RAW formats when supported by the active engine. Output to PDF, DOCX, PPTX and HTML is also available; TXT via OCR when supported.",
+        "PDF, DOCX, ODT, RTF, XLSX, ODS, CSV, PPTX, EPUB, Markdown, HTML y LaTeX.":
+            "PDF, DOCX, ODT, RTF, XLSX, ODS, CSV, PPTX, EPUB, Markdown, HTML and LaTeX.",
+    },
+    "fr": {
+        "FFmpeg: MP3, WAV, FLAC, OGG, OPUS, M4A, AAC, WMA y más según compilación.":
+            "FFmpeg : MP3, WAV, FLAC, OGG, OPUS, M4A, AAC, WMA et d’autres formats selon la compilation disponible.",
+        "PNG, JPG, WEBP, TIFF, GIF, AVIF, HEIC, PSD, SVG y formatos RAW cuando el motor los soporte. También salida a PDF, DOCX, PPTX y HTML; TXT por OCR cuando esté disponible.":
+            "PNG, JPG, WEBP, TIFF, GIF, AVIF, HEIC, PSD, SVG et formats RAW lorsque le moteur actif les prend en charge. Sortie également vers PDF, DOCX, PPTX et HTML ; TXT via OCR lorsque disponible.",
+        "PDF, DOCX, ODT, RTF, XLSX, ODS, CSV, PPTX, EPUB, Markdown, HTML y LaTeX.":
+            "PDF, DOCX, ODT, RTF, XLSX, ODS, CSV, PPTX, EPUB, Markdown, HTML et LaTeX.",
+    },
+    "pt-br": {
+        "FFmpeg: MP3, WAV, FLAC, OGG, OPUS, M4A, AAC, WMA y más según compilación.":
+            "FFmpeg: MP3, WAV, FLAC, OGG, OPUS, M4A, AAC, WMA e outros formatos, dependendo da compilação disponível.",
+        "PNG, JPG, WEBP, TIFF, GIF, AVIF, HEIC, PSD, SVG y formatos RAW cuando el motor los soporte. También salida a PDF, DOCX, PPTX y HTML; TXT por OCR cuando esté disponible.":
+            "PNG, JPG, WEBP, TIFF, GIF, AVIF, HEIC, PSD, SVG e formatos RAW quando o mecanismo ativo oferecer suporte. Também há saída para PDF, DOCX, PPTX e HTML; TXT via OCR quando disponível.",
+        "PDF, DOCX, ODT, RTF, XLSX, ODS, CSV, PPTX, EPUB, Markdown, HTML y LaTeX.":
+            "PDF, DOCX, ODT, RTF, XLSX, ODS, CSV, PPTX, EPUB, Markdown, HTML e LaTeX.",
+    },
+}
+
+
+def _request_content_locale(path: str) -> str | None:
+    if path == "/en" or path.startswith("/en/"):
+        return "en"
+    if path == "/fr" or path.startswith("/fr/"):
+        return "fr"
+    if path == "/pt-br" or path.startswith("/pt-br/"):
+        return "pt-br"
+    return None
+
+
+@app.after_request
+def _clean_localized_html(response):
+    locale = _request_content_locale(request.path)
+    if not locale or response.status_code != 200:
+        return response
+    if not response.content_type or "text/html" not in response.content_type.lower():
+        return response
+    try:
+        html = response.get_data(as_text=True)
+    except (UnicodeDecodeError, RuntimeError):
+        return response
+    replacements = _CORE_LOCALE_TEXT_REPLACEMENTS.get(locale, {})
+    changed = False
+    for source, target in replacements.items():
+        if source in html:
+            html = html.replace(source, target)
+            changed = True
+    if changed:
+        response.set_data(html)
+        response.headers["Content-Length"] = str(len(response.get_data()))
+    return response
 app.config["MAX_CONTENT_LENGTH"] = MAX_MB * 1024 * 1024
 app.config["JSON_AS_ASCII"] = False
 
@@ -1051,7 +1126,7 @@ CV_AI_UI = {
         "ai_improve_import":"Importar y ultra mejorar",
         "ai_improve_current":"Ultra mejorar este CV",
         "ai_ats":"Optimizar para filtros de selección",
-        "ai_credits":"IA disponível",
+        "ai_credits":"IA disponible",
         "ai_privacy_title":"Tu información no se queda en Converti",
         "ai_privacy_text":"Converti procesa el archivo solo para extraer el texto y no guarda tu CV ni crea perfiles con tus datos. Al usar IA, el texto necesario se envía a Google Gemini para generar la mejora. En el nivel gratuito, Google indica que los datos enviados pueden usarse para mejorar sus productos.",
         "ai_consent":"Entiendo y quiero usar la mejora con Gemini.",
@@ -2522,6 +2597,487 @@ def _tool_url(locale: str, slug: str) -> str:
     return "https://converti.lat" + LOCALE_PATHS[locale]["tool"] + slug
 
 
+# -----------------------------------------------------------------------------
+# EML / MSG mail viewer + exporter
+# Independent module: does not alter the existing file converter or CV features.
+# -----------------------------------------------------------------------------
+EMAIL_VIEWER_PATHS = {
+    "es": "/abrir-correo-eml-msg",
+    "en": "/en/open-eml-msg",
+    "fr": "/fr/ouvrir-eml-msg",
+    "pt-br": "/pt-br/abrir-eml-msg",
+}
+
+EMAIL_VIEWER_UI = {
+    "es": {
+        "html_lang":"es","title":"Abrir EML y MSG Online | Convertir correo a PDF, Word o imagen | Converti",
+        "description":"Abre archivos EML y MSG online sin Outlook. Visualiza el correo, descarga adjuntos y conviértelo a PDF, Word, PNG, JPG o TXT gratis.",
+        "eyebrow":"Visor de correo · EML / MSG","h1":"Abre correos EML y MSG sin Outlook",
+        "lead":"Carga un correo guardado y revísalo con un visor completo estilo Outlook. Puedes descargar sus adjuntos o convertir todo el mensaje a PDF, Word, PNG, JPG o TXT.",
+        "drop_title":"Arrastra tu correo aquí","drop_text":"Admite .EML y .MSG · máximo {max_mb} MB","choose":"Seleccionar archivo EML o MSG",
+        "loading":"Abriendo correo…","empty":"El correo aparecerá aquí","empty_text":"Remitente, destinatarios, fecha, cuerpo del mensaje y adjuntos en un solo visor.",
+        "from":"De","to":"Para","cc":"CC","date":"Fecha","attachments":"Adjuntos","download_all":"Descargar todos (.ZIP)",
+        "export":"Convertir correo","pdf":"PDF","docx":"Word (.DOCX)","png":"Imagen PNG","jpg":"Imagen JPG","txt":"Texto TXT",
+        "open_attachment":"Descargar","new_mail":"Abrir otro correo","privacy":"Privacidad: el correo se procesa temporalmente y se elimina automáticamente según la política de Converti.",
+        "about_title":"Visor EML y MSG online","about_text":"EML es un formato estándar de correo y MSG es el formato usado por Microsoft Outlook. Converti permite abrir ambos desde el navegador sin depender de Outlook para leer el contenido.",
+        "features_title":"Todo lo que puedes hacer","features":["Ver asunto, remitente, destinatarios, CC y fecha.","Leer el cuerpo HTML o texto del correo con imágenes incrustadas compatibles.","Descargar cada archivo adjunto o todos juntos en ZIP.","Convertir el correo a PDF, Word (DOCX), PNG, JPG o TXT.","Abrir archivos MSG sin tener Microsoft Outlook instalado."],
+        "faq_title":"Preguntas frecuentes","faq":[
+            ("¿Puedo abrir un archivo MSG sin Outlook?","Sí. Converti extrae la información del archivo MSG en el servidor y la muestra en el navegador."),
+            ("¿Qué pasa con los archivos adjuntos?","Puedes descargarlos individualmente o generar un ZIP con todos los adjuntos del mensaje."),
+            ("¿Puedo convertir un EML o MSG a PDF o Word?","Sí. El visor permite exportar el correo a PDF, DOCX, PNG, JPG y TXT."),
+            ("¿Se guardan mis correos?","No de forma permanente. Se usan archivos temporales y la limpieza automática de Converti los elimina."),
+        ],
+        "inbox":"Bandeja de entrada","sent":"Enviados","drafts":"Borradores","archive":"Archivo","error_type":"Solo se admiten archivos .eml o .msg.","error_generic":"No se pudo abrir este correo.","no_attachments":"Este correo no contiene archivos adjuntos.",
+    },
+    "en": {
+        "html_lang":"en","title":"Open EML & MSG Online | Convert Email to PDF, Word or Image | Converti",
+        "description":"Open EML and MSG files online without Outlook. View the email, download attachments and convert it to PDF, Word, PNG, JPG or TXT for free.",
+        "eyebrow":"Email viewer · EML / MSG","h1":"Open EML and MSG emails without Outlook",
+        "lead":"Upload a saved email and read it in a complete Outlook-style viewer. Download attachments or convert the whole message to PDF, Word, PNG, JPG or TXT.",
+        "drop_title":"Drop your email here","drop_text":"Supports .EML and .MSG · up to {max_mb} MB","choose":"Select EML or MSG file",
+        "loading":"Opening email…","empty":"Your email will appear here","empty_text":"Sender, recipients, date, message body and attachments in one viewer.",
+        "from":"From","to":"To","cc":"Cc","date":"Date","attachments":"Attachments","download_all":"Download all (.ZIP)",
+        "export":"Convert email","pdf":"PDF","docx":"Word (.DOCX)","png":"PNG image","jpg":"JPG image","txt":"TXT text",
+        "open_attachment":"Download","new_mail":"Open another email","privacy":"Privacy: the email is processed temporarily and automatically removed under Converti's cleanup policy.",
+        "about_title":"Online EML and MSG viewer","about_text":"EML is a standard email format and MSG is commonly used by Microsoft Outlook. Converti opens both in your browser without requiring Outlook to read the message.",
+        "features_title":"What you can do","features":["View subject, sender, recipients, Cc and date.","Read HTML or plain-text email bodies with supported inline images.","Download each attachment or all attachments in one ZIP.","Convert the email to PDF, Word (DOCX), PNG, JPG or TXT.","Open MSG files without Microsoft Outlook installed."],
+        "faq_title":"Frequently asked questions","faq":[
+            ("Can I open a MSG file without Outlook?","Yes. Converti extracts the MSG file on the server and displays it in your browser."),
+            ("What happens to email attachments?","You can download them individually or create one ZIP containing all attachments."),
+            ("Can I convert EML or MSG to PDF or Word?","Yes. The viewer exports the message to PDF, DOCX, PNG, JPG and TXT."),
+            ("Are my emails stored?","Not permanently. Converti uses temporary files that are removed by the automatic cleanup process."),
+        ],
+        "inbox":"Inbox","sent":"Sent","drafts":"Drafts","archive":"Archive","error_type":"Only .eml and .msg files are supported.","error_generic":"This email could not be opened.","no_attachments":"This email has no attachments.",
+    },
+    "fr": {
+        "html_lang":"fr","title":"Ouvrir EML et MSG en ligne | Convertir un e-mail en PDF, Word ou image | Converti",
+        "description":"Ouvrez des fichiers EML et MSG en ligne sans Outlook. Consultez le message, téléchargez les pièces jointes et convertissez-le en PDF, Word, PNG, JPG ou TXT.",
+        "eyebrow":"Visionneuse d’e-mails · EML / MSG","h1":"Ouvrez les e-mails EML et MSG sans Outlook",
+        "lead":"Importez un e-mail enregistré et consultez-le dans une visionneuse complète inspirée d’Outlook. Téléchargez les pièces jointes ou convertissez le message en PDF, Word, PNG, JPG ou TXT.",
+        "drop_title":"Déposez votre e-mail ici","drop_text":"Formats .EML et .MSG · jusqu’à {max_mb} Mo","choose":"Sélectionner un fichier EML ou MSG",
+        "loading":"Ouverture de l’e-mail…","empty":"Votre e-mail apparaîtra ici","empty_text":"Expéditeur, destinataires, date, contenu et pièces jointes dans une seule visionneuse.",
+        "from":"De","to":"À","cc":"Cc","date":"Date","attachments":"Pièces jointes","download_all":"Tout télécharger (.ZIP)",
+        "export":"Convertir l’e-mail","pdf":"PDF","docx":"Word (.DOCX)","png":"Image PNG","jpg":"Image JPG","txt":"Texte TXT",
+        "open_attachment":"Télécharger","new_mail":"Ouvrir un autre e-mail","privacy":"Confidentialité : l’e-mail est traité temporairement puis supprimé automatiquement selon la politique de Converti.",
+        "about_title":"Visionneuse EML et MSG en ligne","about_text":"EML est un format standard de courrier électronique et MSG est couramment utilisé par Microsoft Outlook. Converti permet de lire les deux directement dans le navigateur.",
+        "features_title":"Fonctions disponibles","features":["Afficher l’objet, l’expéditeur, les destinataires, Cc et la date.","Lire le corps HTML ou texte avec les images intégrées prises en charge.","Télécharger une pièce jointe ou toutes les pièces jointes en ZIP.","Convertir l’e-mail en PDF, Word (DOCX), PNG, JPG ou TXT.","Ouvrir les fichiers MSG sans installer Microsoft Outlook."],
+        "faq_title":"Questions fréquentes","faq":[
+            ("Puis-je ouvrir un fichier MSG sans Outlook ?","Oui. Converti extrait le fichier MSG sur le serveur et l’affiche dans le navigateur."),
+            ("Que deviennent les pièces jointes ?","Vous pouvez les télécharger séparément ou créer un ZIP contenant toutes les pièces jointes."),
+            ("Puis-je convertir un EML ou MSG en PDF ou Word ?","Oui. La visionneuse exporte le message en PDF, DOCX, PNG, JPG et TXT."),
+            ("Mes e-mails sont-ils conservés ?","Non de façon permanente. Converti utilise des fichiers temporaires supprimés automatiquement."),
+        ],
+        "inbox":"Boîte de réception","sent":"Envoyés","drafts":"Brouillons","archive":"Archives","error_type":"Seuls les fichiers .eml et .msg sont acceptés.","error_generic":"Impossible d’ouvrir cet e-mail.","no_attachments":"Cet e-mail ne contient aucune pièce jointe.",
+    },
+    "pt-br": {
+        "html_lang":"pt-BR","title":"Abrir EML e MSG Online | Converter e-mail para PDF, Word ou imagem | Converti",
+        "description":"Abra arquivos EML e MSG online sem Outlook. Visualize o e-mail, baixe anexos e converta para PDF, Word, PNG, JPG ou TXT gratuitamente.",
+        "eyebrow":"Visualizador de e-mail · EML / MSG","h1":"Abra e-mails EML e MSG sem Outlook",
+        "lead":"Envie um e-mail salvo e leia tudo em um visualizador completo inspirado no Outlook. Baixe anexos ou converta a mensagem inteira para PDF, Word, PNG, JPG ou TXT.",
+        "drop_title":"Arraste seu e-mail aqui","drop_text":"Aceita .EML e .MSG · até {max_mb} MB","choose":"Selecionar arquivo EML ou MSG",
+        "loading":"Abrindo e-mail…","empty":"Seu e-mail aparecerá aqui","empty_text":"Remetente, destinatários, data, corpo da mensagem e anexos em um só visualizador.",
+        "from":"De","to":"Para","cc":"Cc","date":"Data","attachments":"Anexos","download_all":"Baixar tudo (.ZIP)",
+        "export":"Converter e-mail","pdf":"PDF","docx":"Word (.DOCX)","png":"Imagem PNG","jpg":"Imagem JPG","txt":"Texto TXT",
+        "open_attachment":"Baixar","new_mail":"Abrir outro e-mail","privacy":"Privacidade: o e-mail é processado temporariamente e removido automaticamente pela limpeza do Converti.",
+        "about_title":"Visualizador EML e MSG online","about_text":"EML é um formato padrão de e-mail e MSG é usado com frequência pelo Microsoft Outlook. O Converti abre os dois diretamente no navegador, sem depender do Outlook.",
+        "features_title":"Tudo o que você pode fazer","features":["Ver assunto, remetente, destinatários, Cc e data.","Ler o corpo HTML ou texto com imagens incorporadas compatíveis.","Baixar cada anexo ou todos de uma vez em ZIP.","Converter o e-mail para PDF, Word (DOCX), PNG, JPG ou TXT.","Abrir arquivos MSG sem instalar o Microsoft Outlook."],
+        "faq_title":"Perguntas frequentes","faq":[
+            ("Posso abrir um arquivo MSG sem Outlook?","Sim. O Converti extrai o arquivo MSG no servidor e mostra o conteúdo no navegador."),
+            ("O que acontece com os anexos?","Você pode baixar cada anexo separadamente ou gerar um ZIP com todos eles."),
+            ("Posso converter EML ou MSG para PDF ou Word?","Sim. O visualizador exporta a mensagem para PDF, DOCX, PNG, JPG e TXT."),
+            ("Meus e-mails ficam armazenados?","Não permanentemente. O Converti usa arquivos temporários removidos pela limpeza automática."),
+        ],
+        "inbox":"Caixa de entrada","sent":"Enviados","drafts":"Rascunhos","archive":"Arquivo","error_type":"Apenas arquivos .eml e .msg são aceitos.","error_generic":"Não foi possível abrir este e-mail.","no_attachments":"Este e-mail não contém anexos.",
+    },
+}
+
+
+def _email_decode_header(value) -> str:
+    if value is None:
+        return ""
+    try:
+        return str(make_header(decode_header(str(value)))).strip()
+    except Exception:
+        return str(value).strip()
+
+
+def _email_bytes_to_text(data: bytes, charset: str | None = None) -> str:
+    for enc in (charset, "utf-8", "cp1252", "latin-1"):
+        if not enc:
+            continue
+        try:
+            return data.decode(enc, errors="replace")
+        except Exception:
+            pass
+    return data.decode("utf-8", errors="replace")
+
+
+def _email_plain_from_html(value: str) -> str:
+    class _Collector(HTMLParser):
+        def __init__(self):
+            super().__init__(convert_charrefs=True)
+            self.parts=[]
+        def handle_starttag(self, tag, attrs):
+            if tag.lower() in {"br","p","div","li","tr","h1","h2","h3","h4","h5","h6"}:
+                self.parts.append("\n")
+        def handle_data(self, data):
+            self.parts.append(data)
+        def handle_endtag(self, tag):
+            if tag.lower() in {"p","div","li","tr"}:
+                self.parts.append("\n")
+    c=_Collector()
+    try: c.feed(value or "")
+    except Exception: return re.sub(r"<[^>]+>", " ", value or "")
+    text="".join(c.parts).replace("\xa0", " ")
+    text=re.sub(r"[ \t]+", " ", text)
+    text=re.sub(r"\n{3,}", "\n\n", text)
+    return text.strip()
+
+
+def _email_sanitize_html(value: str, cid_map: dict[str,str]) -> str:
+    value=value or ""
+    for cid, data_url in cid_map.items():
+        value=re.sub(r'cid:'+re.escape(cid), data_url, value, flags=re.I)
+    # Prevent tracking pixels and remote image requests while reading an uploaded email.
+    value=re.sub(r'(?is)(<img\b[^>]*?\bsrc\s*=\s*["\'])https?://[^"\']*(["\'])', r'\1\2', value)
+    try:
+        import bleach
+        tags = set(bleach.sanitizer.ALLOWED_TAGS) | {"p","div","span","br","hr","img","table","thead","tbody","tr","td","th","ul","ol","li","h1","h2","h3","h4","h5","h6","blockquote","pre","code","strong","em","b","i","u","a"}
+        attrs = {"*": ["style"], "a":["href","title","target","rel"], "img":["src","alt","title","width","height"], "td":["colspan","rowspan"], "th":["colspan","rowspan"]}
+        return bleach.clean(value, tags=tags, attributes=attrs, protocols={"http","https","mailto","data"}, strip=True)
+    except Exception:
+        value=re.sub(r"(?is)<(script|style|iframe|object|embed|form).*?>.*?</\\1>", "", value)
+        value=re.sub(r"(?i)\son[a-z]+\s*=\s*(['\"]).*?\1", "", value)
+        value=re.sub(r"(?i)javascript\s*:", "", value)
+        return value
+
+
+def _parse_eml(path: Path) -> dict:
+    msg=BytesParser(policy=policy.default).parsebytes(path.read_bytes())
+    html_body=""; text_body=""; attachments=[]; cid_map={}
+    for part in msg.walk():
+        ctype=(part.get_content_type() or "application/octet-stream").lower()
+        disp=(part.get_content_disposition() or "").lower()
+        filename=_email_decode_header(part.get_filename())
+        if ctype == "message/rfc822" and (disp == "attachment" or filename):
+            nested=part.get_payload()
+            if isinstance(nested,list) and nested:
+                payload=nested[0].as_bytes(policy=policy.default)
+            elif hasattr(nested,"as_bytes"):
+                payload=nested.as_bytes(policy=policy.default)
+            else:
+                payload=bytes(part.get_payload(decode=True) or b"")
+            attachments.append({"name":safe_original_name(filename or f"attached-email-{len(attachments)+1}.eml"),"content_type":ctype,"data":payload,"size":len(payload)})
+            continue
+        if part.is_multipart():
+            continue
+        payload=part.get_payload(decode=True) or b""
+        cid=(part.get("Content-ID") or "").strip().strip("<>")
+        if cid and ctype.startswith("image/") and len(payload) <= 4*1024*1024:
+            cid_map[cid]=f"data:{ctype};base64,{base64.b64encode(payload).decode('ascii')}"
+        is_attachment = disp == "attachment" or bool(filename)
+        if is_attachment:
+            if not filename:
+                ext=mimetypes.guess_extension(ctype) or ".bin"
+                filename=f"attachment{len(attachments)+1}{ext}"
+            attachments.append({"name":safe_original_name(filename),"content_type":ctype,"data":payload,"size":len(payload)})
+            continue
+        if ctype == "text/html" and not html_body:
+            html_body=_email_bytes_to_text(payload, part.get_content_charset())
+        elif ctype == "text/plain" and not text_body:
+            text_body=_email_bytes_to_text(payload, part.get_content_charset())
+    if not html_body and text_body:
+        import html as _html
+        html_body="<div style='white-space:pre-wrap'>"+_html.escape(text_body)+"</div>"
+    if not text_body and html_body:
+        text_body=_email_plain_from_html(html_body)
+    return {
+        "subject":_email_decode_header(msg.get("Subject")) or "(Sin asunto)",
+        "from":_email_decode_header(msg.get("From")), "to":_email_decode_header(msg.get("To")),
+        "cc":_email_decode_header(msg.get("Cc")), "date":_email_decode_header(msg.get("Date")),
+        "html":_email_sanitize_html(html_body, cid_map), "text":text_body.strip(), "attachments":attachments,
+    }
+
+
+def _msg_attachment_bytes(att) -> bytes:
+    data=getattr(att, "data", b"")
+    if callable(data):
+        data=data()
+    if isinstance(data, str):
+        data=data.encode("utf-8", errors="replace")
+    if data:
+        return bytes(data)
+    # Fallback for attachment implementations that expose save() instead of raw data.
+    try:
+        with tempfile.TemporaryDirectory(prefix="converti_msg_") as td:
+            before=set(Path(td).glob("*"))
+            att.save(customPath=td)
+            created=[x for x in Path(td).glob("*") if x not in before and x.is_file()]
+            if created:
+                return created[0].read_bytes()
+    except Exception:
+        pass
+    return b""
+
+
+def _parse_msg(path: Path) -> dict:
+    try:
+        import extract_msg
+    except Exception as exc:
+        raise ValueError("Para abrir archivos MSG instala la dependencia 'extract-msg' incluida en requirements.txt.") from exc
+    message=extract_msg.openMsg(str(path))
+    try:
+        html_body=getattr(message, "htmlBody", b"") or b""
+        if isinstance(html_body, bytes): html_body=_email_bytes_to_text(html_body)
+        text_body=str(getattr(message, "body", "") or "")
+        if not html_body:
+            import html as _html
+            html_body="<div style='white-space:pre-wrap'>"+_html.escape(text_body)+"</div>"
+        if not text_body:
+            text_body=_email_plain_from_html(html_body)
+        attachments=[]
+        for idx, att in enumerate(getattr(message, "attachments", []) or []):
+            name=(getattr(att,"longFilename",None) or getattr(att,"shortFilename",None) or f"attachment-{idx+1}.bin")
+            name=safe_original_name(str(name))
+            data=_msg_attachment_bytes(att)
+            ctype=mimetypes.guess_type(name)[0] or "application/octet-stream"
+            attachments.append({"name":name,"content_type":ctype,"data":data,"size":len(data)})
+        date_v=getattr(message,"date","") or ""
+        return {
+            "subject":str(getattr(message,"subject","") or "(Sin asunto)"),
+            "from":str(getattr(message,"sender","") or ""), "to":str(getattr(message,"to","") or ""),
+            "cc":str(getattr(message,"cc","") or ""), "date":str(date_v),
+            "html":_email_sanitize_html(str(html_body), {}), "text":text_body.strip(), "attachments":attachments,
+        }
+    finally:
+        try: message.close()
+        except Exception: pass
+
+
+def _parse_email_file(path: Path, ext: str) -> dict:
+    if ext == "eml": return _parse_eml(path)
+    if ext == "msg": return _parse_msg(path)
+    raise ValueError("Unsupported email format")
+
+
+def _email_original_path(token: str) -> tuple[Path,str]:
+    if not re.fullmatch(r"[a-f0-9]{32}", token or ""):
+        raise ValueError("Invalid email token")
+    for ext in ("eml","msg"):
+        p=TEMP_DIR/f"mail_{token}.{ext}"
+        if p.exists(): return p, ext
+    raise FileNotFoundError("Email expired")
+
+
+def _email_public_payload(parsed: dict, token: str) -> dict:
+    public={k:v for k,v in parsed.items() if k != "attachments"}
+    items=[]
+    for idx, att in enumerate(parsed.get("attachments", [])):
+        saved=TEMP_DIR/f"mailatt_{token}_{idx}_{safe_original_name(att['name'])}"
+        saved.write_bytes(att["data"])
+        items.append({"name":att["name"],"size":att["size"],"content_type":att["content_type"],
+                      "url":url_for("email_download_attachment", token=token, index=idx)})
+    public["attachments"]=items
+    public["token"]=token
+    public["exports"]={fmt:url_for("email_export",token=token,fmt=fmt) for fmt in ("pdf","docx","png","jpg","txt")}
+    public["attachments_zip"]=url_for("email_attachments_zip",token=token)
+    return public
+
+
+def _email_export_text(parsed: dict) -> str:
+    lines=[parsed.get("subject") or "", "", f"From: {parsed.get('from','')}", f"To: {parsed.get('to','')}"]
+    if parsed.get("cc"): lines.append(f"Cc: {parsed['cc']}")
+    if parsed.get("date"): lines.append(f"Date: {parsed['date']}")
+    lines.extend(["", parsed.get("text") or _email_plain_from_html(parsed.get("html",""))])
+    if parsed.get("attachments"):
+        lines.extend(["", "Attachments:"]+[f"- {a['name']} ({a['size']} bytes)" for a in parsed["attachments"]])
+    return "\n".join(lines).strip()+"\n"
+
+
+def _email_export_pdf(parsed: dict, out: Path):
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.enums import TA_LEFT
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, HRFlowable
+    from reportlab.lib.units import mm
+    import html as _html
+    doc=SimpleDocTemplate(str(out),pagesize=A4,rightMargin=18*mm,leftMargin=18*mm,topMargin=16*mm,bottomMargin=16*mm)
+    styles=getSampleStyleSheet(); body=ParagraphStyle('mailbody',parent=styles['BodyText'],fontSize=9.5,leading=14,spaceAfter=6)
+    story=[Paragraph(_html.escape(parsed.get('subject') or '(No subject)'),styles['Title']),Spacer(1,6)]
+    for label,key in (("From","from"),("To","to"),("Cc","cc"),("Date","date")):
+        val=parsed.get(key)
+        if val: story.append(Paragraph(f"<b>{label}:</b> {_html.escape(str(val))}",body))
+    story.extend([Spacer(1,4),HRFlowable(width='100%',thickness=.6),Spacer(1,8)])
+    for para in (parsed.get('text') or _email_plain_from_html(parsed.get('html',''))).split('\n'):
+        story.append(Paragraph(_html.escape(para) if para else '&nbsp;',body))
+    if parsed.get('attachments'):
+        story.extend([Spacer(1,8),HRFlowable(width='100%',thickness=.6),Spacer(1,6),Paragraph('<b>Attachments</b>',body)])
+        for a in parsed['attachments']: story.append(Paragraph('• '+_html.escape(a['name']),body))
+    doc.build(story)
+
+
+def _email_export_docx(parsed: dict, out: Path):
+    from docx import Document
+    doc=Document(); doc.add_heading(parsed.get('subject') or '(No subject)',0)
+    for label,key in (("From","from"),("To","to"),("Cc","cc"),("Date","date")):
+        val=parsed.get(key)
+        if val:
+            p=doc.add_paragraph(); r=p.add_run(label+': '); r.bold=True; p.add_run(str(val))
+    doc.add_paragraph('')
+    for para in (parsed.get('text') or _email_plain_from_html(parsed.get('html',''))).split('\n'):
+        doc.add_paragraph(para)
+    if parsed.get('attachments'):
+        doc.add_heading('Attachments', level=2)
+        for a in parsed['attachments']: doc.add_paragraph(a['name'], style='List Bullet')
+    doc.save(str(out))
+
+
+def _email_export_image(parsed: dict, out: Path, fmt: str):
+    from PIL import Image, ImageDraw, ImageFont
+    candidates=["/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf","/system/fonts/Roboto-Regular.ttf","C:/Windows/Fonts/arial.ttf"]
+    font_path=next((p for p in candidates if Path(p).exists()),None)
+    font=ImageFont.truetype(font_path,28) if font_path else ImageFont.load_default()
+    small=ImageFont.truetype(font_path,21) if font_path else ImageFont.load_default()
+    bold=ImageFont.truetype(font_path,36) if font_path else ImageFont.load_default()
+    width=1600; margin=100; usable=width-2*margin
+    def wrap(text, fnt):
+        text=str(text or '')
+        out=[]
+        for raw in text.splitlines() or ['']:
+            words=raw.split(' '); line=''
+            for word in words:
+                trial=(line+' '+word).strip()
+                if ImageDraw.Draw(Image.new('RGB',(1,1))).textlength(trial,font=fnt) <= usable:
+                    line=trial
+                else:
+                    if line: out.append(line)
+                    line=word
+            out.append(line)
+        return out
+    rows=[]
+    rows += [('title',x) for x in wrap(parsed.get('subject') or '(No subject)',bold)]
+    rows.append(('space',''))
+    for label,key in (("From","from"),("To","to"),("Cc","cc"),("Date","date")):
+        if parsed.get(key): rows += [('meta',x) for x in wrap(f"{label}: {parsed[key]}",small)]
+    rows += [('space',''),('rule','')]
+    rows += [('body',x) for x in wrap(parsed.get('text') or _email_plain_from_html(parsed.get('html','')),font)]
+    if parsed.get('attachments'):
+        rows += [('space',''),('rule',''),('meta','Attachments:')]
+        for a in parsed['attachments']: rows += [('meta',x) for x in wrap('• '+a['name'],small)]
+    heights={'title':52,'meta':34,'body':42,'space':30,'rule':22}
+    if len(rows) > 220:
+        rows=rows[:219]+[('body','[Content truncated in image export; use PDF or Word for the full message.]')]
+    height=max(600, margin*2+sum(heights[t] for t,_ in rows))
+    img=Image.new('RGB',(width,height),'white'); draw=ImageDraw.Draw(img); y=margin
+    for typ,text in rows:
+        if typ=='rule': draw.line((margin,y,width-margin,y),fill=(210,218,230),width=2)
+        elif typ!='space': draw.text((margin,y),text,fill=(18,31,55),font={'title':bold,'meta':small,'body':font}[typ])
+        y += heights[typ]
+    img.save(out, 'PNG' if fmt=='png' else 'JPEG', quality=92)
+
+
+def _email_render_page(locale: str):
+    ui=dict(EMAIL_VIEWER_UI[locale]); ui['drop_text']=ui['drop_text'].format(max_mb=MAX_MB)
+    canonical="https://converti.lat"+EMAIL_VIEWER_PATHS[locale]
+    alternates={code:"https://converti.lat"+path for code,path in EMAIL_VIEWER_PATHS.items()}
+    schema={"@context":"https://schema.org","@graph":[
+        {"@type":"WebApplication","name":ui['h1'],"url":canonical,"applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":ui['description']},
+        {"@type":"FAQPage","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in ui['faq']]}
+    ]}
+    return render_template("email_viewer.html",ui=ui,locale=locale,canonical_url=canonical,alternates=alternates,
+                           schema_json=json.dumps(schema,ensure_ascii=False),home_path=SECTION_PATHS[locale]['home'],max_mb=MAX_MB)
+
+
+@app.get("/abrir-correo-eml-msg")
+def email_viewer_es(): return _email_render_page("es")
+
+@app.get("/en/open-eml-msg")
+def email_viewer_en(): return _email_render_page("en")
+
+@app.get("/fr/ouvrir-eml-msg")
+def email_viewer_fr(): return _email_render_page("fr")
+
+@app.get("/pt-br/abrir-eml-msg")
+def email_viewer_ptbr(): return _email_render_page("pt-br")
+
+
+@app.post("/api/email/inspect")
+def email_inspect():
+    up=request.files.get("file")
+    if not up or not up.filename: return jsonify(error="No file uploaded"),400
+    ext=Path(up.filename).suffix.lower().lstrip('.')
+    if ext not in {"eml","msg"}:
+        # Some mail clients download RFC-822 messages without an extension.
+        probe=up.stream.read(8192)
+        try: up.stream.seek(0)
+        except Exception: pass
+        looks_eml=bool(re.search(br'(?im)^(from|to|subject|date|mime-version|content-type):\s*.+$', probe))
+        if looks_eml: ext="eml"
+        else: return jsonify(error="Only EML, MSG or extensionless RFC-822 email files are supported"),400
+    token=uuid.uuid4().hex
+    path=TEMP_DIR/f"mail_{token}.{ext}"
+    up.save(path)
+    try:
+        if path.stat().st_size > MAX_MB*1024*1024: raise ValueError(f"File exceeds {MAX_MB} MB")
+        parsed=_parse_email_file(path,ext)
+        return jsonify(ok=True,email=_email_public_payload(parsed,token))
+    except Exception as exc:
+        path.unlink(missing_ok=True)
+        log.warning("email_open_failed ext=%s type=%s",ext,type(exc).__name__)
+        return jsonify(error=str(exc)),400
+
+
+@app.get("/api/email/attachment/<token>/<int:index>")
+def email_download_attachment(token: str,index: int):
+    try:
+        path,ext=_email_original_path(token); parsed=_parse_email_file(path,ext)
+        attachments=parsed.get('attachments',[])
+        if index<0 or index>=len(attachments): return "Attachment not found",404
+        a=attachments[index]
+        return send_file(BytesIO(a['data']),mimetype=a['content_type'],as_attachment=True,download_name=safe_original_name(a['name']))
+    except FileNotFoundError: return "Email expired",404
+    except Exception: return "Attachment unavailable",400
+
+
+@app.get("/api/email/attachments/<token>.zip")
+def email_attachments_zip(token: str):
+    try:
+        path,ext=_email_original_path(token); parsed=_parse_email_file(path,ext)
+        attachments=parsed.get('attachments',[])
+        if not attachments: return "No attachments",404
+        out=TEMP_DIR/f"mail_attachments_{token}.zip"
+        used=set()
+        with zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED) as z:
+            for i,a in enumerate(attachments):
+                name=safe_original_name(a['name']) or f"attachment-{i+1}.bin"
+                base=name; n=2
+                while name.lower() in used:
+                    p=Path(base); name=f"{p.stem}-{n}{p.suffix}"; n+=1
+                used.add(name.lower()); z.writestr(name,a['data'])
+        return send_file(out,as_attachment=True,download_name="email-attachments.zip")
+    except FileNotFoundError: return "Email expired",404
+    except Exception as exc: return str(exc),400
+
+
+@app.get("/api/email/export/<token>/<fmt>")
+def email_export(token: str,fmt: str):
+    fmt=(fmt or '').lower()
+    if fmt not in {'pdf','docx','png','jpg','txt'}: return "Unsupported export format",400
+    try:
+        path,ext=_email_original_path(token); parsed=_parse_email_file(path,ext)
+        out=TEMP_DIR/f"mail_export_{token}.{fmt}"
+        if fmt=='pdf': _email_export_pdf(parsed,out)
+        elif fmt=='docx': _email_export_docx(parsed,out)
+        elif fmt in {'png','jpg'}: _email_export_image(parsed,out,fmt)
+        else: out.write_text(_email_export_text(parsed),encoding='utf-8')
+        stem=re.sub(r'[^A-Za-z0-9._-]+','-',parsed.get('subject') or 'email').strip('-')[:70] or 'email'
+        return send_file(out,as_attachment=True,download_name=f"{stem}.{fmt}")
+    except FileNotFoundError: return "Email expired",404
+    except Exception as exc:
+        log.warning("email_export_failed fmt=%s type=%s",fmt,type(exc).__name__)
+        return str(exc),400
+
+
 SITEMAP_LASTMOD = "2026-08-24"
 SITEMAP_LOCALES = ("es", "en", "fr", "pt-br")
 SITEMAP_LANG_ATTR = {"es":"es", "en":"en", "fr":"fr", "pt-br":"pt-BR"}
@@ -2531,6 +3087,7 @@ SITEMAP_FILES = (
     ("https://converti.lat/sitemap-french.xml", "French pages"),
     ("https://converti.lat/sitemap-portuguese.xml", "Brazilian Portuguese pages"),
     ("https://converti.lat/sitemap-resume.xml", "CV and resume pages"),
+    ("https://converti.lat/sitemap-email.xml", "EML and MSG email viewer pages"),
 )
 
 
@@ -2649,6 +3206,24 @@ def sitemap_portuguese():
 @app.get("/sitemap-resume.xml")
 def sitemap_resume():
     return _sitemap_urlset(_sitemap_resume_groups()), 200, {"Content-Type":"application/xml; charset=utf-8", "Cache-Control":"public, max-age=1800"}
+
+
+@app.get("/sitemap-email.xml")
+def sitemap_email():
+    from xml.sax.saxutils import escape
+    lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">',
+    ]
+    for locale, path in EMAIL_VIEWER_PATHS.items():
+        url = "https://converti.lat" + path
+        lines += ['  <url>', f'    <loc>{escape(url)}</loc>', '    <lastmod>2026-09-12</lastmod>']
+        for alt_locale, alt_path in EMAIL_VIEWER_PATHS.items():
+            lines.append(f'    <xhtml:link rel="alternate" hreflang="{SITEMAP_LANG_ATTR[alt_locale]}" href="{escape("https://converti.lat"+alt_path)}" />')
+        lines.append(f'    <xhtml:link rel="alternate" hreflang="x-default" href="{escape("https://converti.lat"+EMAIL_VIEWER_PATHS["es"])}" />')
+        lines.append('  </url>')
+    lines.append('</urlset>')
+    return "\n".join(lines)+"\n", 200, {"Content-Type":"application/xml; charset=utf-8", "Cache-Control":"public, max-age=1800"}
 
 
 def _render_tool(locale: str, slug: str):
