@@ -1,53 +1,38 @@
-CONVERTI — VISOR / CONVERTIDOR EML + MSG — 2026-09-12
+CONVERTI — VALIDACIÓN EML/MSG CORREGIDA 2026-09-12
 
-INCLUIDO
-- Visor EML y MSG estilo Outlook dentro de la estética de Converti.
-- Lee asunto, remitente, destinatarios, CC, fecha y cuerpo HTML/texto.
-- Soporta archivos EML y MSG y también correos RFC-822 descargados sin extensión.
-- Soporta correos EML adjuntos dentro de otros EML.
-- Muestra imágenes incrustadas CID compatibles.
-- Bloquea imágenes externas HTTP/HTTPS dentro del correo para evitar píxeles de seguimiento.
-- Descarga de adjuntos individual.
-- Descarga de todos los adjuntos en ZIP.
-- Exportación del correo a PDF, DOCX (Word), PNG, JPG y TXT.
-- Archivos temporales integrados con TEMP_DIR / limpieza existente de Converti.
+PROBLEMA CORREGIDO
+La primera versión usaba extract-msg. En Termux/Python 3.13 esa dependencia arrastraba cryptography/maturin y fallaba al compilar para aarch64-linux-android.
 
-SEO / IDIOMAS
-- Español: /abrir-correo-eml-msg
-- Inglés: /en/open-eml-msg
-- Francés: /fr/ouvrir-eml-msg
-- Portugués BR: /pt-br/abrir-eml-msg
-- Canonical individual + hreflang es/en/fr/pt-BR + x-default.
-- WebApplication schema + FAQPage schema.
-- Meta title y description localizados.
-- Sitemap nuevo: /sitemap-email.xml
-- El sitemap index principal referencia ahora el sitemap de correo.
+SOLUCIÓN
+Se eliminó completamente extract-msg y cualquier dependencia de cryptography/maturin/Rust.
+El soporte MSG ahora usa un lector OLE/CFB integrado en app.py, escrito en Python estándar. Soporta FAT, MiniFAT, directorios OLE anidados y las propiedades MAPI usadas por Outlook para asunto, remitente, destinatarios, CC, cuerpo HTML/texto y adjuntos binarios comunes.
 
-VALIDACIONES REALIZADAS
-- py_compile: OK.
-- AST: OK.
-- Jinja de email_viewer.html: OK.
-- Todas las 61 rutas anteriores siguen presentes: OK.
-- Motor/API existente desde /api/diagnostico-formatos en adelante: idéntico.
-- Prueba EML sintética con HTML + adjunto: OK.
-- Prueba EML con correo .EML adjunto: OK.
-- Sanitización de <script>: OK.
-- Bloqueo de imagen remota/tracker: OK.
-- Exportación PDF: OK.
-- Exportación DOCX: OK.
-- Exportación PNG: OK.
-- Exportación JPG: OK.
-- Exportación TXT: OK.
+PRUEBAS REALIZADAS
+- py_compile de app.py: OK
+- AST de app.py: OK
+- Rutas Flask antes/después: idénticas
+- Confirmado: no existe import extract_msg ni referencia extract-msg en app.py
+- MSG sintético OLE/CFB usando FAT regular: OK
+- MSG sintético OLE/CFB usando MiniFAT (caso habitual para propiedades pequeñas): OK
+- Extracción de adjunto MSG binario: OK
+- Exportación desde MSG a PDF: OK
+- Exportación desde MSG a DOCX: OK
+- Exportación desde MSG a PNG: OK
+- Exportación desde MSG a JPG: OK
+- Exportación desde MSG a TXT: OK
+- EML de prueba incluido: OK
+- EML real de usuario (134170 bytes): leído correctamente; asunto, remitente y adjunto detectados: OK
+- Exportación EML a PDF/DOCX/PNG/JPG/TXT: OK
 
-DEPENDENCIA MSG
-El soporte MSG usa extract-msg, una biblioteca diseñada para leer .MSG de Outlook sin Outlook.
-Este entorno de validación no tenía extract-msg instalado y no tenía acceso de red para descargarlo,
-por lo que no fue posible ejecutar aquí una prueba binaria real de MSG. La integración usa la API
-openMsg(), attachments, htmlBody/body y propiedades estándar de extract-msg; requirements_email.txt
-incluye la dependencia para instalarla en el servidor.
+LIMITACIÓN DECLARADA
+No se pudo ejecutar en este entorno un archivo .MSG binario producido directamente por Outlook porque no se dispone aquí de un fixture real montado. Para cubrir la estructura se probaron dos archivos MSG OLE/CFB generados para test, incluyendo FAT y MiniFAT, con propiedades MAPI y adjuntos. El parser ya no requiere ninguna instalación adicional en Termux.
 
-ARCHIVOS TOCADOS
-- app.py: se añade exclusivamente el módulo de correo y la referencia del sitemap de correo.
-- templates/email_viewer.html: archivo NUEVO.
-- No se modifica ningún HTML/CSS/JS existente del proyecto.
-- No se modifica Gemini, Converti CV ni los motores actuales de conversión.
+NO TOCADO
+- Convertidor general
+- Converti CV
+- Gemini
+- Cloudflare
+- CSS/JS/templates existentes
+- SEO anterior
+
+La única plantilla nueva sigue siendo templates/email_viewer.html.

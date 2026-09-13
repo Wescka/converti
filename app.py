@@ -2799,60 +2799,237 @@ def _parse_eml(path: Path) -> dict:
     }
 
 
-def _msg_attachment_bytes(att) -> bytes:
-    data=getattr(att, "data", b"")
-    if callable(data):
-        data=data()
-    if isinstance(data, str):
-        data=data.encode("utf-8", errors="replace")
-    if data:
-        return bytes(data)
-    # Fallback for attachment implementations that expose save() instead of raw data.
+
+def _cfb_read(path: Path) -> dict[str, bytes]:
+    """Minimal read-only Compound File Binary (OLE/CFB) reader for Outlook .MSG.
+
+    It intentionally supports the subset needed by MSG: regular FAT streams,
+    MiniFAT streams, nested storages and version-3/4 sector sizes. No third-party
+    package is required, which keeps it compatible with Termux/Python 3.13.
+    """
+    import struct
+
+    data = path.read_bytes()
+    if len(data) < 512 or data[:8] != bytes.fromhex('D0CF11E0A1B11AE1'):
+        raise ValueError('El archivo MSG no tiene una estructura OLE/CFB válida.')
+
+    FREESECT=0xFFFFFFFF; ENDOFCHAIN=0xFFFFFFFE; FATSECT=0xFFFFFFFD; DIFSECT=0xFFFFFFFC
+    major=struct.unpack_from('<H',data,26)[0]
+    sector_shift=struct.unpack_from('<H',data,30)[0]
+    mini_shift=struct.unpack_from('<H',data,32)[0]
+    sector_size=1 << sector_shift
+    mini_size=1 << mini_shift
+    if sector_size not in (512,4096) or mini_size != 64:
+        raise ValueError('MSG con tamaño de sector OLE no compatible.')
+
+    num_fat=struct.unpack_from('<I',data,44)[0]
+    first_dir=struct.unpack_from('<I',data,48)[0]
+    mini_cutoff=struct.unpack_from('<I',data,56)[0]
+    first_mini_fat=struct.unpack_from('<I',data,60)[0]
+    num_mini_fat=struct.unpack_from('<I',data,64)[0]
+    first_difat=struct.unpack_from('<I',data,68)[0]
+    num_difat=struct.unpack_from('<I',data,72)[0]
+
+    def sector(sid:int)->bytes:
+        if sid >= 0xFFFFFFF0:
+            raise ValueError('Cadena OLE inválida.')
+        off=512 + sid*sector_size
+        if off < 512 or off+sector_size > len(data):
+            raise ValueError('Sector OLE fuera del archivo.')
+        return data[off:off+sector_size]
+
+    # DIFAT in header + chained DIFAT sectors.
+    difat=list(struct.unpack_from('<109I',data,76))
+    difat=[x for x in difat if x not in (FREESECT,ENDOFCHAIN)]
+    sid=first_difat
+    seen=set()
+    for _ in range(num_difat):
+        if sid in (ENDOFCHAIN,FREESECT) or sid in seen: break
+        seen.add(sid); raw=sector(sid)
+        vals=list(struct.unpack('<%dI'%(sector_size//4),raw))
+        difat.extend(x for x in vals[:-1] if x not in (FREESECT,ENDOFCHAIN))
+        sid=vals[-1]
+    fat_sids=difat[:num_fat]
+    if len(fat_sids) < num_fat:
+        raise ValueError('Tabla FAT incompleta en MSG.')
+
+    fat=[]
+    for fsid in fat_sids:
+        fat.extend(struct.unpack('<%dI'%(sector_size//4),sector(fsid)))
+
+    def chain(start:int, table:list[int], limit:int=100000)->list[int]:
+        if start in (ENDOFCHAIN,FREESECT): return []
+        out=[]; seen=set(); cur=start
+        while cur not in (ENDOFCHAIN,FREESECT):
+            if cur in seen or cur >= len(table) or len(out)>=limit:
+                raise ValueError('Cadena OLE dañada o circular.')
+            seen.add(cur); out.append(cur); cur=table[cur]
+        return out
+
+    # Directory stream.
+    dir_bytes=b''.join(sector(x) for x in chain(first_dir,fat))
+    entries=[]
+    for i in range(0,len(dir_bytes),128):
+        e=dir_bytes[i:i+128]
+        if len(e)<128: break
+        name_len=struct.unpack_from('<H',e,64)[0]
+        typ=e[66]
+        if not typ: entries.append(None); continue
+        name=''
+        if 2 <= name_len <= 64:
+            name=e[:name_len-2].decode('utf-16le',errors='replace')
+        entries.append({
+            'name':name,'type':typ,'left':struct.unpack_from('<I',e,68)[0],
+            'right':struct.unpack_from('<I',e,72)[0],'child':struct.unpack_from('<I',e,76)[0],
+            'start':struct.unpack_from('<I',e,116)[0],
+            'size':struct.unpack_from('<Q',e,120)[0] if major>=4 else struct.unpack_from('<I',e,120)[0],
+        })
+    if not entries or not entries[0] or entries[0]['type'] != 5:
+        raise ValueError('Directorio OLE inválido en MSG.')
+
+    root=entries[0]
+    root_chain=chain(root['start'],fat)
+    mini_stream=b''.join(sector(x) for x in root_chain)[:root['size']]
+
+    mini_fat=[]
+    if num_mini_fat and first_mini_fat not in (ENDOFCHAIN,FREESECT):
+        raw=b''.join(sector(x) for x in chain(first_mini_fat,fat)[:num_mini_fat])
+        if raw:
+            mini_fat=list(struct.unpack('<%dI'%(len(raw)//4),raw[:len(raw)//4*4]))
+
+    def read_stream(ent)->bytes:
+        size=int(ent['size'])
+        if size<=0: return b''
+        if size < mini_cutoff and mini_fat and ent['start'] not in (ENDOFCHAIN,FREESECT):
+            parts=[]
+            for msid in chain(ent['start'],mini_fat):
+                off=msid*mini_size
+                if off+mini_size > len(mini_stream): break
+                parts.append(mini_stream[off:off+mini_size])
+            return b''.join(parts)[:size]
+        return b''.join(sector(x) for x in chain(ent['start'],fat))[:size]
+
+    # Build names from each storage's red-black sibling tree.
+    streams={}
+    def walk_siblings(idx:int,prefix:str,visited:set[int]):
+        if idx in (FREESECT,ENDOFCHAIN) or idx>=len(entries) or idx in visited: return
+        ent=entries[idx]
+        if not ent: return
+        visited.add(idx)
+        walk_siblings(ent['left'],prefix,visited)
+        full=f"{prefix}/{ent['name']}" if prefix else ent['name']
+        if ent['type']==2:
+            streams[full]=read_stream(ent)
+        elif ent['type'] in (1,5) and ent['child'] not in (FREESECT,ENDOFCHAIN):
+            walk_siblings(ent['child'],full,visited)
+        walk_siblings(ent['right'],prefix,visited)
+
+    if root['child'] not in (FREESECT,ENDOFCHAIN):
+        walk_siblings(root['child'],'',set())
+    return streams
+
+
+def _msg_find_stream(streams: dict[str,bytes], prop: str, base: str='') -> bytes:
+    """Find a MAPI property stream, preferring Unicode then ANSI/binary."""
+    prop=prop.upper()
+    prefixes=[]
+    if base:
+        prefixes=[base.rstrip('/')+'/']
+    else:
+        prefixes=['']
+    suffixes=(f'__substg1.0_{prop}001F', f'__substg1.0_{prop}001E', f'__substg1.0_{prop}0102')
+    lower={k.lower():v for k,v in streams.items()}
+    for pref in prefixes:
+        for suffix in suffixes:
+            key=(pref+suffix).lower()
+            if key in lower: return lower[key]
+    return b''
+
+
+def _msg_decode_prop(raw: bytes, unicode_hint: bool=True) -> str:
+    if not raw: return ''
+    # MSG Unicode strings are UTF-16LE; ANSI strings are commonly Windows-1252.
+    if unicode_hint or (len(raw)>=2 and raw[1]==0):
+        try:
+            return raw.decode('utf-16le',errors='replace').rstrip('\x00').strip()
+        except Exception:
+            pass
+    return _email_bytes_to_text(raw,'cp1252').rstrip('\x00').strip()
+
+
+def _msg_text_prop(streams: dict[str,bytes], prop: str, base: str='') -> str:
+    prop=prop.upper(); lower={k.lower():k for k in streams}
+    for typ,enc in (('001F','utf-16le'),('001E','cp1252')):
+        key=((base.rstrip('/')+'/') if base else '')+f'__substg1.0_{prop}{typ}'
+        real=lower.get(key.lower())
+        if real:
+            raw=streams[real]
+            try: return raw.decode(enc,errors='replace').rstrip('\x00').strip()
+            except Exception: return _email_bytes_to_text(raw).rstrip('\x00').strip()
+    return ''
+
+
+def _msg_filetime(streams: dict[str,bytes], prop: str) -> str:
+    import struct
+    raw=_msg_find_stream(streams,prop)
+    if len(raw)<8: return ''
     try:
-        with tempfile.TemporaryDirectory(prefix="converti_msg_") as td:
-            before=set(Path(td).glob("*"))
-            att.save(customPath=td)
-            created=[x for x in Path(td).glob("*") if x not in before and x.is_file()]
-            if created:
-                return created[0].read_bytes()
-    except Exception:
-        pass
-    return b""
+        ft=struct.unpack_from('<Q',raw,0)[0]
+        if not ft: return ''
+        from datetime import datetime, timezone, timedelta
+        dt=datetime(1601,1,1,tzinfo=timezone.utc)+timedelta(microseconds=ft/10)
+        return dt.strftime('%Y-%m-%d %H:%M:%S UTC')
+    except Exception: return ''
 
 
 def _parse_msg(path: Path) -> dict:
-    try:
-        import extract_msg
-    except Exception as exc:
-        raise ValueError("Para abrir archivos MSG instala la dependencia 'extract-msg' incluida en requirements.txt.") from exc
-    message=extract_msg.openMsg(str(path))
-    try:
-        html_body=getattr(message, "htmlBody", b"") or b""
-        if isinstance(html_body, bytes): html_body=_email_bytes_to_text(html_body)
-        text_body=str(getattr(message, "body", "") or "")
-        if not html_body:
-            import html as _html
-            html_body="<div style='white-space:pre-wrap'>"+_html.escape(text_body)+"</div>"
-        if not text_body:
-            text_body=_email_plain_from_html(html_body)
-        attachments=[]
-        for idx, att in enumerate(getattr(message, "attachments", []) or []):
-            name=(getattr(att,"longFilename",None) or getattr(att,"shortFilename",None) or f"attachment-{idx+1}.bin")
-            name=safe_original_name(str(name))
-            data=_msg_attachment_bytes(att)
-            ctype=mimetypes.guess_type(name)[0] or "application/octet-stream"
-            attachments.append({"name":name,"content_type":ctype,"data":data,"size":len(data)})
-        date_v=getattr(message,"date","") or ""
-        return {
-            "subject":str(getattr(message,"subject","") or "(Sin asunto)"),
-            "from":str(getattr(message,"sender","") or ""), "to":str(getattr(message,"to","") or ""),
-            "cc":str(getattr(message,"cc","") or ""), "date":str(date_v),
-            "html":_email_sanitize_html(str(html_body), {}), "text":text_body.strip(), "attachments":attachments,
-        }
-    finally:
-        try: message.close()
-        except Exception: pass
+    streams=_cfb_read(path)
+    if not streams:
+        raise ValueError('El archivo MSG no contiene propiedades legibles.')
 
+    subject=_msg_text_prop(streams,'0037') or '(Sin asunto)'
+    sender_name=_msg_text_prop(streams,'0C1A')
+    sender_email=_msg_text_prop(streams,'0C1F') or _msg_text_prop(streams,'0065')
+    sender=(f'{sender_name} <{sender_email}>' if sender_name and sender_email and sender_email.lower() not in sender_name.lower()
+            else sender_name or sender_email)
+    to=_msg_text_prop(streams,'0E04')
+    cc=_msg_text_prop(streams,'0E03')
+    text_body=_msg_text_prop(streams,'1000')
+
+    # HTML body can be binary (PR_HTML) or string depending on producer.
+    html_body=''
+    lower={k.lower():k for k in streams}
+    for suffix,enc in (('10130102','utf-8'),('1013001F','utf-16le'),('1013001E','cp1252')):
+        real=lower.get(('__substg1.0_'+suffix).lower())
+        if real:
+            raw=streams[real]
+            try: html_body=raw.decode(enc,errors='replace').rstrip('\x00')
+            except Exception: html_body=_email_bytes_to_text(raw)
+            break
+    if not html_body and text_body:
+        import html as _html
+        html_body="<div style='white-space:pre-wrap'>"+_html.escape(text_body)+"</div>"
+    if not text_body and html_body:
+        text_body=_email_plain_from_html(html_body)
+
+    # Attachment storages are named __attach_version1.0_#XXXXXXXX.
+    attach_roots=sorted({k.split('/',1)[0] for k in streams if k.lower().startswith('__attach_version1.0_#')})
+    attachments=[]
+    for idx,base in enumerate(attach_roots):
+        name=_msg_text_prop(streams,'3707',base) or _msg_text_prop(streams,'3704',base) or f'attachment-{idx+1}.bin'
+        name=safe_original_name(name)
+        ctype=_msg_text_prop(streams,'370E',base) or mimetypes.guess_type(name)[0] or 'application/octet-stream'
+        data_key=(base+'/__substg1.0_37010102').lower()
+        real=lower.get(data_key)
+        payload=streams.get(real,b'') if real else b''
+        if payload:
+            attachments.append({'name':name,'content_type':ctype,'data':payload,'size':len(payload)})
+
+    date_v=_msg_filetime(streams,'0039') or _msg_filetime(streams,'0E06')
+    return {
+        'subject':subject,'from':sender,'to':to,'cc':cc,'date':date_v,
+        'html':_email_sanitize_html(html_body,{}),'text':text_body.strip(),'attachments':attachments,
+    }
 
 def _parse_email_file(path: Path, ext: str) -> dict:
     if ext == "eml": return _parse_eml(path)

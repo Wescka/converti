@@ -1,7 +1,12 @@
-1. Sustituye app.py por el incluido.
-2. Añade templates/email_viewer.html al directorio templates/.
-3. Añade requirements_email.txt a la raíz del proyecto.
-4. En el Redmi instala las dependencias nuevas y reinicia app.py.
+CONVERTI — INSTALACIÓN VISOR EML/MSG CORREGIDO PARA TERMUX
 
-Comando recomendado después de subir estos archivos a GitHub:
-cd ~/converti && git fetch origin && git reset --hard origin/main && source venv/bin/activate && python -m pip install -r requirements.txt && python -m pip install -r requirements_email.txt && { pkill -f "app.py" 2>/dev/null || true; nohup ~/converti/venv/bin/python ~/converti/app.py > ~/converti.log 2>&1 & sleep 5; tail -60 ~/converti.log; }
+1. Descomprime este ZIP en tu copia del repositorio Converti, respetando las carpetas.
+2. Sustituye app.py y añade templates/email_viewer.html.
+3. requirements_email.txt ya NO instala nada: el lector MSG está integrado y no usa extract-msg, cryptography, maturin ni Rust.
+4. Sube los cambios a GitHub.
+
+En el Redmi ejecuta SOLO:
+
+cd ~/converti && git fetch origin && git reset --hard origin/main && source venv/bin/activate && python -m pip install -r requirements.txt && { pkill -f "app.py" 2>/dev/null || true; nohup ~/converti/venv/bin/python ~/converti/app.py > ~/converti.log 2>&1 & sleep 5; tail -60 ~/converti.log; }
+
+NO ejecutes pip install -r requirements_email.txt; no hace falta.
