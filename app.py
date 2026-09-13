@@ -167,13 +167,55 @@ def _email_nav_for_locale(locale: str) -> tuple[str, str]:
     return values.get(locale, values["es"])
 
 
+def _email_create_path_for_locale(locale: str) -> str:
+    return {
+        "es": "/crear-cv",
+        "en": "/en/create-cv",
+        "fr": "/fr/creer-cv",
+        "pt-br": "/pt-br/criar-cv",
+    }.get(locale, "/crear-cv")
+
+
+def _inject_email_nav_html(html: str, locale: str) -> str:
+    """Add one email-viewer link to Converti's existing main nav only.
+
+    This is deliberately additive: it does not alter existing anchors, classes,
+    styles or ordering. It supports both the standard `.nav` header and the CV
+    `.cvb-site-nav` header so the viewer link persists throughout the site.
+    """
+    href, label = _email_nav_for_locale(locale)
+    if f'href="{href}"' in html or f"href='{href}'" in html:
+        return html
+
+    create_path = _email_create_path_for_locale(locale)
+    nav_re = re.compile(
+        r'(<nav\b[^>]*class=["\'][^"\']*(?:\bnav\b|\bcvb-site-nav\b)[^"\']*["\'][^>]*>)(.*?)(</nav>)',
+        re.I | re.S,
+    )
+    anchor_re = re.compile(
+        r'(<a\b[^>]*href=["\']' + re.escape(create_path) + r'["\'][^>]*>.*?</a>)',
+        re.I | re.S,
+    )
+
+    def patch_nav(match):
+        inner = match.group(2)
+        if f'href="{href}"' in inner or f"href='{href}'" in inner:
+            return match.group(0)
+        new_inner, count = anchor_re.subn(
+            r'\1\n        <a class="nav-mail" href="' + href + '">' + label + '</a>',
+            inner,
+            count=1,
+        )
+        if not count:
+            return match.group(0)
+        return match.group(1) + new_inner + match.group(3)
+
+    return nav_re.sub(patch_nav, html, count=1)
+
+
 @app.after_request
 def _inject_email_viewer_nav(response):
-    """Add the email viewer to Converti's existing main navigation without replacing templates.
-
-    This intentionally patches only HTML that already contains Converti's `nav-cv` link.
-    If the markup changes in the future, it becomes a no-op instead of touching unrelated UI.
-    """
+    """Keep the email viewer present in existing Converti navigation everywhere."""
     if response.status_code != 200 or not response.content_type or "text/html" not in response.content_type.lower():
         return response
     if request.path in EMAIL_VIEWER_PATHS.values():
@@ -183,13 +225,8 @@ def _inject_email_viewer_nav(response):
     except (UnicodeDecodeError, RuntimeError):
         return response
     locale = _request_content_locale(request.path) or "es"
-    href, label = _email_nav_for_locale(locale)
-    if f'href="{href}"' in html or 'class="nav-cv"' not in html:
-        return response
-    # Keep the user's current navigation/design intact: insert one sibling link right after Crear CV.
-    pattern = re.compile(r'(<a\s+class=["\']nav-cv["\'][^>]*>.*?</a>)', re.I | re.S)
-    html2, count = pattern.subn(r'\1\n        <a class="nav-mail" href="' + href + '">' + label + '</a>', html, count=1)
-    if count:
+    html2 = _inject_email_nav_html(html, locale)
+    if html2 != html:
         response.set_data(html2)
         response.headers["Content-Length"] = str(len(response.get_data()))
     return response
@@ -3441,7 +3478,7 @@ def sitemap_email():
     ]
     for locale, path in EMAIL_VIEWER_PATHS.items():
         url = "https://converti.lat" + path
-        lines += ['  <url>', f'    <loc>{escape(url)}</loc>', '    <lastmod>2026-09-12</lastmod>']
+        lines += ['  <url>', f'    <loc>{escape(url)}</loc>', '    <lastmod>2026-09-13</lastmod>']
         for alt_locale, alt_path in EMAIL_VIEWER_PATHS.items():
             lines.append(f'    <xhtml:link rel="alternate" hreflang="{SITEMAP_LANG_ATTR[alt_locale]}" href="{escape("https://converti.lat"+alt_path)}" />')
         lines.append(f'    <xhtml:link rel="alternate" hreflang="x-default" href="{escape("https://converti.lat"+EMAIL_VIEWER_PATHS["es"])}" />')

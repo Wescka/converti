@@ -1,0 +1,36 @@
+Converti · Visor EML/MSG · validación 2026-09-13
+
+CAMBIOS REALIZADOS
+- Visor rediseñado para usar la misma tipografía Plus Jakarta Sans de Converti.
+- El visor reutiliza el CSS compartido site_ui.css y añade SOLO static/css/email_viewer.css.
+- No se modifica site_ui.css, create_cv.css, create_cv.js, templates de CV ni templates del Convertidor.
+- Navegación del visor usa las mismas clases de cabecera de Converti.
+- Enlace “Visor de correos” se inserta de forma aditiva en la navegación existente de las páginas HTML, incluida Crear CV.
+- SEO localizado ES / EN / FR / PT-BR con canonical, hreflang, x-default, WebApplication + FAQ y sitemap-email.xml.
+- lastmod del sitemap específico de email actualizado a 2026-09-13 sin modificar el lastmod global de los demás sitemaps.
+
+PRUEBAS EJECUTADAS
+1. python -m py_compile app.py: OK.
+2. Rutas Flask antes/después: idénticas, 70 decoradores de ruta.
+3. Bloque del Convertidor + CV: comparación byte a byte contra la versión previa: IDÉNTICO (210921 bytes).
+4. Parser/exportador EML/MSG: byte a byte IDÉNTICO a la versión previamente testeada.
+5. API de email (inspect/adjuntos/export): byte a byte IDÉNTICA a la versión previamente testeada.
+6. Persistencia del enlace de navegación simulada en:
+   - index ES/EN/FR/PT-BR: OK
+   - create_cv ES/EN/FR/PT-BR: OK
+   - section_page: OK
+   - tool_page: OK
+   - cv_seo_page: OK
+   Se inserta exactamente 1 enlace; no se edita ningún enlace existente.
+7. Render estático Jinja de email_viewer.html en ES/EN/FR/PT-BR: OK.
+8. Cada idioma contiene canonical y al menos 5 hreflang (4 idiomas + x-default): OK.
+9. Tipografía del visor: Plus Jakarta Sans; no quedan referencias a Inter ni Manrope: OK.
+10. CSS del visor aislado en selectores ev-* salvo el estado activo nav-mail del propio visor: OK.
+11. sitemap-email.xml contiene las 4 rutas localizadas, x-default y lastmod 2026-09-13: OK.
+
+ARCHIVOS QUE SE DEBEN SUBIR
+- app.py
+- templates/email_viewer.html
+- static/css/email_viewer.css
+
+NO SE REQUIEREN NUEVAS DEPENDENCIAS PYTHON PARA ESTE AJUSTE VISUAL/NAVEGACIÓN.
