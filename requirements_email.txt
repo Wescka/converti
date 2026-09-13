@@ -1,2 +1,3 @@
-# No extra Python packages are required for EML/MSG parsing.
-# MSG is parsed by Converti using its built-in OLE/CFB reader.
+# No hay dependencias adicionales para EML/MSG.
+# El visor usa el parser integrado en app.py y las dependencias ya existentes de Converti.
+# NO instalar extract-msg, cryptography, maturin ni Rust para esta función.

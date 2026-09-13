@@ -157,6 +157,44 @@ def _request_content_locale(path: str) -> str | None:
     return None
 
 
+def _email_nav_for_locale(locale: str) -> tuple[str, str]:
+    values = {
+        "es": ("/abrir-correo-eml-msg", "Visor de correos"),
+        "en": ("/en/open-eml-msg", "Email viewer"),
+        "fr": ("/fr/ouvrir-eml-msg", "Visionneuse e-mail"),
+        "pt-br": ("/pt-br/abrir-eml-msg", "Visualizador de e-mails"),
+    }
+    return values.get(locale, values["es"])
+
+
+@app.after_request
+def _inject_email_viewer_nav(response):
+    """Add the email viewer to Converti's existing main navigation without replacing templates.
+
+    This intentionally patches only HTML that already contains Converti's `nav-cv` link.
+    If the markup changes in the future, it becomes a no-op instead of touching unrelated UI.
+    """
+    if response.status_code != 200 or not response.content_type or "text/html" not in response.content_type.lower():
+        return response
+    if request.path in EMAIL_VIEWER_PATHS.values():
+        return response
+    try:
+        html = response.get_data(as_text=True)
+    except (UnicodeDecodeError, RuntimeError):
+        return response
+    locale = _request_content_locale(request.path) or "es"
+    href, label = _email_nav_for_locale(locale)
+    if f'href="{href}"' in html or 'class="nav-cv"' not in html:
+        return response
+    # Keep the user's current navigation/design intact: insert one sibling link right after Crear CV.
+    pattern = re.compile(r'(<a\s+class=["\']nav-cv["\'][^>]*>.*?</a>)', re.I | re.S)
+    html2, count = pattern.subn(r'\1\n        <a class="nav-mail" href="' + href + '">' + label + '</a>', html, count=1)
+    if count:
+        response.set_data(html2)
+        response.headers["Content-Length"] = str(len(response.get_data()))
+    return response
+
+
 @app.after_request
 def _clean_localized_html(response):
     locale = _request_content_locale(request.path)
@@ -3161,8 +3199,17 @@ def _email_render_page(locale: str):
         {"@type":"WebApplication","name":ui['h1'],"url":canonical,"applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":ui['description']},
         {"@type":"FAQPage","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in ui['faq']]}
     ]}
-    return render_template("email_viewer.html",ui=ui,locale=locale,canonical_url=canonical,alternates=alternates,
-                           schema_json=json.dumps(schema,ensure_ascii=False),home_path=SECTION_PATHS[locale]['home'],max_mb=MAX_MB)
+    email_nav_labels={
+        "es":{"mail":"Visor de correos","language":"Idioma"},
+        "en":{"mail":"Email viewer","language":"Language"},
+        "fr":{"mail":"Visionneuse e-mail","language":"Langue"},
+        "pt-br":{"mail":"Visualizador de e-mails","language":"Idioma"},
+    }[locale]
+    return render_template(
+        "email_viewer.html", ui=ui, locale=locale, canonical_url=canonical, alternates=alternates,
+        schema_json=json.dumps(schema,ensure_ascii=False), home_path=SECTION_PATHS[locale]['home'],
+        nav_paths=SECTION_PATHS[locale], nav_ui=SECTION_UI[locale], email_nav=email_nav_labels, max_mb=MAX_MB
+    )
 
 
 @app.get("/abrir-correo-eml-msg")
